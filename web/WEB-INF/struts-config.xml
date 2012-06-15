@@ -16,6 +16,8 @@
         <form-bean name="OpRoles" type="forms.RolesOpForm"/>
         <form-bean name="TipoDocumento" type="forms.TipoDocumentoForm"/>
         <form-bean name="OpTipoDocumento" type="forms.TipoDocumentoOpForm"/>
+        <form-bean name="Pais" type="forms.PaisForm"/>
+        <form-bean name="OpPais" type="forms.PaisOpForm"/>
 
     </form-beans>
 
@@ -73,6 +75,17 @@
             <forward name="ok" path="/Jsp/TipoDocumento/OpTipoDocumento.jsp"/>
             <forward name="modificar" path="/Jsp/TipoDocumento/TipoDocumento.jsp"/>
             <forward name="nuevo" path="/Jsp/TipoDocumento/TipoDocumento.jsp"/>
+            <forward name="error" path="/Jsp/error.jsp" />
+        </action>
+        <action input="/Jsp/Pais/Pais.jsp" name="Pais" path="/Pais" scope="session" type="actions.ActionPais">
+            <forward name="ok" path="/Jsp/Pais/Pais.jsp"/>
+            <forward name="atras" path="/Jsp/Pais/OpPais.jsp"/>
+            <forward name="error" path="/Jsp/error.jsp" />
+        </action>
+        <action input="/Jsp/Pais/OpPais.jsp" name="OpPais" path="/OpPais" scope="request" type="actions.ActionPaisOp" validate="false">
+            <forward name="ok" path="/Jsp/Pais/OpPais.jsp"/>
+            <forward name="modificar" path="/Jsp/Pais/Pais.jsp"/>
+            <forward name="nuevo" path="/Jsp/Pais/Pais.jsp"/>
             <forward name="error" path="/Jsp/error.jsp" />
         </action>
         <action path="/Logout" name="LoginForm" type="actions.ActionSalir">

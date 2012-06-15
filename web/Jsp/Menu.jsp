@@ -51,7 +51,9 @@
             <ul id="menulink1">
                 <li><a href="/Inventario/OpEntidad.do" target="Body">&nbsp;&nbsp;Entidad</a></li>
                 <li><a href="/Inventario/OpTipoDocumento.do" target="Body">&nbsp;&nbsp;Tipo de Documentos</a></li>
-            </ul>        </div>
+                <li><a href="/Inventario/OpPais.do" target="Body">&nbsp;&nbsp;Paises</a></li>
+            </ul>
+        </div>
         <div id="navsite">
             <ul>
                 <li><a href="#" onclick="return kadabra('menulink2');" style=" font-size: 16px; ">&nbsp;<strong>Seguridad</strong></a></li>
