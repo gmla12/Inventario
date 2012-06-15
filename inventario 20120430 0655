@@ -1,0 +1,272 @@
+-- MySQL Administrator dump 1.4
+--
+-- ------------------------------------------------------
+-- Server version	5.0.51b-community-nt
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+
+
+--
+-- Create schema inventario
+--
+
+CREATE DATABASE IF NOT EXISTS inventario;
+USE inventario;
+
+--
+-- Definition of table `articulos`
+--
+
+DROP TABLE IF EXISTS `articulos`;
+CREATE TABLE `articulos` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `idDispositivo` int(4) unsigned NOT NULL,
+  `valor` double NOT NULL,
+  `idComputador` int(4) unsigned NOT NULL,
+  `idFactura` int(4) unsigned NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+
+--
+-- Dumping data for table `articulos`
+--
+
+/*!40000 ALTER TABLE `articulos` DISABLE KEYS */;
+INSERT INTO `articulos` (`id`,`idDispositivo`,`valor`,`idComputador`,`idFactura`) VALUES 
+ (1,1,0,1,1),
+ (2,2,0,2,1);
+/*!40000 ALTER TABLE `articulos` ENABLE KEYS */;
+
+
+--
+-- Definition of table `computador`
+--
+
+DROP TABLE IF EXISTS `computador`;
+CREATE TABLE `computador` (
+  `id` int(4) unsigned NOT NULL auto_increment,
+  `codigo` varchar(10) character set latin1 NOT NULL,
+  `nombre` varchar(20) character set latin1 NOT NULL,
+  `idEmpleado` int(4) unsigned NOT NULL,
+  `ubicacion` varchar(45) character set latin1 NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+
+--
+-- Dumping data for table `computador`
+--
+
+/*!40000 ALTER TABLE `computador` DISABLE KEYS */;
+INSERT INTO `computador` (`id`,`codigo`,`nombre`,`idEmpleado`,`ubicacion`) VALUES 
+ (1,'1','PC Gilberth',1,'Dpto Sistemas'),
+ (2,'1','PC Ejemplo',2,'Dpto Ejemplo');
+/*!40000 ALTER TABLE `computador` ENABLE KEYS */;
+
+
+--
+-- Definition of table `dispositivo`
+--
+
+DROP TABLE IF EXISTS `dispositivo`;
+CREATE TABLE `dispositivo` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `Nombre` varchar(30) character set latin1 NOT NULL,
+  `Descripcion` varchar(30) character set latin1 NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+
+--
+-- Dumping data for table `dispositivo`
+--
+
+/*!40000 ALTER TABLE `dispositivo` DISABLE KEYS */;
+INSERT INTO `dispositivo` (`id`,`Nombre`,`Descripcion`) VALUES 
+ (1,'Monitor 17\'\' Acer','Modelo tal'),
+ (2,'CPU','CPU');
+/*!40000 ALTER TABLE `dispositivo` ENABLE KEYS */;
+
+
+--
+-- Definition of table `empleado`
+--
+
+DROP TABLE IF EXISTS `empleado`;
+CREATE TABLE `empleado` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `primerNombre` varchar(45) character set latin1 NOT NULL,
+  `segundoNombre` varchar(45) character set latin1 default NULL,
+  `primerApellido` varchar(45) character set latin1 NOT NULL,
+  `segundoApellido` varchar(45) character set latin1 default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+
+--
+-- Dumping data for table `empleado`
+--
+
+/*!40000 ALTER TABLE `empleado` DISABLE KEYS */;
+INSERT INTO `empleado` (`id`,`primerNombre`,`segundoNombre`,`primerApellido`,`segundoApellido`) VALUES 
+ (1,'Gilberth','Miguel','Linero','Ariza');
+/*!40000 ALTER TABLE `empleado` ENABLE KEYS */;
+
+
+--
+-- Definition of table `entidad`
+--
+
+DROP TABLE IF EXISTS `entidad`;
+CREATE TABLE `entidad` (
+  `idEntidad` int(10) unsigned NOT NULL auto_increment,
+  `primerNombre` varchar(40) character set latin1 default NULL,
+  `segundoNombre` varchar(40) character set latin1 default NULL,
+  `primerApellido` varchar(40) collate latin1_spanish_ci default NULL,
+  `segundoApellido` varchar(40) character set latin1 default NULL,
+  `idTipoDocumento` int(11) default NULL,
+  `identificacion` bigint(20) default NULL,
+  `razonSocial` varchar(50) character set latin1 default NULL,
+  PRIMARY KEY  (`idEntidad`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+
+--
+-- Dumping data for table `entidad`
+--
+
+/*!40000 ALTER TABLE `entidad` DISABLE KEYS */;
+INSERT INTO `entidad` (`idEntidad`,`primerNombre`,`segundoNombre`,`primerApellido`,`segundoApellido`,`idTipoDocumento`,`identificacion`,`razonSocial`) VALUES 
+ (2,'Gilberth','Miguel','Linero','Ariza',2,1065571485,NULL);
+/*!40000 ALTER TABLE `entidad` ENABLE KEYS */;
+
+
+--
+-- Definition of table `factura`
+--
+
+DROP TABLE IF EXISTS `factura`;
+CREATE TABLE `factura` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `numFactura` varchar(40) character set latin1 NOT NULL,
+  `idEntidad` int(4) unsigned NOT NULL,
+  `fecha` date NOT NULL,
+  `total` double NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+
+--
+-- Dumping data for table `factura`
+--
+
+/*!40000 ALTER TABLE `factura` DISABLE KEYS */;
+INSERT INTO `factura` (`id`,`numFactura`,`idEntidad`,`fecha`,`total`) VALUES 
+ (1,'12',1,'2012-04-03',123);
+/*!40000 ALTER TABLE `factura` ENABLE KEYS */;
+
+
+--
+-- Definition of table `roles`
+--
+
+DROP TABLE IF EXISTS `roles`;
+CREATE TABLE `roles` (
+  `idRoles` int(10) unsigned NOT NULL auto_increment,
+  `nombre` varchar(45) character set latin1 NOT NULL,
+  PRIMARY KEY  (`idRoles`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+
+--
+-- Dumping data for table `roles`
+--
+
+/*!40000 ALTER TABLE `roles` DISABLE KEYS */;
+INSERT INTO `roles` (`idRoles`,`nombre`) VALUES 
+ (1,'ROOT'),
+ (2,'Empleado'),
+ (3,'Cliente');
+/*!40000 ALTER TABLE `roles` ENABLE KEYS */;
+
+
+--
+-- Definition of table `tipodocumento`
+--
+
+DROP TABLE IF EXISTS `tipodocumento`;
+CREATE TABLE `tipodocumento` (
+  `idTipoDocumento` int(10) unsigned NOT NULL auto_increment,
+  `nombre` varchar(45) character set latin1 NOT NULL,
+  PRIMARY KEY  (`idTipoDocumento`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+
+--
+-- Dumping data for table `tipodocumento`
+--
+
+/*!40000 ALTER TABLE `tipodocumento` DISABLE KEYS */;
+INSERT INTO `tipodocumento` (`idTipoDocumento`,`nombre`) VALUES 
+ (2,'Cédula de Ciudadanía'),
+ (3,'Tarjeta de Extranjería'),
+ (4,'Cédula de Extranjería'),
+ (5,'NIT');
+/*!40000 ALTER TABLE `tipodocumento` ENABLE KEYS */;
+
+
+--
+-- Definition of table `tipodocumentoaut`
+--
+
+DROP TABLE IF EXISTS `tipodocumentoaut`;
+CREATE TABLE `tipodocumentoaut` (
+  `idTipoDocumento` int(10) unsigned NOT NULL,
+  `campoEntidad` varchar(40) NOT NULL,
+  `habilitar` tinyint(1) NOT NULL,
+  `obligatorio` tinyint(1) NOT NULL,
+  PRIMARY KEY  (`idTipoDocumento`,`campoEntidad`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tipodocumentoaut`
+--
+
+/*!40000 ALTER TABLE `tipodocumentoaut` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tipodocumentoaut` ENABLE KEYS */;
+
+
+--
+-- Definition of table `usuario`
+--
+
+DROP TABLE IF EXISTS `usuario`;
+CREATE TABLE `usuario` (
+  `idUsuario` int(11) NOT NULL auto_increment,
+  `login` varchar(30) character set latin1 default NULL,
+  `password` blob,
+  `idRol` int(11) default NULL,
+  `identificacion` bigint(20) default NULL,
+  PRIMARY KEY  (`idUsuario`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+
+--
+-- Dumping data for table `usuario`
+--
+
+/*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
+INSERT INTO `usuario` (`idUsuario`,`login`,`password`,`idRol`,`identificacion`) VALUES 
+ (7,'glinero',0xCCED7DC55BC05315D663405218D9EE52,1,1065571485);
+/*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
+
+
+
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

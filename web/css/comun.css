@@ -1,0 +1,70 @@
+/* 
+    Document   : comun
+    Created on : 20-nov-2010, 12:11:24
+    Author     : Mario
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+root { 
+    display: block;
+}
+.divlogo{
+    position:absolute;
+    top:0;
+    left:1290px;
+}
+.encabe{
+    border: 0;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 22px;
+    position:absolute;
+    top:20;
+    left:330px;
+}
+.divSesion{
+    position:absolute;
+    top:66px;
+    left:1050px;
+}
+.titulo{
+    text-align: left;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+
+}
+.text{
+    border: 0;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+#form{
+    position:absolute;
+    top:40px;
+    left:80px;
+}
+.imgRegi{
+    position:absolute;
+    top:40px;
+    left:810px;
+}
+a.boton:link,a.boton:visited
+{
+    font-weight:bold;
+    color:#ffffff;
+    background-color:#2aa7e8;
+    width:120px;
+    text-align:center;
+    padding:4px;
+    text-decoration:none;
+}
+a.boton:hover,a.boton:active
+{
+    background-color:#2e80ff;
+}
