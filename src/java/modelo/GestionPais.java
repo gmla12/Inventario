@@ -54,9 +54,10 @@ public class GestionPais extends ConeccionMySql {
 
             }
 
-            String query = "insert into paises     (nombre"
+            String query = "insert into paises     (idPais, nombre"
                     + ") "
                     + "values('"
+                    + f.getIdPais() + "', '"
                     + f.getNombre() + "'"
                     + ")";
 
@@ -213,8 +214,15 @@ public class GestionPais extends ConeccionMySql {
             String query = "SELECT p.idPais, p.nombre ";
             query += "FROM paises p ";
             String query2 = "";
+            if (f.getbIdPais().isEmpty() != true) {
+                query2 = "p.idPais LIKE '%" + f.getbIdPais() + "%'";
+            }
             if (f.getbNombre().isEmpty() != true) {
-                query2 = "p.nombre LIKE '%" + f.getbNombre() + "%'";
+                if (query2.isEmpty() != true) {
+                    query2 += "AND p.nombre LIKE '%" + f.getbNombre() + "%'";
+                } else {
+                    query2 = "p.nombre LIKE '%" + f.getbNombre() + "%'";
+                }
             }
             if (query2.isEmpty() != true) {
                 query += "WHERE " + query2;
@@ -407,6 +415,90 @@ public class GestionPais extends ConeccionMySql {
 
     }
 
+    public ArrayList<Object> BuscarPais(String idPais, Boolean transac, Connection tCn) {
+
+        ArrayList<Object> resultado = new ArrayList<Object>();
+        BeanPais bu;
+        bu = new BeanPais();
+        boolean encontro = false;
+
+        try {
+
+            if (transac == false) { //si no es una transaccion busca una nueva conexion
+
+                ArrayList<Object> resultad = new ArrayList<Object>();
+                resultad = (ArrayList) getConection();
+
+                if ((Boolean) resultad.get(0) == false) { // si no hubo error al obtener la conexion
+
+                    cn = (Connection) resultad.get(1);
+
+                } else { //si hubo error al obtener la conexion retorna el error para visualizar
+
+                    resultado.add(true);
+                    resultado.add(resultad.get(1));
+                    return resultado;
+
+                }
+
+            } else { //si es una transaccion asigna la conexion utilizada
+
+                cn = tCn;
+
+            }
+
+            String query = "SELECT p.idPais ";
+            query += "FROM paises p ";
+            query += "WHERE ";
+            query += "p.idPais = '" + idPais + "' ";
+
+            System.out.println("***********************************************");
+            System.out.println("*****       Buscar idPais  *****");
+            System.out.println("***********************************************");
+
+            st = cn.createStatement();
+            ResultSet rs = st.executeQuery(query);
+            while (rs.next()) {
+                bu = new BeanPais();
+
+                bu.setIdPais(rs.getObject("p.idPais"));
+                String p =(String) bu.getIdPais();
+                if (p.equals(idPais)){
+                    encontro = true;
+                }
+                
+
+            }
+
+            st.close();
+
+            if (transac == false) { // si no es una transaccion cierra la conexion
+
+                cn.close();
+
+            }
+
+            resultado.add(false); //si no hubo un error asigna false
+            resultado.add(encontro); // y registros consultados
+
+        } catch (Exception e) {
+
+            resultado.add(true); //si hubo error asigna true
+            resultado.add(e); //y asigna el error para retornar y visualizar
+
+            if (cn != null) {
+                cn.rollback();
+                cn.close();
+            }
+
+        } finally {
+
+            return resultado;
+
+        }
+
+    }
+    
     public ArrayList<Object> MostrarPaisFormulario(String IdPais, Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();

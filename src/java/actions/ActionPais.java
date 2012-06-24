@@ -85,8 +85,8 @@ public class ActionPais extends Action {
 
         } else if (fo.getOp().equals("eliminar")) {
 
-            request.setAttribute("getIdPais", fo.getIdPais());
-            request.setAttribute("getNombre", fo.getNombre());
+            request.setAttribute("getIdPais", "");
+            request.setAttribute("getNombre", "");
 
             ArrayList<Object> resultado = new ArrayList<Object>();
             resultado = gr.EliminaPais(fo, false, null);

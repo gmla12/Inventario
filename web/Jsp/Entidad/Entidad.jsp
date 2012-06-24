@@ -124,7 +124,11 @@
                         </tr>
                         <tr>
                             <td class="text">Pais</td>
-                            <td><html:text property="idPais" value='<%= String.valueOf(request.getAttribute("getIdPais"))%>'></html:text></td>
+                            <td><html:select property="idPais"  size="1" style="width:240px;" value='<%= String.valueOf(request.getAttribute("getIdPais"))%>'>
+                                <c:forEach items="${CMB_PAIS}" var="cat">
+                                    <html:option value="${cat.idPais}"><c:out value='${cat.nombre}'/></html:option>
+                                </c:forEach>
+                            </html:select></td>
                         </tr>
                         <tr>
                             <td class="text">Municipio</td>

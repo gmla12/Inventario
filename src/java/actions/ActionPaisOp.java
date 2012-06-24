@@ -117,8 +117,9 @@ public class ActionPaisOp extends Action {
 
             session.setAttribute("getbIdPais", "");
             session.setAttribute("getbNombre", "");
+            fo.setbIdPais("");
             fo.setbNombre("");
-
+            
             ArrayList<Object> resultado = new ArrayList<Object>();
             resultado = gr.MostrarPaisOP(fo, false, null);
             if ((Boolean) resultado.get(0) == false) {

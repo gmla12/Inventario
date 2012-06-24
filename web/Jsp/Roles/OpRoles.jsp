@@ -16,12 +16,12 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link type="text/css" href="/Inventario/css/ui.all.css" rel="stylesheet" />
         <link type="text/css" href="/Inventario/css/comun.css" rel="stylesheet" />
-        <script language="javascript" type="text/javascript" src="/Inventario/niceforms_files/niceforms.js"></script>
         <link rel="stylesheet" type="text/css" media="all" href="/Inventario/niceforms_files/niceforms-default.css">
-        <script type="text/javascript" src="/Inventario/Js/jquery-1.3.2.js"></script>
-        <script type="text/javascript" src="/Inventario/Js/ui/ui.core.js"></script>
-        <script type="text/javascript" src="/Inventario/Js/ui/ui.datepicker.js"></script>
-        <title>Opiones Usuarios</title>
+        <link rel="stylesheet" type="text/css" media="screen" href="/Inventario/css/ui.jqgrid.css" />
+        <script src="/Inventario/Js/jquery-1.7.2.min.js" type="text/javascript"></script>
+        <script src="/Inventario/Js/i18n/grid.locale-es.js" type="text/javascript"></script>
+        <script src="/Inventario/Js/jquery.jqGrid.min.js" type="text/javascript"></script>
+        <title>Opiones Roles</title>
         <%
             String usuario = "";
             HttpSession sesionOk = request.getSession();
@@ -43,56 +43,27 @@
         <%
         }
         %>
-        <script language="javascript">
-            var xhr;
-            function busqueda(ev){
-                if((ev.keyCode>=48 && ev.keyCode<=57) ||
-                    (ev.keyCode>=65 && ev.keyCode<=90)){
-                    if(window.ActiveXObject){
-                        xhr=new ActiveXObject("Microsoft.XMLHttp");
-                    }
-                    else if((window.XMLHttpRequest) || (typeof XMLHttpRequest)!=undefined){
-                        xhr=new XMLHttpRequest();
-                    }
-                    else{
-                        alert("Su navegador no tiene soporte para AJAX");
-                        return;
-                    }
-                    localizaPalabra();
-                }
-            }
-            function localizaPalabra(){
-                //recupera el texto introducido en el campo
-                //de texto y lo pasa como parámetro en la URL
-                //al servlet
-                var caja=document.getElementById("texto");
-                var texto=caja.value;
-                xhr.open("GET","/Inventario/Generador?texto="+texto,true);
-                xhr.onreadystatechange=procesadatos;
-                xhr.send(null);
-            }
-            function procesadatos(){
-                if(xhr.readyState==4){
-                    var resp=xhr.responseText;
-                    var caja=document.getElementById("texto");
-                    //si se ha recibido una palabra de respuesta
-                    //se introduce en el control y se seleccionan los
-                    //caracteres aún no tecleados
-                    if(resp!=""){
-                        var inicioSel=caja.value.length;
-                        caja.value=resp;
-                        caja.selectionStart=inicioSel;
-                        caja.selectionEnd=caja.value.length;
-                    }
-                }
-            }
-        </script>
-
         <script type="text/javascript">
-            $(function() {
-                $("#datepicker").datepicker();
-            });
-            
+            $(function(){ 
+                jQuery("#list4").jqGrid({
+                    url:'Jsp/Roles/getGriddahico.jsp?op=bus',
+                    datatype: "json",
+                    colNames:['ID', 'Nombre', 'Editar'],
+                    colModel:[
+                        {name:'idRoles',index:'idRoles', width:50, sortable:false},
+                        {name:'nombre',index:'nombre', width:160, sortable:false},
+                        {name:'editar',index:'editar', width:110, formatter:'showlink', sortable:false}
+                    ],
+                    pager: '#prowed1',
+                    width: 550,
+                    height: "100%",
+                    rowNum:10,
+                    viewrecords: true,
+                    caption: "Lista de Roles"
+                }); 
+                jQuery("#list4").jqGrid('navGrid',"#prowed1",{edit:false,add:false,del:false,search:false});
+            }); 
+
             function buscar(){
                 document.forms[0].op.value="buscar";
                 document.forms[0].id.value="";
@@ -123,7 +94,7 @@
                     <tr>
                         <td>Nombre del Rol<input type="text" name="bNombre" value="<%= session.getAttribute("getbNombre")%>"/> </td>
                         <td><a class="boton" href="javascript:buscar()">Buscar</a></td>
-                        <td><a class="boton" href="javascript:nuevo()">Nuevo Rol</a></td>
+                        <td><a class="boton" href="javascript:nuevo()">Nuevo</a></td>
                     </tr>
                 </table>
             </fieldset>
@@ -131,28 +102,9 @@
                 <legend>Listado de Roles</legend>
                 <table>
                     <tr>
-                        <th bgcolor='#BDBDBD' height="25" width="40">ID</th>
-                        <th bgcolor='#BDBDBD' height="25" width="130">Nombre</th>
-                        <th bgcolor='#BDBDBD' height="25">Editar</th>
+                        <td><table id="list4"></table></td>
+                        <td><div id="prowed1"></div></td>
                     </tr>
-                    <%int color = 1;%>
-                    <c:forEach items="${GR_ROLES}" var="cat">
-                        <%  if (color == 1) {%>
-                        <tr>
-                            <td width="40" align="center" height="25" bgcolor="#D8D8D8"><c:out value="${cat.idRoles}"/></td>
-                            <td width="130" align="center"  height="25" bgcolor="#D8D8D8"><c:out value="${cat.nombre}"/></td>
-                            <td width="60" align="center" height="25" bgcolor="#D8D8D8"><a href="javascript:modifica(${cat.idRoles})">Modificar</a></td>
-                        </tr>
-                        <% color = 0;%>
-                        <% } else {%>
-                        <tr>
-                            <td width="40" align="center" height="25"><c:out value="${cat.idRoles}"/></td>
-                            <td width="130" align="center"  height="25"><c:out value="${cat.nombre}"/></td>
-                            <td width="60" align="center" height="25"><a href="javascript:modifica(${cat.idRoles})">Modificar</a></td>
-                        </tr>
-                        <% color = 1;%>
-                        <%}%>
-                    </c:forEach>
                 </table>
             </fieldset>
         </html:form>

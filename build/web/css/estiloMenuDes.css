@@ -1,0 +1,162 @@
+/* 
+    Document   : estiloMenuDes
+    Created on : 14-04-2010, 12:16:22 PM
+    Author     : Luis Urrutia Diaz
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+root { 
+    display: block;
+}
+/*
+    Document   : estilo01
+    Created on : Sep 22, 2009, 5:59:31 PM
+    Author     : Mario Aliaga
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/*
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+body {background-color:#F6E3CE;}
+
+
+
+            #navsite p { display:none;
+            }
+            #menulink {
+                display: none;
+            }
+            #navsite{
+                font-family:Verdana, Arial, Helvetica, sans-serif;
+                font-size:0.7em;
+                font-weight:bold;
+                width:12em;
+                border-right: 1px solid #666;
+                padding:0;
+                /*    margin-bottom: 1em;  */
+                background-color: #FAAC58;
+                color:#333;
+            }
+            #navsite ul{
+                list-style:none;
+                margin:0;
+                padding:0;
+            }
+            html>body #navsite ul li a {
+
+                width: auto;
+
+                font-family: Arial,Helvetica,sans-serif;
+}
+            #navsite ul li{
+                margin:0; border-top: 1px solid #003;
+                text-decoration:none;
+            }
+            #navsite ul li a{
+                display:block;
+                padding:2px 2px 2px 0.5em;
+                border-left: 10px solid #369;
+                border-right: 1px solid #69c;
+                border-bottom:1px solid #369;
+                background-color:#F28C27;
+                color:#fff;
+                text-decoration:none;
+                width:100%;
+            }
+            #navsite ul li a:hover{
+                border-left: 10px solid #036;
+                border-right:1px solid #69c;
+                border-bottom:1px solid #369;
+                background-color:#F17D09;
+                text-decoration:none;
+                color:#fff;
+            }
+
+            #menulink1 {
+                display: none;
+            }
+            #menulink2 {
+                display: none;
+            }
+            #menulink3 {
+                display: none;
+            }
+            #menulink4 {
+                display: none;
+            }
+            #menulink5 {
+                display: none;
+            }
+            #menulink6 {
+                display: none;
+            }
+
+            /* ---------------------------------------------------------------------------------------*/
+
+            #navsite2 p { display:none;
+            }
+            #menulink {
+                display: none;
+            }
+            #navsite2{
+                font-family:Verdana, Arial, Helvetica, sans-serif;
+                font-size:0.7em;
+                font-weight:bold;
+          
+                width:12em;
+                border-right: 1px solid #666;
+                padding:0;
+                /*    margin-bottom: 1em;  */
+                background-color: #FAAC58;
+                color:#333;
+            }
+            #navsite2 ul{
+                list-style:none;
+                margin:0;
+                padding:0;
+            }
+            html>body #navsite2 ul li  a{
+
+                width: auto;
+                font-family: Arial,Helvetica,sans-serif;
+
+            }
+            #navsite2 ul li{
+                margin:0; 
+                border-top: 1px solid #003;
+                text-decoration:none;
+            }
+            #navsite2 ul li a{
+                display:block;
+                
+                padding:2px 2px 2px 0.5em;
+                border-left: 10px solid #369;
+                border-right: 1px solid #69c;
+                border-bottom:1px solid #369;
+                background-color:#F7BE81;
+                color:#fff;
+                text-decoration:none;
+                width:100%;
+            }
+            #navsite2 ul li a:hover{
+                border-left: 10px solid #036;
+                border-right:1px solid #69c;
+                border-bottom:1px solid #369;
+                background-color:#F1A65C;
+                 text-decoration:none;
+                color:#fff;
+            }
+
+
+
+

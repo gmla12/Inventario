@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import modelo.GestionEntidad;
+import modelo.GestionPais;
 import modelo.GestionTipoDocumento;
 
 import org.apache.struts.action.Action;
@@ -49,6 +50,7 @@ public class ActionEntidadOp extends Action {
         EntidadOpForm fo = (EntidadOpForm) form;
         GestionEntidad g = new GestionEntidad();
         GestionTipoDocumento gr = new GestionTipoDocumento();
+        GestionPais gP = new GestionPais();
         HttpSession session = request.getSession();
 
         System.out.println("********************************************");
@@ -73,23 +75,35 @@ public class ActionEntidadOp extends Action {
                     resultado2 = gr.MostrarTipoDocumento(false, null);
                     if ((Boolean) resultado2.get(0) == false) {
 
-                        request.setAttribute("getIdEntidad", g.getIdEntidad());
-                        request.setAttribute("getPrimerNombre", g.getPrimerNombre());
-                        request.setAttribute("getSegundoNombre", g.getSegundoNombre());
-                        request.setAttribute("getPrimerApellido", g.getPrimerApellido());
-                        request.setAttribute("getSegundoApellido", g.getSegundoApellido());
-                        request.setAttribute("getIdTipoDocumento", g.getIdTipoDocumento());
-                        request.setAttribute("getIdentificacion", g.getIdentificacion());
-                        request.setAttribute("getRazonSocial", g.getRazonSocial());
-                        request.setAttribute("getIdPais", g.getIdPais());
-                        request.setAttribute("getIdMunicipio", g.getIdMunicipio());
-                        request.setAttribute("getDireccion", g.getDireccion());
-                        request.setAttribute("getTelefono", g.getTelefono());
-                        request.setAttribute("getEmail", g.getEmail());
-                        request.setAttribute("getIdTipoEntidad", g.getIdTipoEntidad());
+                        ArrayList<Object> resultado3 = new ArrayList<Object>();
+                        resultado3 = gP.MostrarPais(false, null);
+                        if ((Boolean) resultado3.get(0) == false) {
 
-                        session.setAttribute("CMB_TIPODOCUMENTO", (ArrayList) resultado2.get(1));
-                        return mapping.findForward("modificar");
+                            request.setAttribute("getIdEntidad", g.getIdEntidad());
+                            request.setAttribute("getPrimerNombre", g.getPrimerNombre());
+                            request.setAttribute("getSegundoNombre", g.getSegundoNombre());
+                            request.setAttribute("getPrimerApellido", g.getPrimerApellido());
+                            request.setAttribute("getSegundoApellido", g.getSegundoApellido());
+                            request.setAttribute("getIdTipoDocumento", g.getIdTipoDocumento());
+                            request.setAttribute("getIdentificacion", g.getIdentificacion());
+                            request.setAttribute("getRazonSocial", g.getRazonSocial());
+                            request.setAttribute("getIdPais", g.getIdPais());
+                            request.setAttribute("getIdMunicipio", g.getIdMunicipio());
+                            request.setAttribute("getDireccion", g.getDireccion());
+                            request.setAttribute("getTelefono", g.getTelefono());
+                            request.setAttribute("getEmail", g.getEmail());
+                            request.setAttribute("getIdTipoEntidad", g.getIdTipoEntidad());
+
+                            session.setAttribute("CMB_TIPODOCUMENTO", (ArrayList) resultado2.get(1));
+                            session.setAttribute("CMB_PAIS", (ArrayList) resultado3.get(1));
+                            return mapping.findForward("modificar");
+
+                        } else {
+
+                            request.setAttribute("error", resultado3.get(1));
+                            return mapping.findForward("error");
+
+                        }
 
                     } else {
 
@@ -152,23 +166,35 @@ public class ActionEntidadOp extends Action {
                 resultado = gr.MostrarTipoDocumento(false, null);
                 if ((Boolean) resultado.get(0) == false) {
 
-                    request.setAttribute("getIdEntidad", "");
-                    request.setAttribute("getPrimerNombre", "");
-                    request.setAttribute("getSegundoNombre", "");
-                    request.setAttribute("getPrimerApellido", "");
-                    request.setAttribute("getSegundoApellido", "");
-                    request.setAttribute("getIdTipoDocumento", "");
-                    request.setAttribute("getIdentificacion", "");
-                    request.setAttribute("getRazonSocial", "");
-                    request.setAttribute("getIdPais", "");
-                    request.setAttribute("getIdMunicipio", "");
-                    request.setAttribute("getDireccion", "");
-                    request.setAttribute("getTelefono", "");
-                    request.setAttribute("getEmail", "");
-                    request.setAttribute("getIdTipoEntidad", "");
+                    ArrayList<Object> resultado2 = new ArrayList<Object>();
+                    resultado2 = gP.MostrarPais(false, null);
+                    if ((Boolean) resultado2.get(0) == false) {
 
-                    session.setAttribute("CMB_TIPODOCUMENTO", (ArrayList) resultado.get(1));
-                    return mapping.findForward("nuevo");
+                        request.setAttribute("getIdEntidad", "");
+                        request.setAttribute("getPrimerNombre", "");
+                        request.setAttribute("getSegundoNombre", "");
+                        request.setAttribute("getPrimerApellido", "");
+                        request.setAttribute("getSegundoApellido", "");
+                        request.setAttribute("getIdTipoDocumento", "");
+                        request.setAttribute("getIdentificacion", "");
+                        request.setAttribute("getRazonSocial", "");
+                        request.setAttribute("getIdPais", "");
+                        request.setAttribute("getIdMunicipio", "");
+                        request.setAttribute("getDireccion", "");
+                        request.setAttribute("getTelefono", "");
+                        request.setAttribute("getEmail", "");
+                        request.setAttribute("getIdTipoEntidad", "");
+
+                        session.setAttribute("CMB_TIPODOCUMENTO", (ArrayList) resultado.get(1));
+                        session.setAttribute("CMB_PAIS", (ArrayList) resultado2.get(1));
+                        return mapping.findForward("nuevo");
+
+                    } else {
+
+                        request.setAttribute("error", resultado2.get(1));
+                        return mapping.findForward("error");
+
+                    }
 
                 } else {
 
