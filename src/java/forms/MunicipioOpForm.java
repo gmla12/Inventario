@@ -13,11 +13,13 @@ import org.apache.struts.action.ActionForm;
  */
 public class MunicipioOpForm extends ActionForm{
     private String bIdMunicipio;
+    private String bIdDepartamento;
     private String bIdPais;
     private String bNombre;
     private String op;
     private String id;
     private String id2;
+    private String id3;
 
     public String getOp() {
         return op;
@@ -43,12 +45,28 @@ public class MunicipioOpForm extends ActionForm{
         this.id2 = id2;
     }
 
+    public String getId3() {
+        return id3;
+    }
+
+    public void setId3(String id3) {
+        this.id3 = id3;
+    }
+
     public String getbIdMunicipio() {
         return bIdMunicipio;
     }
 
     public void setbIdMunicipio(String bIdMunicipio) {
         this.bIdMunicipio = bIdMunicipio;
+    }
+
+    public String getbIdDepartamento() {
+        return bIdDepartamento;
+    }
+
+    public void setbIdDepartamento(String bIdDepartamento) {
+        this.bIdDepartamento = bIdDepartamento;
     }
 
     public String getbIdPais() {

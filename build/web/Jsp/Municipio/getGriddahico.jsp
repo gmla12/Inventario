@@ -103,9 +103,10 @@
             json = json + "\n{";
             json = json + "\"id\":\"" + i + "\",";
             json = json + "\"cell\":[\"" + buMunicipio2.getIdMunicipio() + "\"";
+            json = json + ",\"" + buMunicipio2.getIdDepartamento() + "\"";
             json = json + ",\"" + buMunicipio2.getIdPais() + "\"";
             json = json + ",\"" + buMunicipio2.getNombre() + "\"";
-            String aux2 = "<a href='javascript:modifica(&quot;" + buMunicipio2.getIdMunicipio() + "&quot; , &quot;" + buMunicipio2.getIdPais() + "&quot;)'>Modificar</a>";
+            String aux2 = "<a href='javascript:modifica(&quot;" + buMunicipio2.getIdMunicipio() + "&quot; , &quot;" + buMunicipio2.getIdDepartamento() + "&quot; , &quot;" + buMunicipio2.getIdPais() + "&quot;)'>Modificar</a>";
             json = json + ",\"" + aux2 + "\"]";
             json = json + "}";
 

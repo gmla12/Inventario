@@ -37,7 +37,7 @@
         <%
             if (request.getAttribute("getOp") == "buscar") {
         %>
-        <jsp:forward page="/OpMuncipio.do">
+        <jsp:forward page="/OpMunicipio.do">
             <jsp:param name="getOp" value="buscar"/>
         </jsp:forward>
         <%            }
@@ -50,6 +50,7 @@
                     colNames:['ID', 'Pais', 'Nombre', 'Editar'],
                     colModel:[
                         {name:'idMunicipio',index:'idMunicipio', width:50, sortable:false},
+                        {name:'nombreDepartamento',index:'nombreDepartamento', width:50, sortable:false},
                         {name:'nombrePais',index:'nombrePais', width:50, sortable:false},
                         {name:'nombre',index:'nombre', width:160, sortable:false},
                         {name:'editar',index:'editar', width:110, formatter:'showlink', sortable:false}
@@ -70,10 +71,11 @@
                 document.forms[0].submit();
             }
             
-            function modifica(id, id2){
+            function modifica(id, id2, id3){
                 document.forms[0].op.value="modificar";
                 document.forms[0].id.value=id;
                 document.forms[0].id2.value=id2;
+                document.forms[0].id3.value=id3;
                 document.forms[0].submit();
             }
 
@@ -90,11 +92,18 @@
             <input type="hidden" name="op" value=""> 
             <input type="hidden" name="id" value=""> 
             <input type="hidden" name="id2" value=""> 
+            <input type="hidden" name="id3" value=""> 
             <fieldset>
                 <legend>Consulta de Municipios</legend>
                 <table>
                     <tr>
                         <td>ID<input size="5" type="text" name="bIdMunicipio" value="<%= session.getAttribute("getbIdMunicipio")%>"/> </td>
+                        <td>Departamento<html:select property="bIdDepartamento"  size="1" style="width:240px;" value='<%= String.valueOf(request.getAttribute("getbIdDepartamento"))%>'>
+                                <html:option value=""><c:out value='[Todos]'/></html:option>    
+                                <c:forEach items="${CMB_DEPARTAMENTO}" var="cat">
+                                    <html:option value="${cat.idDepartamento}"><c:out value='${cat.nombre}'/></html:option>
+                                </c:forEach>
+                        </html:select></td>
                         <td>Pais<html:select property="bIdPais"  size="1" style="width:240px;" value='<%= String.valueOf(request.getAttribute("getbIdPais"))%>'>
                                 <html:option value=""><c:out value='[Todos]'/></html:option>    
                                 <c:forEach items="${CMB_PAIS}" var="cat">

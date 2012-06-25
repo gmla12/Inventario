@@ -14,6 +14,7 @@ import java.io.Serializable;
 public class BeanMunicipio implements Serializable{
 
     private Object idMunicipio;
+    private Object idDepartamento;
     private Object idPais;
     private Object nombre;
 
@@ -25,6 +26,14 @@ public class BeanMunicipio implements Serializable{
         this.idMunicipio = idMunicipio;
     }
     
+    public Object getIdDepartamento() {
+        return idDepartamento;
+    }
+
+    public void setIdDepartamento(Object idDepartamento) {
+        this.idDepartamento = idDepartamento;
+    }
+
     public Object getIdPais() {
         return idPais;
     }

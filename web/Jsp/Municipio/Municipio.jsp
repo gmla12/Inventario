@@ -52,14 +52,27 @@
                     rules : {
                         idMunicipio : {
                             required : true,
-                            minlength : 5,
-                            maxlength : 5,
+                            minlength : 3,
+                            maxlength : 3,
                             remote: { 
                                 url: "Jsp/Municipio/getMunicipio.jsp", //valida si existe el idMunicipio
                                 type: "post", 
                                 data: { 
                                     lectura: function() { return document.forms[0].idMunicipio.disabled },
-                                    idPais: function() { return $("#idPais").val() } 
+                                    idPais: function() { return $("#idPais").val() },
+                                    idDepartamento: function() { return $("#idDepartamento").val() } 
+                                } 
+                            }
+                        },
+                        idDepartamento : {
+                            required : true,
+                            remote: { 
+                                url: "Jsp/Municipio/getMunicipio.jsp", //valida si existe la identificacion
+                                type: "post", 
+                                data: { 
+                                    lectura: function() { return document.forms[0].idPais.readOnly },
+                                    idMunicipio: function() { return $("#idMunicipio").val() },
+                                    idPais: function() { return $("#idPais").val() }
                                 } 
                             }
                         },
@@ -70,7 +83,8 @@
                                 type: "post", 
                                 data: { 
                                     lectura: function() { return document.forms[0].idPais.readOnly },
-                                    idMunicipio: function() { return $("#idMunicipio").val() } 
+                                    idMunicipio: function() { return $("#idMunicipio").val() },
+                                    idDepartamento: function() { return $("#idDepartamento").val() } 
                                 } 
                             }
                         },
@@ -82,10 +96,13 @@
                     },
                     messages: {
                         idMunicipio: {
-                            remote: "El ID ya existe con el Pais escogido"
+                            remote: "El ID ya existe con el Departamento y Pais escogido"
+                        },
+                        idDepartamento: {
+                            remote: "El ID ya existe con el Departamento y Pais escogido"
                         },
                         idPais: {
-                            remote: "El ID ya existe con el Pais escogido"
+                            remote: "El ID ya existe con el Departamento y Pais escogido"
                         }
                     },
                     debug: false,
@@ -140,6 +157,22 @@
                             <td><html:text property="idMunicipio" readonly="true" value='<%= String.valueOf(request.getAttribute("getIdMunicipio"))%>'></html:text></td>
                             <% } else {%> 
                             <td><html:text property="idMunicipio" value='<%= String.valueOf(request.getAttribute("getIdMunicipio"))%>'></html:text></td>
+                            <% }%> 
+                        </tr>
+                        <tr>
+                            <td class="text">Departamento</td>
+                            <% if (request.getAttribute("getIdDepartamento") != "") {%> 
+                                <td><html:select property="idDepartamento"  size="1" style="width:240px;" disabled="true" value='<%= String.valueOf(request.getAttribute("getIdDepartamento"))%>'>
+                                    <c:forEach items="${CMB_DEPARTAMENTO}" var="cat">
+                                        <html:option value="${cat.idDepartamento}"><c:out value='${cat.nombre}'/></html:option>
+                                    </c:forEach>
+                                </html:select></td>
+                            <% } else {%> 
+                                <td><html:select property="idDepartamento"  size="1" style="width:240px;" value='<%= String.valueOf(request.getAttribute("getIdDepartamento"))%>'>
+                                    <c:forEach items="${CMB_DEPARTAMENTO}" var="cat">
+                                        <html:option value="${cat.idDepartamento}"><c:out value='${cat.nombre}'/></html:option>
+                                    </c:forEach>
+                                </html:select></td>
                             <% }%> 
                         </tr>
                         <tr>

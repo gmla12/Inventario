@@ -4,14 +4,13 @@
  */
 package modelo;
 
-import forms.MunicipioOpForm;
 import forms.MunicipioForm;
+import forms.MunicipioOpForm;
 import forms.bean.BeanMunicipio;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import util.ConeccionMySql;
 
@@ -54,10 +53,11 @@ public class GestionMunicipio extends ConeccionMySql {
 
             }
 
-            String query = "insert into municipios     (idMunicipio, idPais, nombre"
+            String query = "insert into municipios     (idMunicipio, idDepartamento, idPais, nombre"
                     + ") "
                     + "values('"
                     + f.getIdMunicipio() + "', '"
+                    + f.getIdDepartamento() + "', '"
                     + f.getIdPais() + "', '"
                     + f.getNombre() + "'"
                     + ")";
@@ -129,7 +129,7 @@ public class GestionMunicipio extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idMunicipio, p.idPais, p.nombre ";
+            String query = "SELECT p.idMunicipio, p.idDepartamento, p.idPais, p.nombre ";
             query += "FROM municipios p ";
 
             System.out.println("***********************************************");
@@ -145,6 +145,7 @@ public class GestionMunicipio extends ConeccionMySql {
                 bu = new BeanMunicipio();
 
                 bu.setIdMunicipio(rs.getObject("p.idMunicipio"));
+                bu.setIdDepartamento(rs.getObject("p.idDepartamento"));
                 bu.setIdPais(rs.getObject("p.idPais"));
                 bu.setNombre(rs.getObject("p.nombre"));
 
@@ -213,11 +214,18 @@ public class GestionMunicipio extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idMunicipio, p.idPais, p.nombre ";
+            String query = "SELECT p.idMunicipio, p.idDepartamento, p.idPais, p.nombre ";
             query += "FROM municipios p ";
             String query2 = "";
             if (f.getbIdMunicipio().isEmpty() != true) {
                 query2 = "p.idMunicipio LIKE '%" + f.getbIdMunicipio() + "%'";
+            }
+            if (f.getbIdDepartamento().isEmpty() != true) {
+                if (query2.isEmpty() != true) {
+                    query2 += "AND p.idDepartamento LIKE '%" + f.getbIdDepartamento() + "%'";
+                } else {
+                    query2 = "p.idDepartamento LIKE '%" + f.getbIdDepartamento() + "%'";
+                }
             }
             if (f.getbIdPais().isEmpty() != true) {
                 if (query2.isEmpty() != true) {
@@ -252,6 +260,7 @@ public class GestionMunicipio extends ConeccionMySql {
 
                 bu.setIdMunicipio(rs.getObject("p.idMunicipio"));
                 bu.setIdPais(rs.getObject("p.idPais"));
+                bu.setIdDepartamento(rs.getObject("p.idDepartamento"));
                 bu.setNombre(rs.getObject("p.nombre"));
 
                 GR_MUNICIPIO.add(bu);
@@ -318,7 +327,7 @@ public class GestionMunicipio extends ConeccionMySql {
             }
 
             String query = "UPDATE municipios SET nombre = '" + f.getNombre() + "'";
-            query += " WHERE idMunicipio = '" + f.getIdMunicipio() + "' AND idPais = '" + f.getIdPais() + "'";
+            query += " WHERE idMunicipio = '" + f.getIdMunicipio() + "' AND idDepartamento = '" + f.getIdDepartamento() + "' AND idPais = '" + f.getIdPais() + "'";
 
 
             System.out.println(query);
@@ -387,7 +396,7 @@ public class GestionMunicipio extends ConeccionMySql {
             }
 
             String query = "DELETE FROM municipios ";
-            query += "WHERE  idMunicipio = '" + f.getIdMunicipio() + "' AND idPais = '" + f.getIdPais() + "'";
+            query += "WHERE  idMunicipio = '" + f.getIdMunicipio() + "' AND idDepartamento = '" + f.getIdDepartamento() + "' AND idPais = '" + f.getIdPais() + "'";
 
 
             System.out.println(query);
@@ -425,7 +434,7 @@ public class GestionMunicipio extends ConeccionMySql {
 
     }
 
-    public ArrayList<Object> BuscarMunicipio(String idMunicipio, String idPais, Boolean transac, Connection tCn) {
+    public ArrayList<Object> BuscarMunicipio(String idMunicipio, String idDepartamento, String idPais, Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
         BeanMunicipio bu;
@@ -457,10 +466,11 @@ public class GestionMunicipio extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idMunicipio, p.idPais ";
+            String query = "SELECT p.idMunicipio, p.idDepartamento, p.idPais ";
             query += "FROM municipios p ";
             query += "WHERE ";
             query += "p.idMunicipio = '" + idMunicipio + "' ";
+            query += "AND p.idDepartamento = '" + idDepartamento + "' ";
             query += "AND p.idPais = '" + idPais + "' ";
 
             System.out.println("***********************************************");
@@ -473,10 +483,12 @@ public class GestionMunicipio extends ConeccionMySql {
                 bu = new BeanMunicipio();
 
                 bu.setIdMunicipio(rs.getObject("p.idMunicipio"));
+                bu.setIdDepartamento(rs.getObject("p.idDepartamento"));
                 bu.setIdPais(rs.getObject("p.idPais"));
-                String p =(String) bu.getIdPais();
-                String p2 =(String) bu.getIdMunicipio();
-                if (p.equals(idMunicipio) && p2.equals(idPais)){
+                String p =(String) bu.getIdMunicipio();
+                String p2 =(String) bu.getIdDepartamento();
+                String p3 =(String) bu.getIdPais();
+                if (p.equals(idMunicipio) && p2.equals(idDepartamento) && p3.equals(idPais)){
                     encontro = true;
                 }
                 
@@ -512,7 +524,7 @@ public class GestionMunicipio extends ConeccionMySql {
 
     }
     
-    public ArrayList<Object> MostrarMunicipioFormulario(String IdMunicipio, String IdPais, Boolean transac, Connection tCn) {
+    public ArrayList<Object> MostrarMunicipioFormulario(String IdMunicipio, String IdDepartamento, String IdPais, Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
 
@@ -541,9 +553,9 @@ public class GestionMunicipio extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idMunicipio, p.idPais, p.nombre ";
+            String query = "SELECT p.idMunicipio, p.idDepartamento, p.idPais, p.nombre ";
             query += "FROM municipios p ";
-            query += "WHERE  p.idMunicipio = '" + IdMunicipio + "' AND p.idPais = '" + IdPais + "'";
+            query += "WHERE  p.idMunicipio = '" + IdMunicipio + "' AND p.idDepartamento = '" + IdDepartamento + "' AND p.idPais = '" + IdPais + "'";
 
 
             System.out.println("***********************************************");
@@ -559,6 +571,7 @@ public class GestionMunicipio extends ConeccionMySql {
                 bu = new BeanMunicipio();
 
                 setIdMunicipio(rs.getObject("p.idMunicipio"));
+                setIdDepartamento(rs.getObject("p.idDepartamento"));
                 setIdPais(rs.getObject("p.idPais"));
                 setNombre(rs.getObject("p.nombre"));
 
@@ -753,6 +766,7 @@ public class GestionMunicipio extends ConeccionMySql {
 //}
 
     private Object idMunicipio;
+    private Object idDepartamento;
     private Object idPais;
     private Object nombre;
 
@@ -762,6 +776,14 @@ public class GestionMunicipio extends ConeccionMySql {
 
     public void setIdMunicipio(Object idMunicipio) {
         this.idMunicipio = idMunicipio;
+    }
+
+    public Object getIdDepartamento() {
+        return idDepartamento;
+    }
+
+    public void setIdDepartamento(Object idDepartamento) {
+        this.idDepartamento = idDepartamento;
     }
 
     public Object getIdPais() {

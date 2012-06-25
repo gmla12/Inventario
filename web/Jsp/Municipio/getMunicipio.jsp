@@ -23,13 +23,14 @@
 <%
     String op = request.getParameter("idMunicipio");
     boolean op2 = (Boolean) Boolean.valueOf(request.getParameter("lectura"));
-    String op3 = request.getParameter("idPais");
+    String op3 = request.getParameter("idDepartamento");
+    String op4 = request.getParameter("idPais");
     if (op != null) {
         String id = String.valueOf(op);
 
         GestionMunicipio gr = new GestionMunicipio();
         ArrayList<Object> resultado = new ArrayList<Object>();
-        resultado = gr.BuscarMunicipio(id, op3, false, null);
+        resultado = gr.BuscarMunicipio(id, op3, op4, false, null);
         if ((Boolean) resultado.get(0) == false) {
             if ((Boolean) resultado.get(1) == true) {
                 if (op2 == false) {

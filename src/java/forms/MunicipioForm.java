@@ -13,6 +13,7 @@ import org.apache.struts.action.ActionForm;
  */
 public class MunicipioForm extends ActionForm{
     private String idMunicipio;
+    private String idDepartamento;
     private String idPais;
     private String nombre;
     private String op;
@@ -31,6 +32,14 @@ public class MunicipioForm extends ActionForm{
 
     public void setIdPais(String idPais) {
         this.idPais = idPais;
+    }
+
+    public String getIdDepartamento() {
+        return idDepartamento;
+    }
+
+    public void setIdDepartamento(String idDepartamento) {
+        this.idDepartamento = idDepartamento;
     }
 
     public String getNombre() {

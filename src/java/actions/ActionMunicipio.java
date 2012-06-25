@@ -6,11 +6,9 @@ package actions;
 
 import forms.MunicipioForm;
 import java.util.ArrayList;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import modelo.GestionMunicipio;
-
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -40,6 +38,7 @@ public class ActionMunicipio extends Action {
         if (fo.getOp().equals("nuevo")) {
 
             request.setAttribute("getIdMunicipio", fo.getIdMunicipio());
+            request.setAttribute("getIdDepartamento", fo.getIdDepartamento());
             request.setAttribute("getIdPais", fo.getIdPais());
             request.setAttribute("getNombre", fo.getNombre());
 
@@ -64,6 +63,7 @@ public class ActionMunicipio extends Action {
         } else if (fo.getOp().equals("modificar")) {
 
             request.setAttribute("getIdMunicipio", fo.getIdMunicipio());
+            request.setAttribute("getIdDepartamento", fo.getIdDepartamento());
             request.setAttribute("getIdPais", fo.getIdPais());
             request.setAttribute("getNombre", fo.getNombre());
 
@@ -88,6 +88,7 @@ public class ActionMunicipio extends Action {
         } else if (fo.getOp().equals("eliminar")) {
 
             request.setAttribute("getIdMunicipio", "");
+            request.setAttribute("getIdDepartamento", "");
             request.setAttribute("getIdPais", "");
             request.setAttribute("getNombre", "");
 
