@@ -18,6 +18,8 @@
         <form-bean name="OpTipoDocumento" type="forms.TipoDocumentoOpForm"/>
         <form-bean name="Pais" type="forms.PaisForm"/>
         <form-bean name="OpPais" type="forms.PaisOpForm"/>
+        <form-bean name="Departamento" type="forms.DepartamentoForm"/>
+        <form-bean name="OpDepartamento" type="forms.DepartamentoOpForm"/>
         <form-bean name="Municipio" type="forms.MunicipioForm"/>
         <form-bean name="OpMunicipio" type="forms.MunicipioOpForm"/>
 
@@ -88,6 +90,17 @@
             <forward name="ok" path="/Jsp/Pais/OpPais.jsp"/>
             <forward name="modificar" path="/Jsp/Pais/Pais.jsp"/>
             <forward name="nuevo" path="/Jsp/Pais/Pais.jsp"/>
+            <forward name="error" path="/Jsp/error.jsp" />
+        </action>
+        <action input="/Jsp/Departamento/Departamento.jsp" name="Departamento" path="/Departamento" scope="session" type="actions.ActionDepartamento">
+            <forward name="ok" path="/Jsp/Departamento/Departamento.jsp"/>
+            <forward name="atras" path="/Jsp/Departamento/OpDepartamento.jsp"/>
+            <forward name="error" path="/Jsp/error.jsp" />
+        </action>
+        <action input="/Jsp/Departamento/OpDepartamento.jsp" name="OpDepartamento" path="/OpDepartamento" scope="request" type="actions.ActionDepartamentoOp" validate="false">
+            <forward name="ok" path="/Jsp/Departamento/OpDepartamento.jsp"/>
+            <forward name="modificar" path="/Jsp/Departamento/Departamento.jsp"/>
+            <forward name="nuevo" path="/Jsp/Departamento/Departamento.jsp"/>
             <forward name="error" path="/Jsp/error.jsp" />
         </action>
         <action input="/Jsp/Municipio/Municipio.jsp" name="Municipio" path="/Municipio" scope="session" type="actions.ActionMunicipio">

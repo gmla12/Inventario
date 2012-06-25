@@ -52,6 +52,7 @@
                 <li><a href="/Inventario/OpEntidad.do" target="Body">&nbsp;&nbsp;Entidad</a></li>
                 <li><a href="/Inventario/OpTipoDocumento.do" target="Body">&nbsp;&nbsp;Tipo de Documentos</a></li>
                 <li><a href="/Inventario/OpPais.do" target="Body">&nbsp;&nbsp;Paises</a></li>
+                <li><a href="/Inventario/OpDepartamento.do" target="Body">&nbsp;&nbsp;Departamentos</a></li>
                 <li><a href="/Inventario/OpMunicipio.do" target="Body">&nbsp;&nbsp;Municipios</a></li>
             </ul>
         </div>

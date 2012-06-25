@@ -21,7 +21,7 @@
         <script src="/Inventario/Js/jquery-1.7.2.min.js" type="text/javascript"></script>
         <script src="/Inventario/Js/i18n/grid.locale-es.js" type="text/javascript"></script>
         <script src="/Inventario/Js/jquery.jqGrid.min.js" type="text/javascript"></script>
-        <title>Opiones Municipios</title>
+        <title>Opciones Municipios</title>
         <%
             String usuario = "";
             HttpSession sesionOk = request.getSession();
@@ -47,7 +47,7 @@
                 jQuery("#list4").jqGrid({
                     url:'Jsp/Municipio/getGriddahico.jsp?op=bus',
                     datatype: "json",
-                    colNames:['ID', 'Pais', 'Nombre', 'Editar'],
+                    colNames:['ID', 'Departamento', 'Pais', 'Nombre', 'Editar'],
                     colModel:[
                         {name:'idMunicipio',index:'idMunicipio', width:50, sortable:false},
                         {name:'nombreDepartamento',index:'nombreDepartamento', width:50, sortable:false},

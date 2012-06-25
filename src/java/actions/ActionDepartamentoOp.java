@@ -4,13 +4,12 @@
  */
 package actions;
 
-import forms.MunicipioOpForm;
+import forms.DepartamentoOpForm;
 import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import modelo.GestionDepartamento;
-import modelo.GestionMunicipio;
 import modelo.GestionPais;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -21,7 +20,7 @@ import org.apache.struts.action.ActionMapping;
  *
  * @author mario
  */
-public class ActionMunicipioOp extends Action {
+public class ActionDepartamentoOp extends Action {
 
     /**
      * Processes requests for both HTTP
@@ -33,7 +32,7 @@ public class ActionMunicipioOp extends Action {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    public ActionMunicipioOp() {
+    public ActionDepartamentoOp() {
 
         super();
 
@@ -46,14 +45,13 @@ public class ActionMunicipioOp extends Action {
             HttpServletResponse response)
             throws Exception {
 
-        MunicipioOpForm fo = (MunicipioOpForm) form;
-        GestionMunicipio gr = new GestionMunicipio();
-        GestionDepartamento gd = new GestionDepartamento();
+        DepartamentoOpForm fo = (DepartamentoOpForm) form;
+        GestionDepartamento gr = new GestionDepartamento();
         GestionPais gp = new GestionPais();
         HttpSession session = request.getSession();
 
         System.out.println("********************************************");
-        System.out.println("*********  ActionOpMunicipio  **********");
+        System.out.println("*********  ActionOpDepartamento  **********");
         System.out.println("********************************************");
         request.setAttribute("respuesta", "");
 
@@ -67,32 +65,19 @@ public class ActionMunicipioOp extends Action {
             if (fo.getOp().equals("modificar")) {
 
                 ArrayList<Object> resultado = new ArrayList<Object>();
-                resultado = gr.MostrarMunicipioFormulario(fo.getId(), fo.getId2(), fo.getId3(), false, null);
+                resultado = gr.MostrarDepartamentoFormulario(fo.getId(), fo.getId2(), false, null);
                 if ((Boolean) resultado.get(0) == false) {
 
                     ArrayList<Object> resultado2 = new ArrayList<Object>();
-                    resultado2 = gd.MostrarDepartamento(false, null);
+                    resultado2 = gp.MostrarPais(false, null);
                     if ((Boolean) resultado2.get(0) == false) {
 
-                        ArrayList<Object> resultado3 = new ArrayList<Object>();
-                        resultado3 = gp.MostrarPais(false, null);
-                        if ((Boolean) resultado3.get(0) == false) {
+                        request.setAttribute("getIdDepartamento", gr.getIdDepartamento());
+                        request.setAttribute("getIdPais", gr.getIdPais());
+                        request.setAttribute("getNombre", gr.getNombre());
 
-                            request.setAttribute("getIdMunicipio", gr.getIdMunicipio());
-                            request.setAttribute("getIdDepartamento", gr.getIdDepartamento());
-                            request.setAttribute("getIdPais", gr.getIdPais());
-                            request.setAttribute("getNombre", gr.getNombre());
-
-                            session.setAttribute("CMB_DEPARTAMENTO", resultado2.get(1));
-                            session.setAttribute("CMB_PAIS", resultado3.get(1));
-                            return mapping.findForward("modificar");
-
-                        } else {
-
-                            request.setAttribute("error", resultado3.get(1));
-                            return mapping.findForward("error");
-
-                        }
+                        session.setAttribute("CMB_PAIS", resultado2.get(1));
+                        return mapping.findForward("modificar");
 
                     } else {
 
@@ -111,40 +96,26 @@ public class ActionMunicipioOp extends Action {
             } else if (fo.getOp().equals("buscar")) {
 
                 if (fo.getbNombre() == null) {
-                    fo.setbIdMunicipio((String) session.getAttribute("getbIdMunicipio"));
                     fo.setbIdDepartamento((String) session.getAttribute("getbIdDepartamento"));
                     fo.setbIdPais((String) session.getAttribute("getbIdPais"));
                     fo.setbNombre((String) session.getAttribute("getbNombre"));
                 }
 
                 ArrayList<Object> resultado = new ArrayList<Object>();
-                resultado = gr.MostrarMunicipioOP(fo, false, null);
+                resultado = gr.MostrarDepartamentoOP(fo, false, null);
                 if ((Boolean) resultado.get(0) == false) {
 
                     ArrayList<Object> resultado2 = new ArrayList<Object>();
-                    resultado2 = gd.MostrarDepartamento(false, null);
+                    resultado2 = gp.MostrarPais(false, null);
                     if ((Boolean) resultado2.get(0) == false) {
 
-                        ArrayList<Object> resultado3 = new ArrayList<Object>();
-                        resultado3 = gp.MostrarPais(false, null);
-                        if ((Boolean) resultado3.get(0) == false) {
+                        session.setAttribute("getbIdDepartamento", fo.getbIdDepartamento());
+                        session.setAttribute("getbIdPais", fo.getbIdPais());
+                        session.setAttribute("getbNombre", fo.getbNombre());
 
-                            session.setAttribute("getbIdMunicipio", fo.getbIdMunicipio());
-                            session.setAttribute("getbIdDepartamento", fo.getbIdDepartamento());
-                            session.setAttribute("getbIdPais", fo.getbIdPais());
-                            session.setAttribute("getbNombre", fo.getbNombre());
-
-                            session.setAttribute("GR_MUNICIPIO", resultado.get(1));
-                            session.setAttribute("CMB_DEPARTAMENTO", resultado2.get(1));
-                            session.setAttribute("CMB_PAIS", resultado3.get(1));
-                            return mapping.findForward("ok");
-
-                        } else {
-
-                            request.setAttribute("error", resultado3.get(1));
-                            return mapping.findForward("error");
-
-                        }
+                        session.setAttribute("GR_MUNICIPIO", resultado.get(1));
+                        session.setAttribute("CMB_PAIS", resultado2.get(1));
+                        return mapping.findForward("ok");
 
                     } else {
 
@@ -162,7 +133,6 @@ public class ActionMunicipioOp extends Action {
 
             } else {
 
-                request.setAttribute("getIdMunicipio", "");
                 request.setAttribute("getIdDepartamento", "");
                 request.setAttribute("getIdPais", "");
                 request.setAttribute("getNombre", "");
@@ -173,38 +143,24 @@ public class ActionMunicipioOp extends Action {
 
         } else {
 
-            session.setAttribute("getbIdMunicipio", "");
             session.setAttribute("getbIdDepartamento", "");
             session.setAttribute("getbIdPais", "");
             session.setAttribute("getbNombre", "");
-            fo.setbIdMunicipio("");
             fo.setbIdDepartamento("");
             fo.setbIdPais("");
             fo.setbNombre("");
 
             ArrayList<Object> resultado = new ArrayList<Object>();
-            resultado = gr.MostrarMunicipioOP(fo, false, null);
+            resultado = gr.MostrarDepartamentoOP(fo, false, null);
             if ((Boolean) resultado.get(0) == false) {
 
-                ArrayList<Object> resultado2 = new ArrayList<Object>();
-                resultado2 = gd.MostrarDepartamento(false, null);
-                if ((Boolean) resultado2.get(0) == false) {
+                    ArrayList<Object> resultado2 = new ArrayList<Object>();
+                    resultado2 = gp.MostrarPais(false, null);
+                    if ((Boolean) resultado2.get(0) == false) {
 
-                    ArrayList<Object> resultado3 = new ArrayList<Object>();
-                    resultado3 = gp.MostrarPais(false, null);
-                    if ((Boolean) resultado3.get(0) == false) {
-
-                        session.setAttribute("GR_MUNICIPIO", resultado.get(1));
-                        session.setAttribute("CMB_DEPARTAMENTO", resultado2.get(1));
-                        session.setAttribute("CMB_PAIS", resultado3.get(1));
+                        session.setAttribute("GR_DEPARTAMENTO", resultado.get(1));
+                        session.setAttribute("CMB_PAIS", resultado2.get(1));
                         return mapping.findForward("ok");
-
-                    } else {
-
-                        request.setAttribute("error", resultado3.get(1));
-                        return mapping.findForward("error");
-
-                    }
 
                 } else {
 

@@ -148,7 +148,7 @@
                 <input type="hidden" name="op" value=""> 
 
                 <fieldset>
-                    <legend>Ingreso Municipio</legend>
+                    <legend>Ingreso Roles</legend>
 
                     <table>
                         <tr>
