@@ -97,7 +97,7 @@ public class GestionDepartamento extends ConeccionMySql {
     }
     private ArrayList<Object> GR_DEPARTAMENTO;
 
-    public ArrayList<Object> MostrarDepartamento(Boolean transac, Connection tCn) {
+    public ArrayList<Object> MostrarDepartamento(String id, Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
 
@@ -129,7 +129,7 @@ public class GestionDepartamento extends ConeccionMySql {
             }
 
             String query = "SELECT p.idDepartamento, p.idPais, p.nombre ";
-            query += "FROM departamentos p ";
+            query += "FROM departamentos p WHERE p.idPais = '" + id + "'";
 
             System.out.println("***********************************************");
             System.out.println("*****       Cargando grilla  GR_DEPARTAMENTO  *****");

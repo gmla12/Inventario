@@ -112,6 +112,9 @@
                         //alert('El formulario ha sido validado correctamente!');
                     }
                 });
+                $("#idPais").change(function(){
+                    $.post("Jsp/Municipio/getDepartamento.jsp",{ id:$(this).val() },function(data){$("#idDepartamento").html(data);})
+                });
             });
 
             function nuevo(){
@@ -165,43 +168,43 @@
                             <% }%> 
                         </tr>
                         <tr>
-                            <td class="text">Departamento</td>
+                            <td class="text">Pais</td>
                             <% if (request.getAttribute("getIdMunicipio") != "") {%> 
-                            <td><html:select property="idDepartamento"  size="1" style="width:240px;" disabled="true" value='<%= String.valueOf(request.getAttribute("getIdDepartamento"))%>'>
-                                    <c:forEach items="${CMB_DEPARTAMENTO}" var="cat">
-                                        <html:option value="${cat.idDepartamento}"><c:out value='${cat.nombre}'/></html:option>
+                            <td><html:select property="idPais" styleId="idPais" size="1" style="width:240px;" disabled="true" value='<%= String.valueOf(request.getAttribute("getIdPais"))%>'>
+                                    <c:forEach items="${CMB_PAIS}" var="cat">
+                                        <html:option value="${cat.idPais}"><c:out value='${cat.nombre}'/></html:option>
                                     </c:forEach>
                                 </html:select></td>
                                 <% } else {%> 
-                            <td><html:select property="idDepartamento"  size="1" style="width:240px;" value='<%= String.valueOf(request.getAttribute("getIdDepartamento"))%>'>
-                                    <c:forEach items="${CMB_DEPARTAMENTO}" var="cat">
-                                        <html:option value="${cat.idDepartamento}"><c:out value='${cat.nombre}'/></html:option>
+                            <td><html:select property="idPais" styleId="idPais" size="1" style="width:240px;" value='<%= String.valueOf(request.getAttribute("getIdPais"))%>'>
+                                    <c:forEach items="${CMB_PAIS}" var="cat">
+                                        <html:option value="${cat.idPais}"><c:out value='${cat.nombre}'/></html:option>
                                     </c:forEach>
                                 </html:select></td>
                                 <% }%> 
                         </tr>
                         <tr>
-                            <td class="text">Pais</td>
+                            <td class="text">Departamento</td>
                             <% if (request.getAttribute("getIdMunicipio") != "") {%> 
-                            <td><html:select property="idPais"  size="1" style="width:240px;" disabled="true" value='<%= String.valueOf(request.getAttribute("getIdPais"))%>'>
-                                    <c:forEach items="${CMB_PAIS}" var="cat">
-                                        <html:option value="${cat.idPais}"><c:out value='${cat.nombre}'/></html:option>
+                            <td><html:select property="idDepartamento" styleId="idDepartamento" size="1" style="width:240px;" disabled="true" value='<%= String.valueOf(request.getAttribute("getIdDepartamento"))%>'>
+                                    <c:forEach items="${CMB_DEPARTAMENTO}" var="cat">
+                                        <html:option value="${cat.idDepartamento}"><c:out value='${cat.nombre}'/></html:option>
                                     </c:forEach>
                                 </html:select></td>
                                 <% } else {%> 
-                            <td><html:select property="idPais"  size="1" style="width:240px;" value='<%= String.valueOf(request.getAttribute("getIdPais"))%>'>
-                                    <c:forEach items="${CMB_PAIS}" var="cat">
-                                        <html:option value="${cat.idPais}"><c:out value='${cat.nombre}'/></html:option>
+                            <td><html:select property="idDepartamento" styleId="idDepartamento" size="1" style="width:240px;" value='<%= String.valueOf(request.getAttribute("getIdDepartamento"))%>'>
+                                    <c:forEach items="${CMB_DEPARTAMENTO}" var="cat">
+                                        <html:option value="${cat.idDepartamento}"><c:out value='${cat.nombre}'/></html:option>
                                     </c:forEach>
                                 </html:select></td>
                                 <% }%> 
                         </tr>
                         <tr>
                             <td class="text">Nombre del Municipio</td>
-                            <td><html:text property="nombre" value='<%= String.valueOf(request.getAttribute("getNombre"))%>'></html:text></td>
-                            </tr>
-                            <tr>
-                                <td colspan="3"><a class="boton" href="javascript:nuevo();">Nuevo</a> <a class="boton" id="submit" href="javascript:guardar();">Guardar</a> <% if (request.getAttribute("getIdMunicipio") != "") {%> <a class="boton" href="javascript:eliminar();">Eliminar</a> <% }%> <a class="boton" href="javascript:atras();">Volver</a></td>
+                            <td><html:text property="nombre" styleId="nombre" value='<%= String.valueOf(request.getAttribute("getNombre"))%>'></html:text></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3"><a class="boton" href="javascript:nuevo();">Nuevo</a> <a class="boton" id="submit" href="javascript:guardar();">Guardar</a> <% if (request.getAttribute("getIdMunicipio") != "") {%> <a class="boton" href="javascript:eliminar();">Eliminar</a> <% }%> <a class="boton" href="javascript:atras();">Volver</a></td>
                         </tr>
                         <%
                             if (request.getAttribute("respuesta") != "") {

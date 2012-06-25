@@ -63,6 +63,9 @@
                     caption: "Lista de Municipios"
                 }); 
                 jQuery("#list4").jqGrid('navGrid',"#prowed1",{edit:false,add:false,del:false,search:false});
+                $("#bIdPais").change(function(){
+                    $.post("Jsp/Municipio/getDepartamentoOp.jsp",{ id:$(this).val() },function(data){$("#bIdDepartamento").html(data);})
+                });
             }); 
 
             function buscar(){
@@ -103,16 +106,16 @@
                         <td><a class="boton" href="javascript:nuevo()">Nuevo</a></td>
                     </tr>
                     <tr>
-                        <td>Departamento<html:select property="bIdDepartamento"  size="1" style="width:240px;" value='<%= String.valueOf(request.getAttribute("getbIdDepartamento"))%>'>
-                                <html:option value=""><c:out value='[Todos]'/></html:option>    
-                                <c:forEach items="${CMB_DEPARTAMENTO}" var="cat">
-                                    <html:option value="${cat.idDepartamento}"><c:out value='${cat.nombre}'/></html:option>
-                                </c:forEach>
-                        </html:select></td>
-                        <td>Pais<html:select property="bIdPais"  size="1" style="width:240px;" value='<%= String.valueOf(request.getAttribute("getbIdPais"))%>'>
+                        <td>Pais<html:select property="bIdPais" styleId="bIdPais" size="1" style="width:240px;" value='<%= String.valueOf(request.getAttribute("getbIdPais"))%>'>
                                 <html:option value=""><c:out value='[Todos]'/></html:option>    
                                 <c:forEach items="${CMB_PAIS}" var="cat">
                                     <html:option value="${cat.idPais}"><c:out value='${cat.nombre}'/></html:option>
+                                </c:forEach>
+                        </html:select></td>
+                        <td>Departamento<html:select property="bIdDepartamento" styleId="bIdDepartamento" size="1" style="width:240px;" value='<%= String.valueOf(request.getAttribute("getbIdDepartamento"))%>'>
+                                <html:option value=""><c:out value='[Todos]'/></html:option>    
+                                <c:forEach items="${CMB_DEPARTAMENTO}" var="cat">
+                                    <html:option value="${cat.idDepartamento}"><c:out value='${cat.nombre}'/></html:option>
                                 </c:forEach>
                         </html:select></td>
                     </tr>

@@ -71,7 +71,7 @@ public class ActionMunicipioOp extends Action {
                 if ((Boolean) resultado.get(0) == false) {
 
                     ArrayList<Object> resultado2 = new ArrayList<Object>();
-                    resultado2 = gd.MostrarDepartamento(false, null);
+                    resultado2 = gd.MostrarDepartamento((String) gr.getIdPais(), false, null);
                     if ((Boolean) resultado2.get(0) == false) {
 
                         ArrayList<Object> resultado3 = new ArrayList<Object>();
@@ -122,7 +122,7 @@ public class ActionMunicipioOp extends Action {
                 if ((Boolean) resultado.get(0) == false) {
 
                     ArrayList<Object> resultado2 = new ArrayList<Object>();
-                    resultado2 = gd.MostrarDepartamento(false, null);
+                    resultado2 = gd.MostrarDepartamento(fo.getbIdPais(), false, null);
                     if ((Boolean) resultado2.get(0) == false) {
 
                         ArrayList<Object> resultado3 = new ArrayList<Object>();
@@ -187,7 +187,7 @@ public class ActionMunicipioOp extends Action {
             if ((Boolean) resultado.get(0) == false) {
 
                 ArrayList<Object> resultado2 = new ArrayList<Object>();
-                resultado2 = gd.MostrarDepartamento(false, null);
+                resultado2 = gd.MostrarDepartamento("", false, null);
                 if ((Boolean) resultado2.get(0) == false) {
 
                     ArrayList<Object> resultado3 = new ArrayList<Object>();
