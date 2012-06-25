@@ -86,7 +86,12 @@
         json = json + "\"rows\": [";
         rc = false;
 
-        for (int i = 0; i < GR_AUT.size(); i++) {
+        int maximo = start + limit;
+        if (maximo > GR_AUT.size()){
+            maximo = GR_AUT.size();
+        }
+                
+        for (int i = start; i < maximo; i++) {
 
             if (rc) {
                 json = json + ",";

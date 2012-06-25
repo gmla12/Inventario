@@ -21,6 +21,9 @@
         <script src="/Inventario/Js/jquery-1.7.2.min.js" type="text/javascript"></script>
         <script src="/Inventario/Js/i18n/grid.locale-es.js" type="text/javascript"></script>
         <script src="/Inventario/Js/jquery.jqGrid.min.js" type="text/javascript"></script>
+        <script type="text/javascript" src="/Inventario/Js/jquery.validate.js"></script>
+        <script src="/Inventario/Js/i18n/messages_es.js" type="text/javascript"></script>
+        <link rel="stylesheet" type="text/css" media="all" href="/Inventario/niceforms_files/niceforms-default.css">
         <%
             String usuario = "";
             HttpSession sesionOk = request.getSession();
@@ -37,6 +40,32 @@
 
         <script type="text/javascript">
             $(function(){ 
+                $('#submit').click(function(e) {
+                    e.preventDefault();
+                    if(document.forms[0].idTipoDocumento.value==""){
+                        document.forms[0].op.value="nuevo";
+                    }
+                    else {
+                        document.forms[0].op.value="modificar";
+                    }
+                    $("#forma").submit(); 
+                }); 
+                $("#forma").validate({
+                    event: "blur",
+                    rules : {
+                        nombre : {
+                            required : true,
+                            minlength : 3,
+                            maxlength : 45
+                        }
+                    },
+                    debug: false,
+                    errorElement: "label",
+                    submitHandler: function(form){
+                        form.submit();
+                        //alert('El formulario ha sido validado correctamente!');
+                    }
+                });
                 var grid = $("#list4"),
                 getColumnIndexByName = function(columnName1, columnName2) {
                     var cm = grid.jqGrid('getGridParam','colModel'),i=0,l=cm.length;
@@ -94,7 +123,7 @@
                         }
                     }
                 }); 
-                jQuery("#list4").jqGrid('navGrid',"#prowed1",{edit:true,add:true,del:true});
+                jQuery("#list4").jqGrid('navGrid',"#prowed1",{edit:true,add:false,del:false});
                 //Ocultar Columna idTipoDocumento
                 jQuery("#list4").setGridParam().hideCol("idTipoDocumento").trigger("reloadGrid");
                 function checkboxFormatter(cellvalue, options, rowObject) {
@@ -104,23 +133,11 @@
                     return "<input type='checkbox' onclick=" + disableIfChecked(this, '" + options.rowId + "');" " + bchk + " value='" + cellvalue + "' offval='no' />";
                 }
             }); 
-        </script>
 
-        <script type="text/javascript">
             function nuevo(){
                 document.forms[0].op.value="";
                 document.forms[0].idTipoDocumento.value="";
                 document.forms[0].nombre.value="";
-            }
-
-            function guardar(){
-                if(document.forms[0].idTipoDocumento.value==""){
-                    document.forms[0].op.value="nuevo";
-                }
-                else {
-                    document.forms[0].op.value="modificar";
-                }
-                document.forms[0].submit();
             }
             
             function eliminar(){
@@ -134,13 +151,20 @@
             }
             
         </script>
-        <script language="javascript" type="text/javascript" src="/Inventario/niceforms_files/niceforms.js"></script>
-        <link rel="stylesheet" type="text/css" media="all" href="/Inventario/niceforms_files/niceforms-default.css">
 
+        <style>
+            .error-message, label.error {
+                color: #ff0000;
+                margin:0;
+                display: inline;
+                font-size: 1em !important;
+                font-weight:lighter;
+            }
+        </style>
     </head>
     <body>
         <div >
-            <html:form action="/TipoDocumento" method="post">
+            <html:form action="/TipoDocumento" method="post" styleId="forma">
 
                 <input type="hidden" name="op" value=""> 
                 <input type="hidden" name="idTipoDocumento" value='<%= String.valueOf(request.getAttribute("getIdTipoDocumento"))%>'> 
@@ -151,7 +175,7 @@
                     <table>
                         <tr>
                             <td colspan="2" class="text">Nombre del Tipo Documento</td>
-                            <td><html:text property="nombre" value='<%= String.valueOf(request.getAttribute("getNombre"))%>'></html:text></td>
+                            <td><html:text property="nombre" styleId="nombre" value='<%= String.valueOf(request.getAttribute("getNombre"))%>'></html:text></td>
                         </tr>
                         <%
                             if (request.getAttribute("getIdTipoDocumento") != "") {
@@ -160,13 +184,13 @@
                             <td colspan="3" class="text">Por favor establezca cuales campos son obligatorios y habilitados.</td>
                         </tr>
                         <tr>
-                            <td><table id="list4"></table></td>
-                            <td><div id="prowed1"></div></td>
+                            <td colspan="3"><table id="list4"></table></td>
+                            <td colspan="3"><div id="prowed1"></div></td>
                         </tr>
                         <%  }
                         %>
                         <tr>
-                            <td colspan="3"><a class="boton" href="javascript:nuevo();">Nuevo</a> <a class="boton" href="javascript:guardar();" id="sved1">Guardar</a> <% if (request.getAttribute("getIdTipoDocumento") != "") {%> <a class="boton" href="javascript:eliminar();">Eliminar</a> <% }%> <a class="boton" href="javascript:atras();">Volver</a></td>
+                            <td colspan="3"><a class="boton" href="javascript:nuevo();">Nuevo</a> <a class="boton" id="submit" href="javascript:guardar();" id="sved1">Guardar</a> <% if (request.getAttribute("getIdTipoDocumento") != "") {%> <a class="boton" href="javascript:eliminar();">Eliminar</a> <% }%> <a class="boton" href="javascript:atras();">Volver</a></td>
                         </tr>
                         <%
                             if (request.getAttribute("respuesta") != "") {

@@ -9,12 +9,20 @@ import org.apache.struts.action.ActionForm;
 
 /**
  *
- * @author Mario
+ * @author mario
  */
 public class PaisForm extends ActionForm{
     private String idPais;
     private String nombre;
     private String op;
+
+    public String getOp() {
+        return op;
+    }
+
+    public void setOp(String op) {
+        this.op = op;
+    }
 
     public String getIdPais() {
         return idPais;
@@ -32,11 +40,4 @@ public class PaisForm extends ActionForm{
         this.nombre = nombre;
     }
 
-    public String getOp() {
-        return op;
-    }
-
-    public void setOp(String op) {
-        this.op = op;
-    }
 }
