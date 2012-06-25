@@ -214,8 +214,8 @@ public class GestionMunicipio extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idMunicipio, p.idDepartamento, p.idPais, p.nombre ";
-            query += "FROM municipios p ";
+            String query = "SELECT p.idMunicipio, p.idDepartamento, p.idPais, p.nombre, r.nombre, d.nombre ";
+            query += "FROM municipios p INNER JOIN paises r ON p.idPais = r.idPais INNER JOIN departamentos d ON p.idDepartamento = d.idDepartamento";
             String query2 = "";
             if (f.getbIdMunicipio().isEmpty() != true) {
                 query2 = "p.idMunicipio LIKE '%" + f.getbIdMunicipio() + "%'";
@@ -242,7 +242,7 @@ public class GestionMunicipio extends ConeccionMySql {
                 }
             }
             if (query2.isEmpty() != true) {
-                query += "WHERE " + query2;
+                query += " WHERE " + query2;
             }
 
             System.out.println("***********************************************");
@@ -262,6 +262,8 @@ public class GestionMunicipio extends ConeccionMySql {
                 bu.setIdPais(rs.getObject("p.idPais"));
                 bu.setIdDepartamento(rs.getObject("p.idDepartamento"));
                 bu.setNombre(rs.getObject("p.nombre"));
+                bu.setNombreDepartamento(rs.getObject("d.nombre"));
+                bu.setNombrePais(rs.getObject("r.nombre"));
 
                 GR_MUNICIPIO.add(bu);
 

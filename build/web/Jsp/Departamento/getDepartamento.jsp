@@ -33,12 +33,12 @@
         if ((Boolean) resultado.get(0) == false) {
             if ((Boolean) resultado.get(1) == true) {
                 if (op2 == false) {
-                    out.print(true);//si existe
+                    out.print(false);//si existe
                 } else {
-                    out.print(false);//si existe pero es una modificacion
+                    out.print(true);//si existe pero es una modificacion
                 }
             } else {
-                out.print(false);//no existe
+                out.print(true);//no existe
             }
         } else {
             out.print(false);

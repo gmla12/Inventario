@@ -38,7 +38,7 @@
                 //guardar
                 $('#submit').click(function(e) {
                     e.preventDefault();
-                    if(document.forms[0].idPais.readOnly==false){
+                    if(document.forms[0].idDepartamento.readOnly==false){
                         document.forms[0].op.value="nuevo";
                     }
                     else {
@@ -57,7 +57,7 @@
                                 url: "Jsp/Departamento/getDepartamento.jsp", //valida si existe el idDepartamento
                                 type: "post", 
                                 data: { 
-                                    lectura: function() { return document.forms[0].idDepartamento.disabled },
+                                    lectura: function() { return document.forms[0].idDepartamento.readOnly },
                                     idPais: function() { return $("#idPais").val() }
                                 } 
                             }
@@ -68,7 +68,7 @@
                                 url: "Jsp/Departamento/getDepartamento.jsp", //valida si existe la identificacion
                                 type: "post", 
                                 data: { 
-                                    lectura: function() { return document.forms[0].idPais.readOnly },
+                                    lectura: function() { return document.forms[0].idDepartamento.readOnly },
                                     idDepartamento: function() { return $("#idDepartamento").val() } 
                                 } 
                             }
@@ -99,6 +99,9 @@
             function nuevo(){
                 document.forms[0].op.value="";
                 document.forms[0].idDepartamento.value="";
+                document.forms[0].idDepartamento.readOnly=false;
+                document.forms[0].idPais.value="";
+                document.forms[0].idPais.disabled=false;
                 document.forms[0].nombre.value="";
             }
             
@@ -113,7 +116,7 @@
             }
         </script>
 
-        <style>
+        <style type="text/css">
             .error-message, label.error {
                 color: #ff0000;
                 margin:0;

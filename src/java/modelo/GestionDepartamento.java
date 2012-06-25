@@ -233,7 +233,7 @@ public class GestionDepartamento extends ConeccionMySql {
                 }
             }
             if (query2.isEmpty() != true) {
-                query += "WHERE " + query2;
+                query += " WHERE " + query2;
             }
 
             System.out.println("***********************************************");

@@ -113,7 +113,7 @@ public class ActionDepartamentoOp extends Action {
                         session.setAttribute("getbIdPais", fo.getbIdPais());
                         session.setAttribute("getbNombre", fo.getbNombre());
 
-                        session.setAttribute("GR_MUNICIPIO", resultado.get(1));
+                        session.setAttribute("GR_DEPARTAMENTO", resultado.get(1));
                         session.setAttribute("CMB_PAIS", resultado2.get(1));
                         return mapping.findForward("ok");
 
@@ -137,7 +137,19 @@ public class ActionDepartamentoOp extends Action {
                 request.setAttribute("getIdPais", "");
                 request.setAttribute("getNombre", "");
 
-                return mapping.findForward("nuevo");
+                ArrayList<Object> resultado2 = new ArrayList<Object>();
+                resultado2 = gp.MostrarPais(false, null);
+                if ((Boolean) resultado2.get(0) == false) {
+
+                    session.setAttribute("CMB_PAIS", resultado2.get(1));
+                    return mapping.findForward("nuevo");
+
+                } else {
+
+                    request.setAttribute("error", resultado2.get(1));
+                    return mapping.findForward("error");
+
+                }
 
             }
 
@@ -154,13 +166,13 @@ public class ActionDepartamentoOp extends Action {
             resultado = gr.MostrarDepartamentoOP(fo, false, null);
             if ((Boolean) resultado.get(0) == false) {
 
-                    ArrayList<Object> resultado2 = new ArrayList<Object>();
-                    resultado2 = gp.MostrarPais(false, null);
-                    if ((Boolean) resultado2.get(0) == false) {
+                ArrayList<Object> resultado2 = new ArrayList<Object>();
+                resultado2 = gp.MostrarPais(false, null);
+                if ((Boolean) resultado2.get(0) == false) {
 
-                        session.setAttribute("GR_DEPARTAMENTO", resultado.get(1));
-                        session.setAttribute("CMB_PAIS", resultado2.get(1));
-                        return mapping.findForward("ok");
+                    session.setAttribute("GR_DEPARTAMENTO", resultado.get(1));
+                    session.setAttribute("CMB_PAIS", resultado2.get(1));
+                    return mapping.findForward("ok");
 
                 } else {
 

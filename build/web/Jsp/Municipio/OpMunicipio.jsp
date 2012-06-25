@@ -49,14 +49,14 @@
                     datatype: "json",
                     colNames:['ID', 'Departamento', 'Pais', 'Nombre', 'Editar'],
                     colModel:[
-                        {name:'idMunicipio',index:'idMunicipio', width:50, sortable:false},
-                        {name:'nombreDepartamento',index:'nombreDepartamento', width:50, sortable:false},
-                        {name:'nombrePais',index:'nombrePais', width:50, sortable:false},
+                        {name:'idMunicipio',index:'idMunicipio', width:20, sortable:false},
+                        {name:'nombreDepartamento',index:'nombreDepartamento', width:90, sortable:false},
+                        {name:'nombrePais',index:'nombrePais', width:90, sortable:false},
                         {name:'nombre',index:'nombre', width:160, sortable:false},
-                        {name:'editar',index:'editar', width:110, formatter:'showlink', sortable:false}
+                        {name:'editar',index:'editar', width:50, formatter:'showlink', sortable:false}
                     ],
                     pager: '#prowed1',
-                    width: 550,
+                    width: 600,
                     height: "100%",
                     rowNum:10,
                     viewrecords: true,
@@ -98,6 +98,11 @@
                 <table>
                     <tr>
                         <td>ID<input size="5" type="text" name="bIdMunicipio" value="<%= session.getAttribute("getbIdMunicipio")%>"/> </td>
+                        <td>Nombre<input type="text" name="bNombre" value="<%= session.getAttribute("getbNombre")%>"/> </td>
+                        <td><a class="boton" href="javascript:buscar()">Buscar</a></td>
+                        <td><a class="boton" href="javascript:nuevo()">Nuevo</a></td>
+                    </tr>
+                    <tr>
                         <td>Departamento<html:select property="bIdDepartamento"  size="1" style="width:240px;" value='<%= String.valueOf(request.getAttribute("getbIdDepartamento"))%>'>
                                 <html:option value=""><c:out value='[Todos]'/></html:option>    
                                 <c:forEach items="${CMB_DEPARTAMENTO}" var="cat">
@@ -110,9 +115,6 @@
                                     <html:option value="${cat.idPais}"><c:out value='${cat.nombre}'/></html:option>
                                 </c:forEach>
                         </html:select></td>
-                        <td>Nombre<input type="text" name="bNombre" value="<%= session.getAttribute("getbNombre")%>"/> </td>
-                        <td><a class="boton" href="javascript:buscar()">Buscar</a></td>
-                        <td><a class="boton" href="javascript:nuevo()">Nuevo</a></td>
                     </tr>
                 </table>
             </fieldset>

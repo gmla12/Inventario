@@ -17,6 +17,8 @@ public class BeanMunicipio implements Serializable{
     private Object idDepartamento;
     private Object idPais;
     private Object nombre;
+    private Object nombreDepartamento;
+    private Object nombrePais;
 
     public Object getIdMunicipio() {
         return idMunicipio;
@@ -48,6 +50,22 @@ public class BeanMunicipio implements Serializable{
 
     public void setNombre(Object nombre) {
         this.nombre = nombre;
+    }
+    
+    public Object getNombreDepartamento() {
+        return nombreDepartamento;
+    }
+
+    public void setNombreDepartamento(Object nombreDepartamento) {
+        this.nombreDepartamento = nombreDepartamento;
+    }
+    
+    public Object getNombrePais() {
+        return nombrePais;
+    }
+
+    public void setNombrePais(Object nombrePais) {
+        this.nombrePais = nombrePais;
     }
 
 }

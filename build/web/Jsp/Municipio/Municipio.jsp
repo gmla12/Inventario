@@ -39,7 +39,7 @@
                 //guardar
                 $('#submit').click(function(e) {
                     e.preventDefault();
-                    if(document.forms[0].idPais.readOnly==false){
+                    if(document.forms[0].idMunicipio.readOnly==false){
                         document.forms[0].op.value="nuevo";
                     }
                     else {
@@ -70,7 +70,7 @@
                                 url: "Jsp/Municipio/getMunicipio.jsp", //valida si existe la identificacion
                                 type: "post", 
                                 data: { 
-                                    lectura: function() { return document.forms[0].idPais.readOnly },
+                                    lectura: function() { return document.forms[0].idMunicipio.readOnly },
                                     idMunicipio: function() { return $("#idMunicipio").val() },
                                     idPais: function() { return $("#idPais").val() }
                                 } 
@@ -117,6 +117,11 @@
             function nuevo(){
                 document.forms[0].op.value="";
                 document.forms[0].idMunicipio.value="";
+                document.forms[0].idMunicipio.readOnly=false;
+                document.forms[0].idDepartamento.value="";
+                document.forms[0].idDepartamento.disabled=false;
+                document.forms[0].idPais.value="";
+                document.forms[0].idPais.disabled=false;
                 document.forms[0].nombre.value="";
             }
             
@@ -131,7 +136,7 @@
             }
         </script>
 
-        <style>
+        <style type="text/css">
             .error-message, label.error {
                 color: #ff0000;
                 margin:0;
@@ -161,42 +166,42 @@
                         </tr>
                         <tr>
                             <td class="text">Departamento</td>
-                            <% if (request.getAttribute("getIdDepartamento") != "") {%> 
-                                <td><html:select property="idDepartamento"  size="1" style="width:240px;" disabled="true" value='<%= String.valueOf(request.getAttribute("getIdDepartamento"))%>'>
+                            <% if (request.getAttribute("getIdMunicipio") != "") {%> 
+                            <td><html:select property="idDepartamento"  size="1" style="width:240px;" disabled="true" value='<%= String.valueOf(request.getAttribute("getIdDepartamento"))%>'>
                                     <c:forEach items="${CMB_DEPARTAMENTO}" var="cat">
                                         <html:option value="${cat.idDepartamento}"><c:out value='${cat.nombre}'/></html:option>
                                     </c:forEach>
                                 </html:select></td>
-                            <% } else {%> 
-                                <td><html:select property="idDepartamento"  size="1" style="width:240px;" value='<%= String.valueOf(request.getAttribute("getIdDepartamento"))%>'>
+                                <% } else {%> 
+                            <td><html:select property="idDepartamento"  size="1" style="width:240px;" value='<%= String.valueOf(request.getAttribute("getIdDepartamento"))%>'>
                                     <c:forEach items="${CMB_DEPARTAMENTO}" var="cat">
                                         <html:option value="${cat.idDepartamento}"><c:out value='${cat.nombre}'/></html:option>
                                     </c:forEach>
                                 </html:select></td>
-                            <% }%> 
+                                <% }%> 
                         </tr>
                         <tr>
                             <td class="text">Pais</td>
                             <% if (request.getAttribute("getIdMunicipio") != "") {%> 
-                                <td><html:select property="idPais"  size="1" style="width:240px;" disabled="true" value='<%= String.valueOf(request.getAttribute("getIdPais"))%>'>
+                            <td><html:select property="idPais"  size="1" style="width:240px;" disabled="true" value='<%= String.valueOf(request.getAttribute("getIdPais"))%>'>
                                     <c:forEach items="${CMB_PAIS}" var="cat">
                                         <html:option value="${cat.idPais}"><c:out value='${cat.nombre}'/></html:option>
                                     </c:forEach>
                                 </html:select></td>
-                            <% } else {%> 
-                                <td><html:select property="idPais"  size="1" style="width:240px;" value='<%= String.valueOf(request.getAttribute("getIdPais"))%>'>
+                                <% } else {%> 
+                            <td><html:select property="idPais"  size="1" style="width:240px;" value='<%= String.valueOf(request.getAttribute("getIdPais"))%>'>
                                     <c:forEach items="${CMB_PAIS}" var="cat">
                                         <html:option value="${cat.idPais}"><c:out value='${cat.nombre}'/></html:option>
                                     </c:forEach>
                                 </html:select></td>
-                            <% }%> 
+                                <% }%> 
                         </tr>
                         <tr>
                             <td class="text">Nombre del Municipio</td>
                             <td><html:text property="nombre" value='<%= String.valueOf(request.getAttribute("getNombre"))%>'></html:text></td>
-                        </tr>
-                        <tr>
-                            <td colspan="3"><a class="boton" href="javascript:nuevo();">Nuevo</a> <a class="boton" id="submit" href="javascript:guardar();">Guardar</a> <% if (request.getAttribute("getIdMunicipio") != "") {%> <a class="boton" href="javascript:eliminar();">Eliminar</a> <% }%> <a class="boton" href="javascript:atras();">Volver</a></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3"><a class="boton" href="javascript:nuevo();">Nuevo</a> <a class="boton" id="submit" href="javascript:guardar();">Guardar</a> <% if (request.getAttribute("getIdMunicipio") != "") {%> <a class="boton" href="javascript:eliminar();">Eliminar</a> <% }%> <a class="boton" href="javascript:atras();">Volver</a></td>
                         </tr>
                         <%
                             if (request.getAttribute("respuesta") != "") {
