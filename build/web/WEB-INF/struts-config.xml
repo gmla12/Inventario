@@ -10,6 +10,8 @@
         <form-bean name="LoginForm" type="forms.InicioForm"/>
         <form-bean name="Entidad" type="forms.EntidadForm"/>
         <form-bean name="OpEntidad" type="forms.EntidadOpForm"/>
+        <form-bean name="TipoEntidad" type="forms.TipoEntidadForm"/>
+        <form-bean name="OpTipoEntidad" type="forms.TipoEntidadOpForm"/>
         <form-bean name="Usuarios" type="forms.UsuariosForm"/>
         <form-bean name="OpUsuarios" type="forms.UsuariosOpForm"/>
         <form-bean name="Roles" type="forms.RolesForm"/>
@@ -46,6 +48,17 @@
             <forward name="ok" path="/Jsp/Entidad/OpEntidad.jsp"/>
             <forward name="modificar" path="/Jsp/Entidad/Entidad.jsp"/>
             <forward name="nuevo" path="/Jsp/Entidad/Entidad.jsp"/>
+            <forward name="error" path="/Jsp/error.jsp" />
+        </action>
+        <action input="/Jsp/TipoEntidad/TipoEntidad.jsp" name="TipoEntidad" path="/TipoEntidad" scope="session" type="actions.ActionTipoEntidad">
+            <forward name="ok" path="/Jsp/TipoEntidad/TipoEntidad.jsp"/>
+            <forward name="atras" path="/Jsp/TipoEntidad/OpTipoEntidad.jsp"/>
+            <forward name="error" path="/Jsp/error.jsp" />
+        </action>
+        <action input="/Jsp/TipoEntidad/OpTipoEntidad.jsp" name="OpTipoEntidad" path="/OpTipoEntidad" scope="request" type="actions.ActionTipoEntidadOp" validate="false">
+            <forward name="ok" path="/Jsp/TipoEntidad/OpTipoEntidad.jsp"/>
+            <forward name="modificar" path="/Jsp/TipoEntidad/TipoEntidad.jsp"/>
+            <forward name="nuevo" path="/Jsp/TipoEntidad/TipoEntidad.jsp"/>
             <forward name="error" path="/Jsp/error.jsp" />
         </action>
         <action input="/Jsp/Usuarios/Usuarios.jsp" name="Usuarios" path="/Usuarios" scope="session" type="actions.ActionUsuarios">

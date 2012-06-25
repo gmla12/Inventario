@@ -4,12 +4,12 @@
  */
 package actions;
 
-import forms.RolesOpForm;
+import forms.TipoEntidadOpForm;
 import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import modelo.GestionRoles;
+import modelo.GestionTipoEntidad;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -19,7 +19,7 @@ import org.apache.struts.action.ActionMapping;
  *
  * @author mario
  */
-public class ActionRolesOp extends Action {
+public class ActionTipoEntidadOp extends Action {
 
     /**
      * Processes requests for both HTTP
@@ -31,7 +31,7 @@ public class ActionRolesOp extends Action {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    public ActionRolesOp() {
+    public ActionTipoEntidadOp() {
 
         super();
 
@@ -44,12 +44,12 @@ public class ActionRolesOp extends Action {
             HttpServletResponse response)
             throws Exception {
 
-        RolesOpForm fo = (RolesOpForm) form;
-        GestionRoles gr = new GestionRoles();
+        TipoEntidadOpForm fo = (TipoEntidadOpForm) form;
+        GestionTipoEntidad gr = new GestionTipoEntidad();
         HttpSession session = request.getSession();
 
         System.out.println("********************************************");
-        System.out.println("*********  ActionOpRoles  **********");
+        System.out.println("*********  ActionOpTipoEntidad  **********");
         System.out.println("********************************************");
         request.setAttribute("respuesta", "");
 
@@ -63,10 +63,10 @@ public class ActionRolesOp extends Action {
             if (fo.getOp().equals("modificar")) {
 
                 ArrayList<Object> resultado = new ArrayList<Object>();
-                resultado = gr.MostrarRolesFormulario(fo.getId(), false, null);
+                resultado = gr.MostrarTipoEntidadFormulario(fo.getId(), false, null);
                 if ((Boolean) resultado.get(0) == false) {
 
-                    request.setAttribute("getIdRoles", gr.getIdRoles());
+                    request.setAttribute("getIdTipoEntidad", gr.getIdTipoEntidad());
                     request.setAttribute("getNombre", gr.getNombre());
 
                     return mapping.findForward("modificar");
@@ -81,18 +81,18 @@ public class ActionRolesOp extends Action {
             } else if (fo.getOp().equals("buscar")) {
 
                 if (fo.getbNombre() == null) {
-                    fo.setbIdRoles((String) session.getAttribute("getbIdRoles"));
+                    fo.setbIdTipoEntidad((String) session.getAttribute("getbIdTipoEntidad"));
                     fo.setbNombre((String) session.getAttribute("getbNombre"));
                 }
 
                 ArrayList<Object> resultado = new ArrayList<Object>();
-                resultado = gr.MostrarRolesOP(fo, false, null);
+                resultado = gr.MostrarTipoEntidadOP(fo, false, null);
                 if ((Boolean) resultado.get(0) == false) {
 
-                    session.setAttribute("getbIdRoles", fo.getbIdRoles());
+                    session.setAttribute("getbIdTipoEntidad", fo.getbIdTipoEntidad());
                     session.setAttribute("getbNombre", fo.getbNombre());
 
-                    session.setAttribute("GR_ROLES", resultado.get(1));
+                    session.setAttribute("GR_TIPOENTIDAD", resultado.get(1));
                     return mapping.findForward("ok");
 
                 } else {
@@ -104,7 +104,7 @@ public class ActionRolesOp extends Action {
 
             } else {
 
-                request.setAttribute("getIdRoles", "");
+                request.setAttribute("getIdTipoEntidad", "");
                 request.setAttribute("getNombre", "");
 
                 return mapping.findForward("nuevo");
@@ -113,15 +113,15 @@ public class ActionRolesOp extends Action {
 
         } else {
 
-            session.setAttribute("getbIdRoles", "");
+            session.setAttribute("getbIdTipoEntidad", "");
             session.setAttribute("getbNombre", "");
             fo.setbNombre("");
 
             ArrayList<Object> resultado = new ArrayList<Object>();
-            resultado = gr.MostrarRolesOP(fo, false, null);
+            resultado = gr.MostrarTipoEntidadOP(fo, false, null);
             if ((Boolean) resultado.get(0) == false) {
 
-                session.setAttribute("GR_ROLES", resultado.get(1));
+                session.setAttribute("GR_TIPOENTIDAD", resultado.get(1));
                 return mapping.findForward("ok");
 
             } else {

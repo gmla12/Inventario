@@ -21,6 +21,7 @@ public class EntidadForm extends ActionForm{
     private String identificacion;
     private String razonSocial;
     private String idPais;
+    private String idDepartamento;
     private String idMunicipio;
     private String direccion;
     private String telefono;
@@ -146,6 +147,14 @@ public class EntidadForm extends ActionForm{
 
     public void setTelefono(String telefono) {
         this.telefono = telefono;
+    }
+
+    public String getIdDepartamento() {
+        return idDepartamento;
+    }
+
+    public void setIdDepartamento(String idDepartamento) {
+        this.idDepartamento = idDepartamento;
     }
 
 }

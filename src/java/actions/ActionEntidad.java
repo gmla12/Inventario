@@ -6,11 +6,9 @@ package actions;
 
 import forms.EntidadForm;
 import java.util.ArrayList;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import modelo.GestionEntidad;
-
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -48,6 +46,7 @@ public class ActionEntidad extends Action {
             request.setAttribute("getIdentificacion", fo.getIdentificacion());
             request.setAttribute("getRazonSocial", fo.getRazonSocial());
             request.setAttribute("getIdPais", fo.getIdPais());
+            request.setAttribute("getIdDepartamento", fo.getIdDepartamento());
             request.setAttribute("getIdMunicipio", fo.getIdMunicipio());
             request.setAttribute("getDireccion", fo.getDireccion());
             request.setAttribute("getTelefono", fo.getTelefono());
@@ -83,6 +82,7 @@ public class ActionEntidad extends Action {
             request.setAttribute("getIdentificacion", fo.getIdentificacion());
             request.setAttribute("getRazonSocial", fo.getRazonSocial());
             request.setAttribute("getIdPais", fo.getIdPais());
+            request.setAttribute("getIdDepartamento", fo.getIdDepartamento());
             request.setAttribute("getIdMunicipio", fo.getIdMunicipio());
             request.setAttribute("getDireccion", fo.getDireccion());
             request.setAttribute("getTelefono", fo.getTelefono());
@@ -123,6 +123,7 @@ public class ActionEntidad extends Action {
                     request.setAttribute("getIdentificacion", "");
                     request.setAttribute("getRazonSocial", "");
                     request.setAttribute("getIdPais", "");
+                    request.setAttribute("getIdDepartamento", "");
                     request.setAttribute("getIdMunicipio", "");
                     request.setAttribute("getDireccion", "");
                     request.setAttribute("getTelefono", "");
@@ -143,6 +144,7 @@ public class ActionEntidad extends Action {
                     request.setAttribute("getIdentificacion", fo.getIdentificacion());
                     request.setAttribute("getRazonSocial", fo.getRazonSocial());
                     request.setAttribute("getIdPais", fo.getIdPais());
+                    request.setAttribute("getIdDepartamento", fo.getIdDepartamento());
                     request.setAttribute("getIdMunicipio", fo.getIdMunicipio());
                     request.setAttribute("getDireccion", fo.getDireccion());
                     request.setAttribute("getTelefono", fo.getTelefono());

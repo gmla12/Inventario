@@ -64,7 +64,7 @@
                 }); 
                 jQuery("#list4").jqGrid('navGrid',"#prowed1",{edit:false,add:false,del:false,search:false});
                 $("#bIdPais").change(function(){
-                    $.post("Jsp/Municipio/getDepartamentoOp.jsp",{ id:$(this).val() },function(data){$("#bIdDepartamento").html(data);})
+                    $.post("Jsp/Comun/getDepartamentoOp.jsp",{ id:$(this).val() },function(data){$("#bIdDepartamento").html(data);})
                 });
             }); 
 

@@ -98,7 +98,7 @@ public class GestionMunicipio extends ConeccionMySql {
     }
     private ArrayList<Object> GR_MUNICIPIO;
 
-    public ArrayList<Object> MostrarMunicipio(Boolean transac, Connection tCn) {
+    public ArrayList<Object> MostrarMunicipio(String idDepartamento, String idPais, Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
 
@@ -130,7 +130,7 @@ public class GestionMunicipio extends ConeccionMySql {
             }
 
             String query = "SELECT p.idMunicipio, p.idDepartamento, p.idPais, p.nombre ";
-            query += "FROM municipios p ";
+            query += "FROM municipios p WHERE p.idPais = '" + idPais + "' AND p.idDepartamento = '" + idDepartamento + "'";
 
             System.out.println("***********************************************");
             System.out.println("*****       Cargando grilla  GR_MUNICIPIO  *****");

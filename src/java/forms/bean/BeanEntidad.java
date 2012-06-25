@@ -22,6 +22,7 @@ public class BeanEntidad implements Serializable{
     private Object identificacion;
     private Object razonSocial;
     private Object idPais;
+    private Object idDepartamento;
     private Object idMunicipio;
     private Object direccion;
     private Object telefono;
@@ -128,6 +129,14 @@ public class BeanEntidad implements Serializable{
 
     public void setNombreTipoDoc(Object nombreTipoDoc) {
         this.nombreTipoDoc = nombreTipoDoc;
+    }
+
+    public Object getIdDepartamento() {
+        return idDepartamento;
+    }
+
+    public void setIdDepartamento(Object idDepartamento) {
+        this.idDepartamento = idDepartamento;
     }
 
 }

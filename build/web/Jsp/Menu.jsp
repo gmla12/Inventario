@@ -50,6 +50,7 @@
         <div id="navsite2">
             <ul id="menulink1">
                 <li><a href="/Inventario/OpEntidad.do" target="Body">&nbsp;&nbsp;Entidad</a></li>
+                <li><a href="/Inventario/OpTipoEntidad.do" target="Body">&nbsp;&nbsp;Tipo de Entidad</a></li>
                 <li><a href="/Inventario/OpTipoDocumento.do" target="Body">&nbsp;&nbsp;Tipo de Documentos</a></li>
                 <li><a href="/Inventario/OpPais.do" target="Body">&nbsp;&nbsp;Paises</a></li>
                 <li><a href="/Inventario/OpDepartamento.do" target="Body">&nbsp;&nbsp;Departamentos</a></li>

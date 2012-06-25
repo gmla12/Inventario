@@ -113,7 +113,7 @@
                     }
                 });
                 $("#idPais").change(function(){
-                    $.post("Jsp/Municipio/getDepartamento.jsp",{ id:$(this).val() },function(data){$("#idDepartamento").html(data);})
+                    $.post("Jsp/Comun/getDepartamento.jsp",{ id:$(this).val() },function(data){$("#idDepartamento").html(data);})
                 });
             });
 
