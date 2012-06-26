@@ -4,6 +4,8 @@
     Author     : Gilberth
 --%>
 
+<%@page import="forms.bean.BeanTipoDocumentoAut"%>
+<%@page import="java.util.ArrayList"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
 <%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean" %>
@@ -34,134 +36,299 @@
             }
         %>
         <script type="text/javascript">
+            
             $(function() {
-                //guardar
-                $('#submit').click(function(e) {
-                    e.preventDefault();
-                    if(document.forms[0].idEntidad.value==""){
-                        document.forms[0].op.value="nuevo";
-                    }
-                    else {
-                        document.forms[0].op.value="modificar";
-                    }
-                    $("#forma").submit(); 
-                }); 
-                $("#forma").validate({
-                    event: "blur",
-                    rules : {
-                        primerNombre : {
-                            required : true,
-                            minlength : 3,
-                            maxlength : 45
-                        },
-                        segundoNombre : {
-                            required : true,
-                            minlength : 3,
-                            maxlength : 45
-                        },
-                        primerApellido : {
-                            required : true,
-                            minlength : 3,
-                            maxlength : 45
-                        },
-                        segundoApellido : {
-                            required : true,
-                            minlength : 3,
-                            maxlength : 45
-                        },
-                        idTipoDocumento : {
-                            required : true
-                        },
-                        identificacion : {
-                            required : true,
-                            minlength : 7,
-                            maxlength : 15,
-                            number : true
-                        },
-                        razonSocial : {
-                            required : true,
-                            minlength : 3,
-                            maxlength : 45
-                        },
-                        idPais : {
-                            required : true
-                        },
-                        idDepartamento : {
-                            required : true
-                        },
-                        idMunicipio : {
-                            required : true
-                        },
-                        Direccion : {
-                            required : true,
-                            minlength : 3,
-                            maxlength : 45
-                        },
-                        telefono : {
-                            required : true,
-                            minlength : 7,
-                            maxlength : 15,
-                            number : true
-                        },
-                        email : {
-                            required : true,
-                            minlength : 8,
-                            maxlength : 45,
-                            email : true
-                        },
-                        idTipoEntidad : {
-                            required : true
+                matrixx = Array();
+            <%
+
+                ArrayList<Object> resultado = (ArrayList) session.getAttribute("CMB_TIPODOCUMENTOAUT");
+                for (int i = 0; i < resultado.size(); i++) {
+                    out.print("matrixx[" + i + "] = Array('");
+                    BeanTipoDocumentoAut buTipoDocumentoAut2 = new BeanTipoDocumentoAut();
+                    buTipoDocumentoAut2 = (BeanTipoDocumentoAut) resultado.get(i);
+                    out.print(buTipoDocumentoAut2.getIdTipoDocumento() + "', '");
+                    out.print(buTipoDocumentoAut2.getCampo() + "', '");
+                    out.print(buTipoDocumentoAut2.getHabilitar() + "');");
+                }
+
+            %>
+                    
+                    //guardar
+                    $('#submit').click(function(e) {
+                        e.preventDefault();
+                        if(document.forms[0].idEntidad.value==""){
+                            document.forms[0].op.value="nuevo";
                         }
-                    },
-                    messages: {
-
-                    },
-                    debug: false,
-                    errorElement: "label",
-                    submitHandler: function(form){
-                        form.submit();
-                        //alert('El formulario ha sido validado correctamente!');
-                    }
-                });
+                        else {
+                            document.forms[0].op.value="modificar";
+                        }
+                        $("#forma").submit(); 
+                    }); 
+                    $("#forma").validate({
+                        event: "blur",
+                        rules : {
+                            primerNombre : {
+                                required : true,
+                                minlength : 3,
+                                maxlength : 45
+                            },
+                            segundoNombre : {
+                                required : true,
+                                minlength : 3,
+                                maxlength : 45
+                            },
+                            primerApellido : {
+                                required : true,
+                                minlength : 3,
+                                maxlength : 45
+                            },
+                            segundoApellido : {
+                                required : true,
+                                minlength : 3,
+                                maxlength : 45
+                            },
+                            idTipoDocumento : {
+                                required : true,
+                                remote: { 
+                                    url: "Jsp/Entidad/getEntidad.jsp", //valida si existe el identificacion
+                                    type: "post", 
+                                    data: { 
+                                        lectura: function() { return document.forms[0].identificacion.readOnly },
+                                        identificacion: function() { return $("#identificacion").val() } 
+                                    } 
+                                }
+                            },
+                            identificacion : {
+                                required : true,
+                                minlength : 7,
+                                maxlength : 15,
+                                number : true,
+                                remote: { 
+                                    url: "Jsp/Entidad/getEntidad.jsp", //valida si existe el identificacion
+                                    type: "post", 
+                                    data: { 
+                                        lectura: function() { return document.forms[0].identificacion.readOnly },
+                                        idTipoDocumento: function() { return $("#idTipoDocumento").val() }
+                                    } 
+                                }
+                            },
+                            razonSocial : {
+                                required : true,
+                                minlength : 3,
+                                maxlength : 45
+                            },
+                            idPais : {
+                                required : true
+                            },
+                            idDepartamento : {
+                                required : true
+                            },
+                            idMunicipio : {
+                                required : true
+                            },
+                            Direccion : {
+                                required : true,
+                                minlength : 3,
+                                maxlength : 45
+                            },
+                            telefono : {
+                                required : true,
+                                minlength : 7,
+                                maxlength : 15,
+                                number : true
+                            },
+                            email : {
+                                required : true,
+                                minlength : 8,
+                                maxlength : 45,
+                                email : true
+                            },
+                            idTipoEntidad : {
+                                required : true
+                            }
+                        },
+                        messages: {
+                            identificacion: {
+                                remote: "La Identificacion ya existe con el Tipo de Documento escogido"
+                            },
+                            idTipoDocumento: {
+                                remote: "La Identificacion ya existe con el Tipo de Documento escogido"
+                            }
+                        },
+                        debug: false,
+                        errorElement: "label",
+                        submitHandler: function(form){
+                            form.submit();
+                            //alert('El formulario ha sido validado correctamente!');
+                        }
+                    });
  
-                $("#idPais").change(function(){
-                    $.post("Jsp/Comun/getDepartamento.jsp",{ id:$(this).val() },function(data){$("#idDepartamento").html(data);})
-                });
-                $("#idDepartamento").change(function(){
-                    $.post("Jsp/Comun/getMunicipio.jsp",{ id:$(this).val(), idPais:document.forms[0].idPais.value },function(data){$("#idMunicipio").html(data);})
-                });
-            });
-            
-            function nuevo(){
-                document.forms[0].op.value="";
-                document.forms[0].idEntidad.value="";
-                document.forms[0].primerNombre.value="";
-                document.forms[0].segundoNombre.value="";
-                document.forms[0].primerApellido.value="";
-                document.forms[0].segundoApellido.value="";
-                document.forms[0].idTipoDocumento.value="1";
-                document.forms[0].identificacion.value="";
-                document.forms[0].razonSocial.value="";
-                document.forms[0].idPais.value="";
-                document.forms[0].idDepartamento.value="";
-                document.forms[0].idMunicipio.value="";
-                document.forms[0].direccion.value="";
-                document.forms[0].telefono.value="";
-                document.forms[0].email.value="";
-                document.forms[0].idTipoEntidad.value="";
-            }
+                    $("#idPais").change(function(){
+                        $.post("Jsp/Comun/getDepartamento.jsp",{ id:$(this).val() },function(data){$("#idDepartamento").html(data);})
+                    });
+                    $("#idDepartamento").change(function(){
+                        $.post("Jsp/Comun/getMunicipio.jsp",{ id:$(this).val(), idPais:document.forms[0].idPais.value },function(data){$("#idMunicipio").html(data);})
+                    });
+                    $("#idTipoDocumento").change(function(){
+                        for (i=0;i<matrixx.length;i++){
+                            if(matrixx[i][0] == $(this).val()){
+                                switch (matrixx[i][1]){
+                                    case "primerNombre" :
+                                        if(matrixx[i][2] == "false"){
+                                            $("#primerNombre").attr('disabled', true);
+                                        }else{
+                                            $("#primerNombre").attr('disabled', false);
+                                        }
+                                    break;
+                                    case "segundoNombre" :
+                                        if(matrixx[i][2] == "false"){
+                                            $("#segundoNombre").attr('disabled', true);
+                                        }else{
+                                            $("#segundoNombre").attr('disabled', false);
+                                        }
+                                    break;
+                                    case "primerApellido" :
+                                        if(matrixx[i][2] == "false"){
+                                            $("#primerApellido").attr('disabled', true);
+                                        }else{
+                                            $("#primerApellido").attr('disabled', false);
+                                        }
+                                    break;
+                                    case "segundoApellido" :
+                                        if(matrixx[i][2] == "false"){
+                                            $("#segundoApellido").attr('disabled', true);
+                                        }else{
+                                            $("#segundoApellido").attr('disabled', false);
+                                        }
+                                    break;
+                                    case "razonSocial" :
+                                        if(matrixx[i][2] == "false"){
+                                            $("#razonSocial").attr('disabled', true);
+                                        }else{
+                                            $("#razonSocial").attr('disabled', false);
+                                        }
+                                    break;
+                                    case "idPais" :
+                                        if(matrixx[i][2] == "false"){
+                                            $("#idPais").attr('disabled', true);
+                                        }else{
+                                            $("#idPais").attr('disabled', false);
+                                        }
+                                    break;
+                                    case "idDepartamento" :
+                                        if(matrixx[i][2] == "false"){
+                                            $("#idDepartamento").attr('disabled', true);
+                                        }else{
+                                            $("#idDepartamento").attr('disabled', false);
+                                        }
+                                    break;
+                                    case "primerNombre" :
+                                        if(matrixx[i][2] == "false"){
+                                            $("#primerNombre").attr('disabled', true);
+                                        }else{
+                                            $("#primerNombre").attr('disabled', false);
+                                        }
+                                    break;
+                                    case "primerNombre" :
+                                        if(matrixx[i][2] == "false"){
+                                            $("#primerNombre").attr('disabled', true);
+                                        }else{
+                                            $("#primerNombre").attr('disabled', false);
+                                        }
+                                    break;
+                                    case "primerNombre" :
+                                        if(matrixx[i][2] == "false"){
+                                            $("#primerNombre").attr('disabled', true);
+                                        }else{
+                                            $("#primerNombre").attr('disabled', false);
+                                        }
+                                    break;
+                                    case "primerNombre" :
+                                        if(matrixx[i][2] == "false"){
+                                            $("#primerNombre").attr('disabled', true);
+                                        }else{
+                                            $("#primerNombre").attr('disabled', false);
+                                        }
+                                    break;
+                                    case "primerNombre" :
+                                        if(matrixx[i][2] == "false"){
+                                            $("#primerNombre").attr('disabled', true);
+                                        }else{
+                                            $("#primerNombre").attr('disabled', false);
+                                        }
+                                    break;
+                                    case "primerNombre" :
+                                        if(matrixx[i][2] == "false"){
+                                            $("#primerNombre").attr('disabled', true);
+                                        }else{
+                                            $("#primerNombre").attr('disabled', false);
+                                        }
+                                    break;
+                                    case "primerNombre" :
+                                        if(matrixx[i][2] == "false"){
+                                            $("#primerNombre").attr('disabled', true);
+                                        }else{
+                                            $("#primerNombre").attr('disabled', false);
+                                        }
+                                    break;
+                                    case "primerNombre" :
+                                        if(matrixx[i][2] == "false"){
+                                            $("#primerNombre").attr('disabled', true);
+                                        }else{
+                                            $("#primerNombre").attr('disabled', false);
+                                        }
+                                    break;
+                                    case "primerNombre" :
+                                        if(matrixx[i][2] == "false"){
+                                            $("#primerNombre").attr('disabled', true);
+                                        }else{
+                                            $("#primerNombre").attr('disabled', false);
+                                        }
+                                    break;
+                                    case "primerNombre" :
+                                        if(matrixx[i][2] == "false"){
+                                            $("#primerNombre").attr('disabled', true);
+                                        }else{
+                                            $("#primerNombre").attr('disabled', false);
+                                        }
+                                    break;
+                                }
 
-            function eliminar(){
-                document.forms[0].op.value="eliminar";
-                document.forms[0].submit();
-            }
+                            }
+                        }
+                    });
+                });
             
-            function atras(){
-                document.forms[0].op.value="atras";
-                document.forms[0].submit();
-            }
+                function nuevo(){
+                    document.forms[0].op.value="";
+                    document.forms[0].idEntidad.value="";
+                    document.forms[0].primerNombre.value="";
+                    document.forms[0].segundoNombre.value="";
+                    document.forms[0].primerApellido.value="";
+                    document.forms[0].segundoApellido.value="";
+                    document.forms[0].idTipoDocumento.value="1";
+                    document.forms[0].identificacion.value="";
+                    document.forms[0].razonSocial.value="";
+                    document.forms[0].idPais.value="";
+                    document.forms[0].idDepartamento.value="";
+                    document.forms[0].idMunicipio.value="";
+                    document.forms[0].direccion.value="";
+                    document.forms[0].telefono.value="";
+                    document.forms[0].email.value="";
+                    document.forms[0].idTipoEntidad.value="";
+                }
+
+                function eliminar(){
+                    document.forms[0].op.value="eliminar";
+                    document.forms[0].submit();
+                }
+            
+                function atras(){
+                    document.forms[0].op.value="atras";
+                    document.forms[0].submit();
+                }
         </script>
-        
+
         <style type="text/css">
             .error-message, label.error {
                 color: #ff0000;
@@ -185,15 +352,27 @@
                     <table>
                         <tr>
                             <td class="text">Tipo Documento</td>
+                            <% if (request.getAttribute("getIdentificacion") != "") {%> 
+                            <td><html:select property="idTipoDocumento" styleId="idTipoDocumento" size="1" style="width:240px;" disabled="true" value='<%= String.valueOf(request.getAttribute("getIdTipoDocumento"))%>'>
+                                    <c:forEach items="${CMB_TIPODOCUMENTO}" var="cat">
+                                        <html:option value="${cat.idTipoDocumento}"><c:out value='${cat.nombre}'/></html:option>
+                                    </c:forEach>
+                                </html:select></td>
+                                <% } else {%> 
                             <td><html:select property="idTipoDocumento" styleId="idTipoDocumento" size="1" style="width:240px;" value='<%= String.valueOf(request.getAttribute("getIdTipoDocumento"))%>'>
                                     <c:forEach items="${CMB_TIPODOCUMENTO}" var="cat">
                                         <html:option value="${cat.idTipoDocumento}"><c:out value='${cat.nombre}'/></html:option>
                                     </c:forEach>
                                 </html:select></td>
+                                <% }%> 
                         </tr>
                         <tr>
-                            <td class="text">Identificacion:</td>
+                            <td class="text">Identificacion</td>
+                            <% if (request.getAttribute("getIdentificacion") != "") {%> 
+                            <td><html:text property="identificacion" styleId="identificacion" readonly="true" value='<%= String.valueOf(request.getAttribute("getIdentificacion"))%>'></html:text></td>
+                            <% } else {%> 
                             <td><html:text property="identificacion" styleId="identificacion" value='<%= String.valueOf(request.getAttribute("getIdentificacion"))%>'></html:text></td>
+                            <% }%> 
                         </tr>
                         <tr>
                             <td class="text">1er Nombre</td>

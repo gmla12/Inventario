@@ -99,6 +99,88 @@ public class GestionTipoDocumentoAut extends ConeccionMySql {
 
     }
 
+    public ArrayList<Object> MostrarTipoDocumentoAut(Boolean transac, Connection tCn) {
+
+        ArrayList<Object> resultado = new ArrayList<Object>();
+
+        try {
+
+            GR_TIPODOCUMENTOANT = new ArrayList<Object>();
+
+            if (transac == false) { //si no es una transaccion busca una nueva conexion
+
+                ArrayList<Object> resultad = new ArrayList<Object>();
+                resultad = (ArrayList) getConection();
+
+                if ((Boolean) resultad.get(0) == false) { // si no hubo error al obtener la conexion
+
+                    cn = (Connection) resultad.get(1);
+
+                } else { //si hubo error al obtener la conexion retorna el error para visualizar
+
+                    resultado.add(true);
+                    resultado.add(resultad.get(1));
+                    return resultado;
+
+                }
+
+            } else { //si es una transaccion asigna la conexion utilizada
+
+                cn = tCn;
+
+            }
+
+            String query = "SELECT p.idTipoDocumento, p.campoEntidad, p.habilitar, p.obligatorio ";
+            query += "FROM tipoDocumentoAut p";
+
+            System.out.println("***********************************************");
+            System.out.println("*****       Cargando grilla  GR_TIPODOCUMENTOAUT  *****");
+            System.out.println("***********************************************");
+
+            System.out.println(query);
+            st = cn.createStatement();
+            ResultSet rs = st.executeQuery(query);
+
+            BeanTipoDocumentoAut bu;
+            while (rs.next()) {
+                bu = new BeanTipoDocumentoAut();
+
+                bu.setIdTipoDocumento(rs.getObject("p.idTipoDocumento"));
+                bu.setCampo(rs.getObject("p.campoEntidad"));
+                bu.setHabilitar(rs.getObject("p.habilitar"));
+                bu.setObligatorio(rs.getObject("p.obligatorio"));
+
+                GR_TIPODOCUMENTOANT.add(bu);
+
+            }
+
+            st.close();
+
+            if (transac == false) { // si no es una transaccion cierra la conexion
+                cn.close();
+            }
+
+            resultado.add(false); //si no hubo un error asigna false
+            resultado.add(GR_TIPODOCUMENTOANT); // y registros consultados
+
+        } catch (Exception e) {
+
+            resultado.add(true); //si hubo error asigna true
+            resultado.add(e); //y asigna el error para retornar y visualizar
+
+            if (cn != null){
+                cn.rollback();
+                cn.close();
+            }
+            
+        } finally {
+
+            return resultado;
+
+        }
+
+    }
+
     public ArrayList<Object> MostrarTipoDocumentoAut(int idTipoDocumento, Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();

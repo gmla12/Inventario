@@ -51,6 +51,7 @@ public class ActionEntidadOp extends Action {
         GestionDepartamento gD = new GestionDepartamento();
         GestionMunicipio gM = new GestionMunicipio();
         GestionTipoEntidad gTE = new GestionTipoEntidad();
+        GestionTipoDocumentoAut grAut = new GestionTipoDocumentoAut();
         HttpSession session = request.getSession();
 
         System.out.println("********************************************");
@@ -91,28 +92,40 @@ public class ActionEntidadOp extends Action {
                                     resultado6 = gTE.MostrarTipoEntidad(false, null);
                                     if ((Boolean) resultado6.get(0) == false) {
 
-                                        request.setAttribute("getIdEntidad", g.getIdEntidad());
-                                        request.setAttribute("getPrimerNombre", g.getPrimerNombre());
-                                        request.setAttribute("getSegundoNombre", g.getSegundoNombre());
-                                        request.setAttribute("getPrimerApellido", g.getPrimerApellido());
-                                        request.setAttribute("getSegundoApellido", g.getSegundoApellido());
-                                        request.setAttribute("getIdTipoDocumento", g.getIdTipoDocumento());
-                                        request.setAttribute("getIdentificacion", g.getIdentificacion());
-                                        request.setAttribute("getRazonSocial", g.getRazonSocial());
-                                        request.setAttribute("getIdPais", g.getIdPais());
-                                        request.setAttribute("getIdDepartamento", g.getIdDepartamento());
-                                        request.setAttribute("getIdMunicipio", g.getIdMunicipio());
-                                        request.setAttribute("getDireccion", g.getDireccion());
-                                        request.setAttribute("getTelefono", g.getTelefono());
-                                        request.setAttribute("getEmail", g.getEmail());
-                                        request.setAttribute("getIdTipoEntidad", g.getIdTipoEntidad());
+                                        ArrayList<Object> resultado7 = new ArrayList<Object>();
+                                        resultado7 = grAut.MostrarTipoDocumentoAut(false, null);
+                                        if ((Boolean) resultado7.get(0) == false) {
 
-                                        session.setAttribute("CMB_TIPODOCUMENTO", (ArrayList) resultado2.get(1));
-                                        session.setAttribute("CMB_PAIS", (ArrayList) resultado3.get(1));
-                                        session.setAttribute("CMB_DEPARTAMENTO", (ArrayList) resultado4.get(1));
-                                        session.setAttribute("CMB_MUNICIPIO", (ArrayList) resultado5.get(1));
-                                        session.setAttribute("CMB_TIPOENTIDAD", (ArrayList) resultado6.get(1));
-                                        return mapping.findForward("modificar");
+                                            request.setAttribute("getIdEntidad", g.getIdEntidad());
+                                            request.setAttribute("getPrimerNombre", g.getPrimerNombre());
+                                            request.setAttribute("getSegundoNombre", g.getSegundoNombre());
+                                            request.setAttribute("getPrimerApellido", g.getPrimerApellido());
+                                            request.setAttribute("getSegundoApellido", g.getSegundoApellido());
+                                            request.setAttribute("getIdTipoDocumento", g.getIdTipoDocumento());
+                                            request.setAttribute("getIdentificacion", g.getIdentificacion());
+                                            request.setAttribute("getRazonSocial", g.getRazonSocial());
+                                            request.setAttribute("getIdPais", g.getIdPais());
+                                            request.setAttribute("getIdDepartamento", g.getIdDepartamento());
+                                            request.setAttribute("getIdMunicipio", g.getIdMunicipio());
+                                            request.setAttribute("getDireccion", g.getDireccion());
+                                            request.setAttribute("getTelefono", g.getTelefono());
+                                            request.setAttribute("getEmail", g.getEmail());
+                                            request.setAttribute("getIdTipoEntidad", g.getIdTipoEntidad());
+
+                                            session.setAttribute("CMB_TIPODOCUMENTO", (ArrayList) resultado2.get(1));
+                                            session.setAttribute("CMB_PAIS", (ArrayList) resultado3.get(1));
+                                            session.setAttribute("CMB_DEPARTAMENTO", (ArrayList) resultado4.get(1));
+                                            session.setAttribute("CMB_MUNICIPIO", (ArrayList) resultado5.get(1));
+                                            session.setAttribute("CMB_TIPOENTIDAD", (ArrayList) resultado6.get(1));
+                                            session.setAttribute("CMB_TIPODOCUMENTOAUT", (ArrayList) resultado7.get(1));
+                                            return mapping.findForward("modificar");
+
+                                        } else {
+
+                                            request.setAttribute("error", resultado7.get(1));
+                                            return mapping.findForward("error");
+
+                                        }
 
                                     } else {
 
@@ -219,27 +232,39 @@ public class ActionEntidadOp extends Action {
                                 resultado5 = gTE.MostrarTipoEntidad(false, null);
                                 if ((Boolean) resultado5.get(0) == false) {
 
-                                    request.setAttribute("getIdEntidad", "");
-                                    request.setAttribute("getPrimerNombre", "");
-                                    request.setAttribute("getSegundoNombre", "");
-                                    request.setAttribute("getPrimerApellido", "");
-                                    request.setAttribute("getSegundoApellido", "");
-                                    request.setAttribute("getIdTipoDocumento", "");
-                                    request.setAttribute("getIdentificacion", "");
-                                    request.setAttribute("getRazonSocial", "");
-                                    request.setAttribute("getIdPais", "");
-                                    request.setAttribute("getIdMunicipio", "");
-                                    request.setAttribute("getDireccion", "");
-                                    request.setAttribute("getTelefono", "");
-                                    request.setAttribute("getEmail", "");
-                                    request.setAttribute("getIdTipoEntidad", "");
+                                    ArrayList<Object> resultado7 = new ArrayList<Object>();
+                                    resultado7 = grAut.MostrarTipoDocumentoAut(false, null);
+                                    if ((Boolean) resultado7.get(0) == false) {
 
-                                    session.setAttribute("CMB_TIPODOCUMENTO", (ArrayList) resultado.get(1));
-                                    session.setAttribute("CMB_PAIS", (ArrayList) resultado2.get(1));
-                                    session.setAttribute("CMB_DEPARTAMENTO", (ArrayList) resultado3.get(1));
-                                    session.setAttribute("CMB_MUNICIPIO", (ArrayList) resultado4.get(1));
-                                    session.setAttribute("CMB_TIPOENTIDAD", (ArrayList) resultado5.get(1));
-                                    return mapping.findForward("nuevo");
+                                        request.setAttribute("getIdEntidad", "");
+                                        request.setAttribute("getPrimerNombre", "");
+                                        request.setAttribute("getSegundoNombre", "");
+                                        request.setAttribute("getPrimerApellido", "");
+                                        request.setAttribute("getSegundoApellido", "");
+                                        request.setAttribute("getIdTipoDocumento", "");
+                                        request.setAttribute("getIdentificacion", "");
+                                        request.setAttribute("getRazonSocial", "");
+                                        request.setAttribute("getIdPais", "");
+                                        request.setAttribute("getIdMunicipio", "");
+                                        request.setAttribute("getDireccion", "");
+                                        request.setAttribute("getTelefono", "");
+                                        request.setAttribute("getEmail", "");
+                                        request.setAttribute("getIdTipoEntidad", "");
+
+                                        session.setAttribute("CMB_TIPODOCUMENTO", (ArrayList) resultado.get(1));
+                                        session.setAttribute("CMB_PAIS", (ArrayList) resultado2.get(1));
+                                        session.setAttribute("CMB_DEPARTAMENTO", (ArrayList) resultado3.get(1));
+                                        session.setAttribute("CMB_MUNICIPIO", (ArrayList) resultado4.get(1));
+                                        session.setAttribute("CMB_TIPOENTIDAD", (ArrayList) resultado5.get(1));
+                                        session.setAttribute("CMB_TIPODOCUMENTOAUT", (ArrayList) resultado7.get(1));
+                                        return mapping.findForward("nuevo");
+
+                                    } else {
+
+                                        request.setAttribute("error", resultado7.get(1));
+                                        return mapping.findForward("error");
+
+                                    }
 
                                 } else {
 
@@ -247,7 +272,6 @@ public class ActionEntidadOp extends Action {
                                     return mapping.findForward("error");
 
                                 }
-
 
                             } else {
 
