@@ -176,122 +176,99 @@
                                     case "primerNombre" :
                                         if(matrixx[i][2] == "false"){
                                             $("#primerNombre").attr('disabled', true);
+                                            $("#primerNombre").attr('value', '');
                                         }else{
                                             $("#primerNombre").attr('disabled', false);
                                         }
-                                    break;
+                                        break;
                                     case "segundoNombre" :
                                         if(matrixx[i][2] == "false"){
                                             $("#segundoNombre").attr('disabled', true);
+                                            $("#segundoNombre").attr('value', '');
                                         }else{
                                             $("#segundoNombre").attr('disabled', false);
                                         }
-                                    break;
+                                        break;
                                     case "primerApellido" :
                                         if(matrixx[i][2] == "false"){
                                             $("#primerApellido").attr('disabled', true);
+                                            $("#primerApellido").attr('value', '');
                                         }else{
                                             $("#primerApellido").attr('disabled', false);
                                         }
-                                    break;
+                                        break;
                                     case "segundoApellido" :
                                         if(matrixx[i][2] == "false"){
                                             $("#segundoApellido").attr('disabled', true);
+                                            $("#segundoApellido").attr('value', '');
                                         }else{
                                             $("#segundoApellido").attr('disabled', false);
                                         }
-                                    break;
+                                        break;
                                     case "razonSocial" :
                                         if(matrixx[i][2] == "false"){
                                             $("#razonSocial").attr('disabled', true);
+                                            $("#razonSocial").attr('value', '');
                                         }else{
                                             $("#razonSocial").attr('disabled', false);
                                         }
-                                    break;
+                                        break;
                                     case "idPais" :
                                         if(matrixx[i][2] == "false"){
                                             $("#idPais").attr('disabled', true);
+                                            $("#idPais").attr('value', '');
                                         }else{
                                             $("#idPais").attr('disabled', false);
                                         }
-                                    break;
+                                        break;
                                     case "idDepartamento" :
                                         if(matrixx[i][2] == "false"){
                                             $("#idDepartamento").attr('disabled', true);
+                                            $("#idDepartamento").attr('value', '');
                                         }else{
                                             $("#idDepartamento").attr('disabled', false);
                                         }
-                                    break;
-                                    case "primerNombre" :
+                                        break;
+                                    case "idMunicipio" :
                                         if(matrixx[i][2] == "false"){
-                                            $("#primerNombre").attr('disabled', true);
+                                            $("#idMunicipio").attr('disabled', true);
+                                            $("#idMunicipio").attr('value', '');
                                         }else{
-                                            $("#primerNombre").attr('disabled', false);
+                                            $("#idMunicipio").attr('disabled', false);
                                         }
-                                    break;
-                                    case "primerNombre" :
+                                        break;
+                                    case "direccion" :
                                         if(matrixx[i][2] == "false"){
-                                            $("#primerNombre").attr('disabled', true);
+                                            $("#direccion").attr('disabled', true);
+                                            $("#direccion").attr('value', '');
                                         }else{
-                                            $("#primerNombre").attr('disabled', false);
+                                            $("#direccion").attr('disabled', false);
                                         }
-                                    break;
-                                    case "primerNombre" :
+                                        break;
+                                    case "telefono" :
                                         if(matrixx[i][2] == "false"){
-                                            $("#primerNombre").attr('disabled', true);
+                                            $("#telefono").attr('disabled', true);
+                                            $("#telefono").attr('value', '');
                                         }else{
-                                            $("#primerNombre").attr('disabled', false);
+                                            $("#telefono").attr('disabled', false);
                                         }
-                                    break;
-                                    case "primerNombre" :
+                                        break;
+                                    case "email" :
                                         if(matrixx[i][2] == "false"){
-                                            $("#primerNombre").attr('disabled', true);
+                                            $("#email").attr('disabled', true);
+                                            $("#email").attr('value', '');
                                         }else{
-                                            $("#primerNombre").attr('disabled', false);
+                                            $("#email").attr('disabled', false);
                                         }
-                                    break;
-                                    case "primerNombre" :
+                                        break;
+                                    case "idTipoEntidad" :
                                         if(matrixx[i][2] == "false"){
-                                            $("#primerNombre").attr('disabled', true);
+                                            $("#idTipoEntidad").attr('disabled', true);
+                                            $("#idTipoEntidad").attr('value', '');
                                         }else{
-                                            $("#primerNombre").attr('disabled', false);
+                                            $("#idTipoEntidad").attr('disabled', false);
                                         }
-                                    break;
-                                    case "primerNombre" :
-                                        if(matrixx[i][2] == "false"){
-                                            $("#primerNombre").attr('disabled', true);
-                                        }else{
-                                            $("#primerNombre").attr('disabled', false);
-                                        }
-                                    break;
-                                    case "primerNombre" :
-                                        if(matrixx[i][2] == "false"){
-                                            $("#primerNombre").attr('disabled', true);
-                                        }else{
-                                            $("#primerNombre").attr('disabled', false);
-                                        }
-                                    break;
-                                    case "primerNombre" :
-                                        if(matrixx[i][2] == "false"){
-                                            $("#primerNombre").attr('disabled', true);
-                                        }else{
-                                            $("#primerNombre").attr('disabled', false);
-                                        }
-                                    break;
-                                    case "primerNombre" :
-                                        if(matrixx[i][2] == "false"){
-                                            $("#primerNombre").attr('disabled', true);
-                                        }else{
-                                            $("#primerNombre").attr('disabled', false);
-                                        }
-                                    break;
-                                    case "primerNombre" :
-                                        if(matrixx[i][2] == "false"){
-                                            $("#primerNombre").attr('disabled', true);
-                                        }else{
-                                            $("#primerNombre").attr('disabled', false);
-                                        }
-                                    break;
+                                        break;
                                 }
 
                             }
@@ -360,6 +337,7 @@
                                 </html:select></td>
                                 <% } else {%> 
                             <td><html:select property="idTipoDocumento" styleId="idTipoDocumento" size="1" style="width:240px;" value='<%= String.valueOf(request.getAttribute("getIdTipoDocumento"))%>'>
+                                    <html:option value=""><c:out value='[Seleccione]'/></html:option>
                                     <c:forEach items="${CMB_TIPODOCUMENTO}" var="cat">
                                         <html:option value="${cat.idTipoDocumento}"><c:out value='${cat.nombre}'/></html:option>
                                     </c:forEach>
@@ -376,67 +354,143 @@
                         </tr>
                         <tr>
                             <td class="text">1er Nombre</td>
-                            <td><html:text property="primerNombre" styleId="primerNombre" value='<%= String.valueOf(request.getAttribute("getPrimerNombre"))%>'></html:text></td>
+                            <% if (Boolean.valueOf(String.valueOf(request.getAttribute("HabprimerNombre"))) != true) {%> 
+                            <td><html:text property="primerNombre" styleId="primerNombre" disabled='true' value='<%= String.valueOf(request.getAttribute("getPrimerNombre"))%>'></html:text></td>
+                            <% } else {%>
+                            <td><html:text property="primerNombre" styleId="primerNombre" disabled='false' value='<%= String.valueOf(request.getAttribute("getPrimerNombre"))%>'></html:text></td>
+                            <% }%> 
                         </tr>
                         <tr>
                             <td class="text">2do Nombre</td>
-                            <td><html:text property="segundoNombre" styleId="segundoNombre" value='<%= String.valueOf(request.getAttribute("getSegundoNombre"))%>'></html:text></td>
+                            <% if (Boolean.valueOf(String.valueOf(request.getAttribute("HabsegundoNombre"))) != true) {%> 
+                            <td><html:text property="segundoNombre" styleId="segundoNombre" disabled='true' value='<%= String.valueOf(request.getAttribute("getSegundoNombre"))%>'></html:text></td>
+                            <% } else {%>
+                            <td><html:text property="segundoNombre" styleId="segundoNombre" disabled='false' value='<%= String.valueOf(request.getAttribute("getSegundoNombre"))%>'></html:text></td>
+                            <% }%> 
                         </tr>
                         <tr>
                             <td class="text">1er Apellido</td>
-                            <td><html:text property="primerApellido" styleId="primerApellido" value='<%= String.valueOf(request.getAttribute("getPrimerApellido"))%>'></html:text></td>
+                            <% if (Boolean.valueOf(String.valueOf(request.getAttribute("HabprimerApellido"))) != true) {%> 
+                            <td><html:text property="primerApellido" styleId="primerApellido" disabled='true' value='<%= String.valueOf(request.getAttribute("getPrimerApellido"))%>'></html:text></td>
+                            <% } else {%>
+                            <td><html:text property="primerApellido" styleId="primerApellido" disabled='false' value='<%= String.valueOf(request.getAttribute("getPrimerApellido"))%>'></html:text></td>
+                            <% }%> 
                         </tr>
                         <tr>
                             <td class="text">2do Apellido</td>
-                            <td><html:text property="segundoApellido" styleId="segundoApellido" value='<%= String.valueOf(request.getAttribute("getSegundoApellido"))%>'></html:text></td>
+                            <% if (Boolean.valueOf(String.valueOf(request.getAttribute("HabsegundoApellido"))) != true) {%> 
+                            <td><html:text property="segundoApellido" styleId="segundoApellido" disabled='true' value='<%= String.valueOf(request.getAttribute("getSegundoApellido"))%>'></html:text></td>
+                            <% } else {%>
+                            <td><html:text property="segundoApellido" styleId="segundoApellido" disabled='false' value='<%= String.valueOf(request.getAttribute("getSegundoApellido"))%>'></html:text></td>
+                            <% }%> 
                         </tr>
                         <tr>
                             <td class="text">Razon Social</td>
-                            <td><html:text property="razonSocial" styleId="razonSocial" value='<%= String.valueOf(request.getAttribute("getRazonSocial"))%>'></html:text></td>
+                            <% if (Boolean.valueOf(String.valueOf(request.getAttribute("HabrazonSocial"))) != true) {%> 
+                            <td><html:text property="razonSocial" styleId="razonSocial" disabled='true' value='<%= String.valueOf(request.getAttribute("getRazonSocial"))%>'></html:text></td>
+                            <% } else {%>
+                            <td><html:text property="razonSocial" styleId="razonSocial" disabled='false' value='<%= String.valueOf(request.getAttribute("getRazonSocial"))%>'></html:text></td>
+                            <% }%> 
                         </tr>
                         <tr>
                             <td class="text">Pais</td>
-                            <td><html:select property="idPais" styleId="idPais" size="1" style="width:240px;" value='<%= String.valueOf(request.getAttribute("getIdPais"))%>'>
+                            <% if (Boolean.valueOf(String.valueOf(request.getAttribute("HabidPais"))) != true) {%> 
+                            <td><html:select property="idPais" styleId="idPais" size="1" style="width:240px;" disabled='true' value='<%= String.valueOf(request.getAttribute("getIdPais"))%>'>
+                                    <% if (request.getAttribute("getIdentificacion") == "") {%>
+                                    <html:option value=""><c:out value='[Seleccione]'/></html:option>
+                                    <% }%>
                                     <c:forEach items="${CMB_PAIS}" var="cat">
                                         <html:option value="${cat.idPais}"><c:out value='${cat.nombre}'/></html:option>
                                     </c:forEach>
                                 </html:select></td>
+                            <% } else {%>
+                            <td><html:select property="idPais" styleId="idPais" size="1" style="width:240px;" disabled='false' value='<%= String.valueOf(request.getAttribute("getIdPais"))%>'>
+                                    <% if (request.getAttribute("getIdentificacion") == "") {%>
+                                    <html:option value=""><c:out value='[Seleccione]'/></html:option>
+                                    <% }%>
+                                    <c:forEach items="${CMB_PAIS}" var="cat">
+                                        <html:option value="${cat.idPais}"><c:out value='${cat.nombre}'/></html:option>
+                                    </c:forEach>
+                                </html:select></td>
+                            <% }%> 
                         </tr>
                         <tr>
                             <td class="text">Departamento</td>
-                            <td><html:select property="idDepartamento" styleId="idDepartamento" size="1" style="width:240px;" value='<%= String.valueOf(request.getAttribute("getIdDepartamento"))%>'>
+                            <% if (Boolean.valueOf(String.valueOf(request.getAttribute("HabidDepartamento"))) != true) {%> 
+                            <td><html:select property="idDepartamento" styleId="idDepartamento" size="1" style="width:240px;" disabled='true' value='<%= String.valueOf(request.getAttribute("getIdDepartamento"))%>'>
                                     <c:forEach items="${CMB_DEPARTAMENTO}" var="cat">
                                         <html:option value="${cat.idDepartamento}"><c:out value='${cat.nombre}'/></html:option>
                                     </c:forEach>
                                 </html:select></td>
+                            <% } else {%>
+                            <td><html:select property="idDepartamento" styleId="idDepartamento" size="1" style="width:240px;" disabled='false' value='<%= String.valueOf(request.getAttribute("getIdDepartamento"))%>'>
+                                    <c:forEach items="${CMB_DEPARTAMENTO}" var="cat">
+                                        <html:option value="${cat.idDepartamento}"><c:out value='${cat.nombre}'/></html:option>
+                                    </c:forEach>
+                                </html:select></td>
+                            <% }%> 
                         </tr>
                         <tr>
                             <td class="text">Municipio</td>
-                            <td><html:select property="idMunicipio" styleId="idMunicipio" size="1" style="width:240px;" value='<%= String.valueOf(request.getAttribute("getIdMunicipio"))%>'>
+                            <% if (Boolean.valueOf(String.valueOf(request.getAttribute("Habidmunicipio"))) != true) {%> 
+                            <td><html:select property="idMunicipio" styleId="idMunicipio" size="1" style="width:240px;" disabled='true' value='<%= String.valueOf(request.getAttribute("getIdMunicipio"))%>'>
                                     <c:forEach items="${CMB_MUNICIPIO}" var="cat">
                                         <html:option value="${cat.idMunicipio}"><c:out value='${cat.nombre}'/></html:option>
                                     </c:forEach>
                                 </html:select></td>
+                            <% } else {%>
+                            <td><html:select property="idMunicipio" styleId="idMunicipio" size="1" style="width:240px;" disabled='false' value='<%= String.valueOf(request.getAttribute("getIdMunicipio"))%>'>
+                                    <c:forEach items="${CMB_MUNICIPIO}" var="cat">
+                                        <html:option value="${cat.idMunicipio}"><c:out value='${cat.nombre}'/></html:option>
+                                    </c:forEach>
+                                </html:select></td>
+                            <% }%> 
                         </tr>
                         <tr>
                             <td class="text">Direccion</td>
-                            <td><html:text property="direccion" styleId="direccion" value='<%= String.valueOf(request.getAttribute("getDireccion"))%>'></html:text></td>
+                            <% if (Boolean.valueOf(String.valueOf(request.getAttribute("Habdireccion"))) != true) {%> 
+                            <td><html:text property="direccion" styleId="direccion" disabled='true' value='<%= String.valueOf(request.getAttribute("getDireccion"))%>'></html:text></td>
+                            <% } else {%>
+                            <td><html:text property="direccion" styleId="direccion" disabled='false' value='<%= String.valueOf(request.getAttribute("getDireccion"))%>'></html:text></td>
+                            <% }%> 
                         </tr>
                         <tr>
                             <td class="text">Telefono</td>
-                            <td><html:text property="telefono" styleId="telefono" value='<%= String.valueOf(request.getAttribute("getTelefono"))%>'></html:text></td>
+                            <% if (Boolean.valueOf(String.valueOf(request.getAttribute("Habtelefono"))) != true) {%> 
+                            <td><html:text property="telefono" styleId="telefono" disabled='true' value='<%= String.valueOf(request.getAttribute("getTelefono"))%>'></html:text></td>
+                            <% } else {%>
+                            <td><html:text property="telefono" styleId="telefono" disabled='false' value='<%= String.valueOf(request.getAttribute("getTelefono"))%>'></html:text></td>
+                            <% }%> 
                         </tr>
                         <tr>
                             <td class="text">E-mail</td>
-                            <td><html:text property="email" styleId="email" value='<%= String.valueOf(request.getAttribute("getEmail"))%>'></html:text></td>
+                            <% if (Boolean.valueOf(String.valueOf(request.getAttribute("Habemail"))) != true) {%> 
+                            <td><html:text property="email" styleId="email" disabled='true' value='<%= String.valueOf(request.getAttribute("getEmail"))%>'></html:text></td>
+                            <% } else {%>
+                            <td><html:text property="email" styleId="email" disabled='false' value='<%= String.valueOf(request.getAttribute("getEmail"))%>'></html:text></td>
+                            <% }%> 
                         </tr>
                         <tr>
                             <td class="text">Tipo de Entidad</td>
-                            <td><html:select property="idTipoEntidad" styleId="idTipoEntidad" size="1" style="width:240px;" value='<%= String.valueOf(request.getAttribute("getIdTipoEntidad"))%>'>
+                            <% if (Boolean.valueOf(String.valueOf(request.getAttribute("HabidTipoEntidad"))) != true) {%> 
+                            <td><html:select property="idTipoEntidad" styleId="idTipoEntidad" size="1" style="width:240px;" disabled='true' value='<%= String.valueOf(request.getAttribute("getIdTipoEntidad"))%>'>
+                                    <% if (request.getAttribute("getIdentificacion") == "") {%>
+                                    <html:option value=""><c:out value='[Seleccione]'/></html:option>
+                                    <% }%>
                                     <c:forEach items="${CMB_TIPOENTIDAD}" var="cat">
                                         <html:option value="${cat.idTipoEntidad}"><c:out value='${cat.nombre}'/></html:option>
                                     </c:forEach>
                                 </html:select></td>
+                            <% } else {%>
+                            <td><html:select property="idTipoEntidad" styleId="idTipoEntidad" size="1" style="width:240px;" disabled='false' value='<%= String.valueOf(request.getAttribute("getIdTipoEntidad"))%>'>
+                                    <% if (request.getAttribute("getIdentificacion") == "") {%>
+                                    <html:option value=""><c:out value='[Seleccione]'/></html:option>
+                                    <% }%>
+                                    <c:forEach items="${CMB_TIPOENTIDAD}" var="cat">
+                                        <html:option value="${cat.idTipoEntidad}"><c:out value='${cat.nombre}'/></html:option>
+                                    </c:forEach>
+                                </html:select></td>
+                            <% }%> 
                         </tr>
                         <tr>
                             <td colspan="3"><a class="boton" href="javascript:nuevo();">Nuevo</a> <a class="boton" id="submit" href="javascript:guardar();">Guardar</a> <% if (request.getAttribute("getIdEntidad") != "") {%> <a class="boton" href="javascript:eliminar();">Eliminar</a> <% }%> <a class="boton" href="javascript:atras();">Volver</a></td>

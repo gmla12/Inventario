@@ -5,6 +5,9 @@
 package actions;
 
 import forms.EntidadOpForm;
+import forms.bean.BeanTablas;
+import forms.bean.BeanTipoDocumento;
+import forms.bean.BeanTipoDocumentoAut;
 import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -52,6 +55,7 @@ public class ActionEntidadOp extends Action {
         GestionMunicipio gM = new GestionMunicipio();
         GestionTipoEntidad gTE = new GestionTipoEntidad();
         GestionTipoDocumentoAut grAut = new GestionTipoDocumentoAut();
+        GestionTablas grT = new GestionTablas();
         HttpSession session = request.getSession();
 
         System.out.println("********************************************");
@@ -96,29 +100,129 @@ public class ActionEntidadOp extends Action {
                                         resultado7 = grAut.MostrarTipoDocumentoAut(false, null);
                                         if ((Boolean) resultado7.get(0) == false) {
 
-                                            request.setAttribute("getIdEntidad", g.getIdEntidad());
-                                            request.setAttribute("getPrimerNombre", g.getPrimerNombre());
-                                            request.setAttribute("getSegundoNombre", g.getSegundoNombre());
-                                            request.setAttribute("getPrimerApellido", g.getPrimerApellido());
-                                            request.setAttribute("getSegundoApellido", g.getSegundoApellido());
-                                            request.setAttribute("getIdTipoDocumento", g.getIdTipoDocumento());
-                                            request.setAttribute("getIdentificacion", g.getIdentificacion());
-                                            request.setAttribute("getRazonSocial", g.getRazonSocial());
-                                            request.setAttribute("getIdPais", g.getIdPais());
-                                            request.setAttribute("getIdDepartamento", g.getIdDepartamento());
-                                            request.setAttribute("getIdMunicipio", g.getIdMunicipio());
-                                            request.setAttribute("getDireccion", g.getDireccion());
-                                            request.setAttribute("getTelefono", g.getTelefono());
-                                            request.setAttribute("getEmail", g.getEmail());
-                                            request.setAttribute("getIdTipoEntidad", g.getIdTipoEntidad());
+                                            ArrayList<Object> GR_TIPODOCUMENTOAUT = (ArrayList) resultado7.get(1);
+                                            ArrayList<Object> GR_TABLAS = new ArrayList<Object>();
+                                            ArrayList<Object> GR_TIPODOCUMENTO = new ArrayList<Object>();
 
-                                            session.setAttribute("CMB_TIPODOCUMENTO", (ArrayList) resultado2.get(1));
-                                            session.setAttribute("CMB_PAIS", (ArrayList) resultado3.get(1));
-                                            session.setAttribute("CMB_DEPARTAMENTO", (ArrayList) resultado4.get(1));
-                                            session.setAttribute("CMB_MUNICIPIO", (ArrayList) resultado5.get(1));
-                                            session.setAttribute("CMB_TIPOENTIDAD", (ArrayList) resultado6.get(1));
-                                            session.setAttribute("CMB_TIPODOCUMENTOAUT", (ArrayList) resultado7.get(1));
-                                            return mapping.findForward("modificar");
+                                            ArrayList<Object> resultado8 = new ArrayList<Object>();
+                                            resultado8 = grT.MostrarTablas("Entidad", false, null);
+                                            if ((Boolean) resultado8.get(0) == false) {
+
+                                                GR_TIPODOCUMENTO = (ArrayList) resultado2.get(1);
+                                                GR_TABLAS = (ArrayList) resultado8.get(1);
+                                                ArrayList<Object> GR_AUT = new ArrayList<Object>();
+
+                                                BeanTablas buTablas;
+                                                BeanTipoDocumento buTipoDocumento;
+                                                BeanTipoDocumentoAut buTipoDocumentoAut;
+                                                BeanTipoDocumentoAut buTipoDocumentoAut2;
+
+                                                for (int z = 0; z < GR_TIPODOCUMENTO.size(); z++) {
+
+                                                    buTipoDocumento = new BeanTipoDocumento();
+                                                    buTipoDocumento = (BeanTipoDocumento) GR_TIPODOCUMENTO.get(z);
+
+                                                    for (int i = 0; i < GR_TABLAS.size(); i++) {
+
+                                                        buTablas = new BeanTablas();
+                                                        buTablas = (BeanTablas) GR_TABLAS.get(i);
+                                                        int op = 0;
+
+                                                        if (GR_TIPODOCUMENTOAUT.size() > 0) {
+                                                            for (int y = 0; y < GR_TIPODOCUMENTOAUT.size(); y++) {
+
+                                                                buTipoDocumentoAut = new BeanTipoDocumentoAut();
+                                                                buTipoDocumentoAut = (BeanTipoDocumentoAut) GR_TIPODOCUMENTOAUT.get(y);
+
+                                                                buTipoDocumentoAut2 = new BeanTipoDocumentoAut();
+                                                                if (String.valueOf(buTipoDocumentoAut.getCampo()).equals(String.valueOf(buTablas.getField())) && String.valueOf(buTipoDocumentoAut.getIdTipoDocumento()).equals(String.valueOf(buTipoDocumento.getIdTipoDocumento()))) {
+
+                                                                    buTipoDocumentoAut2.setIdTipoDocumento(buTipoDocumentoAut.getIdTipoDocumento());
+                                                                    buTipoDocumentoAut2.setCampo(buTipoDocumentoAut.getCampo());
+                                                                    buTipoDocumentoAut2.setHabilitar(buTipoDocumentoAut.getHabilitar());
+                                                                    buTipoDocumentoAut2.setObligatorio(buTipoDocumentoAut.getObligatorio());
+
+                                                                    GR_AUT.add(buTipoDocumentoAut2);
+
+                                                                    op = 1;
+
+                                                                }
+
+                                                                if (op == 1) {
+                                                                    y = GR_TIPODOCUMENTOAUT.size();
+                                                                }
+
+                                                            }
+                                                            if (op == 0) {
+                                                                buTipoDocumentoAut2 = new BeanTipoDocumentoAut();
+
+                                                                buTipoDocumentoAut2.setIdTipoDocumento(buTipoDocumento.getIdTipoDocumento());
+                                                                buTipoDocumentoAut2.setCampo(buTablas.getField());
+                                                                buTipoDocumentoAut2.setHabilitar(true);
+                                                                buTipoDocumentoAut2.setObligatorio(true);
+
+                                                                GR_AUT.add(buTipoDocumentoAut2);
+                                                            }
+
+                                                        } else {
+
+                                                            buTipoDocumentoAut2 = new BeanTipoDocumentoAut();
+                                                            buTipoDocumentoAut2.setIdTipoDocumento(gr.getIdTipoDocumento());
+                                                            buTipoDocumentoAut2.setCampo(buTablas.getField());
+                                                            buTipoDocumentoAut2.setHabilitar(true);
+                                                            buTipoDocumentoAut2.setObligatorio(true);
+
+                                                            GR_AUT.add(buTipoDocumentoAut2);
+
+                                                        }
+
+                                                    }
+
+                                                }
+                                                for (int y = 0; y < GR_AUT.size(); y++) {
+
+                                                    buTipoDocumentoAut = new BeanTipoDocumentoAut();
+                                                    buTipoDocumentoAut = (BeanTipoDocumentoAut) GR_AUT.get(y);
+
+                                                    if (String.valueOf(buTipoDocumentoAut.getIdTipoDocumento()).equals(String.valueOf(g.getIdTipoDocumento()))) {
+
+                                                        request.setAttribute("Hab" + (String) buTipoDocumentoAut.getCampo(), buTipoDocumentoAut.getHabilitar());
+
+                                                    }
+
+                                                }
+
+                                                request.setAttribute("getIdEntidad", g.getIdEntidad());
+                                                request.setAttribute("getPrimerNombre", g.getPrimerNombre());
+                                                request.setAttribute("getSegundoNombre", g.getSegundoNombre());
+                                                request.setAttribute("getPrimerApellido", g.getPrimerApellido());
+                                                request.setAttribute("getSegundoApellido", g.getSegundoApellido());
+                                                request.setAttribute("getIdTipoDocumento", g.getIdTipoDocumento());
+                                                request.setAttribute("getIdentificacion", g.getIdentificacion());
+                                                request.setAttribute("getRazonSocial", g.getRazonSocial());
+                                                request.setAttribute("getIdPais", g.getIdPais());
+                                                request.setAttribute("getIdDepartamento", g.getIdDepartamento());
+                                                request.setAttribute("getIdMunicipio", g.getIdMunicipio());
+                                                request.setAttribute("getDireccion", g.getDireccion());
+                                                request.setAttribute("getTelefono", g.getTelefono());
+                                                request.setAttribute("getEmail", g.getEmail());
+                                                request.setAttribute("getIdTipoEntidad", g.getIdTipoEntidad());
+
+                                                session.setAttribute("CMB_TIPODOCUMENTO", (ArrayList) resultado2.get(1));
+                                                session.setAttribute("CMB_PAIS", (ArrayList) resultado3.get(1));
+                                                session.setAttribute("CMB_DEPARTAMENTO", (ArrayList) resultado4.get(1));
+                                                session.setAttribute("CMB_MUNICIPIO", (ArrayList) resultado5.get(1));
+                                                session.setAttribute("CMB_TIPOENTIDAD", (ArrayList) resultado6.get(1));
+                                                session.setAttribute("CMB_TIPODOCUMENTOAUT", (ArrayList) resultado7.get(1));
+                                                session.setAttribute("CMB_TIPODOCUMENTOAUT", GR_AUT);
+                                                return mapping.findForward("modificar");
+
+                                            } else {
+
+                                                request.setAttribute("error", resultado8.get(1));
+                                                return mapping.findForward("error");
+
+                                            }
 
                                         } else {
 
@@ -236,28 +340,128 @@ public class ActionEntidadOp extends Action {
                                     resultado7 = grAut.MostrarTipoDocumentoAut(false, null);
                                     if ((Boolean) resultado7.get(0) == false) {
 
-                                        request.setAttribute("getIdEntidad", "");
-                                        request.setAttribute("getPrimerNombre", "");
-                                        request.setAttribute("getSegundoNombre", "");
-                                        request.setAttribute("getPrimerApellido", "");
-                                        request.setAttribute("getSegundoApellido", "");
-                                        request.setAttribute("getIdTipoDocumento", "");
-                                        request.setAttribute("getIdentificacion", "");
-                                        request.setAttribute("getRazonSocial", "");
-                                        request.setAttribute("getIdPais", "");
-                                        request.setAttribute("getIdMunicipio", "");
-                                        request.setAttribute("getDireccion", "");
-                                        request.setAttribute("getTelefono", "");
-                                        request.setAttribute("getEmail", "");
-                                        request.setAttribute("getIdTipoEntidad", "");
+                                        ArrayList<Object> GR_TIPODOCUMENTOAUT = (ArrayList) resultado7.get(1);
+                                        ArrayList<Object> GR_TABLAS = new ArrayList<Object>();
+                                        ArrayList<Object> GR_TIPODOCUMENTO = new ArrayList<Object>();
 
-                                        session.setAttribute("CMB_TIPODOCUMENTO", (ArrayList) resultado.get(1));
-                                        session.setAttribute("CMB_PAIS", (ArrayList) resultado2.get(1));
-                                        session.setAttribute("CMB_DEPARTAMENTO", (ArrayList) resultado3.get(1));
-                                        session.setAttribute("CMB_MUNICIPIO", (ArrayList) resultado4.get(1));
-                                        session.setAttribute("CMB_TIPOENTIDAD", (ArrayList) resultado5.get(1));
-                                        session.setAttribute("CMB_TIPODOCUMENTOAUT", (ArrayList) resultado7.get(1));
-                                        return mapping.findForward("nuevo");
+                                        ArrayList<Object> resultado8 = new ArrayList<Object>();
+                                        resultado8 = grT.MostrarTablas("Entidad", false, null);
+                                        if ((Boolean) resultado8.get(0) == false) {
+
+                                            GR_TIPODOCUMENTO = (ArrayList) resultado.get(1);
+                                            GR_TABLAS = (ArrayList) resultado8.get(1);
+                                            ArrayList<Object> GR_AUT = new ArrayList<Object>();
+
+                                            BeanTablas buTablas;
+                                            BeanTipoDocumento buTipoDocumento;
+                                            BeanTipoDocumentoAut buTipoDocumentoAut;
+                                            BeanTipoDocumentoAut buTipoDocumentoAut2;
+
+                                            for (int z = 0; z < GR_TIPODOCUMENTO.size(); z++) {
+
+                                                buTipoDocumento = new BeanTipoDocumento();
+                                                buTipoDocumento = (BeanTipoDocumento) GR_TIPODOCUMENTO.get(z);
+
+                                                for (int i = 0; i < GR_TABLAS.size(); i++) {
+
+                                                    buTablas = new BeanTablas();
+                                                    buTablas = (BeanTablas) GR_TABLAS.get(i);
+                                                    int op = 0;
+
+                                                    if (GR_TIPODOCUMENTOAUT.size() > 0) {
+                                                        for (int y = 0; y < GR_TIPODOCUMENTOAUT.size(); y++) {
+
+                                                            buTipoDocumentoAut = new BeanTipoDocumentoAut();
+                                                            buTipoDocumentoAut = (BeanTipoDocumentoAut) GR_TIPODOCUMENTOAUT.get(y);
+
+                                                            buTipoDocumentoAut2 = new BeanTipoDocumentoAut();
+                                                            if (String.valueOf(buTipoDocumentoAut.getCampo()).equals(String.valueOf(buTablas.getField())) && String.valueOf(buTipoDocumentoAut.getIdTipoDocumento()).equals(String.valueOf(buTipoDocumento.getIdTipoDocumento()))) {
+
+                                                                buTipoDocumentoAut2.setIdTipoDocumento(buTipoDocumentoAut.getIdTipoDocumento());
+                                                                buTipoDocumentoAut2.setCampo(buTipoDocumentoAut.getCampo());
+                                                                buTipoDocumentoAut2.setHabilitar(buTipoDocumentoAut.getHabilitar());
+                                                                buTipoDocumentoAut2.setObligatorio(buTipoDocumentoAut.getObligatorio());
+
+                                                                GR_AUT.add(buTipoDocumentoAut2);
+
+                                                                op = 1;
+
+                                                            }
+
+                                                            if (op == 1) {
+                                                                y = GR_TIPODOCUMENTOAUT.size();
+                                                            }
+
+                                                        }
+                                                        if (op == 0) {
+                                                            buTipoDocumentoAut2 = new BeanTipoDocumentoAut();
+
+                                                            buTipoDocumentoAut2.setIdTipoDocumento(buTipoDocumento.getIdTipoDocumento());
+                                                            buTipoDocumentoAut2.setCampo(buTablas.getField());
+                                                            buTipoDocumentoAut2.setHabilitar(true);
+                                                            buTipoDocumentoAut2.setObligatorio(true);
+
+                                                            GR_AUT.add(buTipoDocumentoAut2);
+                                                        }
+
+                                                    } else {
+
+                                                        buTipoDocumentoAut2 = new BeanTipoDocumentoAut();
+                                                        buTipoDocumentoAut2.setIdTipoDocumento(gr.getIdTipoDocumento());
+                                                        buTipoDocumentoAut2.setCampo(buTablas.getField());
+                                                        buTipoDocumentoAut2.setHabilitar(true);
+                                                        buTipoDocumentoAut2.setObligatorio(true);
+
+                                                        GR_AUT.add(buTipoDocumentoAut2);
+
+                                                    }
+
+                                                }
+
+                                            }
+                                            buTipoDocumentoAut2 = (BeanTipoDocumentoAut) GR_AUT.get(0);
+                                            for (int y = 0; y < GR_AUT.size(); y++) {
+
+                                                buTipoDocumentoAut = new BeanTipoDocumentoAut();
+                                                buTipoDocumentoAut = (BeanTipoDocumentoAut) GR_AUT.get(y);
+
+                                                if (String.valueOf(buTipoDocumentoAut.getIdTipoDocumento()).equals(String.valueOf(buTipoDocumentoAut2.getIdTipoDocumento()))) {
+
+                                                    request.setAttribute("Hab" + (String) buTipoDocumentoAut.getCampo(), true);
+
+                                                }
+
+                                            }
+
+                                            request.setAttribute("getIdEntidad", "");
+                                            request.setAttribute("getPrimerNombre", "");
+                                            request.setAttribute("getSegundoNombre", "");
+                                            request.setAttribute("getPrimerApellido", "");
+                                            request.setAttribute("getSegundoApellido", "");
+                                            request.setAttribute("getIdTipoDocumento", "");
+                                            request.setAttribute("getIdentificacion", "");
+                                            request.setAttribute("getRazonSocial", "");
+                                            request.setAttribute("getIdPais", "");
+                                            request.setAttribute("getIdMunicipio", "");
+                                            request.setAttribute("getDireccion", "");
+                                            request.setAttribute("getTelefono", "");
+                                            request.setAttribute("getEmail", "");
+                                            request.setAttribute("getIdTipoEntidad", "");
+
+                                            session.setAttribute("CMB_TIPODOCUMENTO", (ArrayList) resultado.get(1));
+                                            session.setAttribute("CMB_PAIS", (ArrayList) resultado2.get(1));
+                                            session.setAttribute("CMB_DEPARTAMENTO", (ArrayList) resultado3.get(1));
+                                            session.setAttribute("CMB_MUNICIPIO", (ArrayList) resultado4.get(1));
+                                            session.setAttribute("CMB_TIPOENTIDAD", (ArrayList) resultado5.get(1));
+                                            session.setAttribute("CMB_TIPODOCUMENTOAUT", GR_AUT);
+                                            return mapping.findForward("nuevo");
+
+                                        } else {
+
+                                            request.setAttribute("error", resultado8.get(1));
+                                            return mapping.findForward("error");
+
+                                        }
 
                                     } else {
 
