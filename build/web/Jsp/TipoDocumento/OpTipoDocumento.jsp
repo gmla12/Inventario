@@ -21,7 +21,7 @@
         <script src="/Inventario/Js/jquery-1.7.2.min.js" type="text/javascript"></script>
         <script src="/Inventario/Js/i18n/grid.locale-es.js" type="text/javascript"></script>
         <script src="/Inventario/Js/jquery.jqGrid.min.js" type="text/javascript"></script>
-        <title>Opiones Tipo de Documento</title>
+        <title>Opciones Tipo de Documento</title>
         <%
             String usuario = "";
             HttpSession sesionOk = request.getSession();

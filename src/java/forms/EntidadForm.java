@@ -29,20 +29,20 @@ public class EntidadForm extends ActionForm{
     private String idTipoEntidad;
     private String op;
 
-    public String getIdEntidad() {
-        return idEntidad;
-    }
-
-    public void setIdEntidad(String idEntidad) {
-        this.idEntidad = idEntidad;
-    }
-
     public String getIdTipoDocumento() {
         return idTipoDocumento;
     }
 
     public void setIdTipoDocumento(String idTipoDocumento) {
         this.idTipoDocumento = idTipoDocumento;
+    }
+
+    public String getIdEntidad() {
+        return idEntidad;
+    }
+
+    public void setIdEntidad(String idEntidad) {
+        this.idEntidad = idEntidad;
     }
 
     public String getIdentificacion() {

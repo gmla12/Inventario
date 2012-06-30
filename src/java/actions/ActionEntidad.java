@@ -110,7 +110,7 @@ public class ActionEntidad extends Action {
         } else if (fo.getOp().equals("eliminar")) {
 
             ArrayList<Object> resultado = new ArrayList<Object>();
-            resultado = gr.ModificaEntidad(fo, false, null);
+            resultado = gr.EliminaEntidad(fo, false, null);
             if ((Boolean) resultado.get(0) == false) {
                 if ((Integer) resultado.get(1) >= 1) {
 

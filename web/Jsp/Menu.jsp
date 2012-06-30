@@ -16,6 +16,7 @@
         <script type="text/javascript" src="../Js/ui/jquery.easing.1.3.js"></script>
         <script type="text/javascript" src="../Js/MenuDes.js"></script>
         <link href="/Inventario/css/estiloMenuDes.css" rel="stylesheet" type="text/css">
+        <link href="/Inventario/css/menu.css" rel="stylesheet" type="text/css">
         <%
             String usuario = "";
             HttpSession sesionOk = request.getSession();
@@ -28,18 +29,18 @@
                 usuario = String.valueOf(sesionOk.getAttribute("usuario"));
             }
         %>
-        <script>
+        <script type="text/javascript">
             function salir(){
                 window.parent.location.href = '/Inventario/Jsp/CerrarSesion.jsp';
             }
         </script>
 
     </head>
-    <body bgcolor=" #EFFBFB">
+    <body bgcolor="#EFFBFB">
         <div id="navsite">
             <ul>
                 <li><center><a href="#" style=" font-size: 18px;"><strong>Menu</strong></a></center></li>
-            <!--    <li style="text-align: left"><a href="/ZFsoft/Jsp/Inicio.jsp" style=" font-size: 14px;"><strong>Home</strong></a></li> -->
+                <!--    <li style="text-align: left"><a href="/ZFsoft/Jsp/Inicio.jsp" style=" font-size: 14px;"><strong>Home</strong></a></li> -->
             </ul>
         </div>
         <div id="navsite">
@@ -48,14 +49,35 @@
             </ul>
         </div>
         <div id="navsite2">
-            <ul id="menulink1">
-                <li><a href="/Inventario/OpEntidad.do" target="Body">&nbsp;&nbsp;Entidad</a></li>
-                <li><a href="/Inventario/OpTipoEntidad.do" target="Body">&nbsp;&nbsp;Tipo de Entidad</a></li>
-                <li><a href="/Inventario/OpTipoDocumento.do" target="Body">&nbsp;&nbsp;Tipo de Documentos</a></li>
-                <li><a href="/Inventario/OpPais.do" target="Body">&nbsp;&nbsp;Paises</a></li>
-                <li><a href="/Inventario/OpDepartamento.do" target="Body">&nbsp;&nbsp;Departamentos</a></li>
-                <li><a href="/Inventario/OpMunicipio.do" target="Body">&nbsp;&nbsp;Municipios</a></li>
-            </ul>
+            <div id="menulink1">
+                <div id="navsite">
+                    <ul>
+                        <li><a href="#" onclick="return kadabra('menulink3');" style=" font-size: 16px; ">&nbsp;<strong>Entidades</strong></a></li>
+                    </ul>
+                </div>
+                <div id="navsite">
+                    <ul id="menulink3">
+                        <li><a href="/Inventario/OpEntidad.do" target="Body">&nbsp;&nbsp;Entidad</a></li>
+                        <li><a href="/Inventario/OpTipoEntidad.do" target="Body">&nbsp;&nbsp;Tipo de Entidad</a></li>
+                    </ul>
+                </div>
+                <div id="navsite">
+                    <ul>
+                        <li><a href="#" onclick="return kadabra('menulink4');" style=" font-size: 16px; ">&nbsp;<strong>Plantillas</strong></a></li>
+                    </ul>
+                </div>
+                <div id="navsite">
+                    <ul id="menulink4">
+                        <li><a href="/Inventario/OpPlantillaDispositivo.do" target="Body">&nbsp;&nbsp;Plantilla Dispositivo</a></li>
+                    </ul>
+                </div>
+                <ul >
+                    <li><a href="/Inventario/OpTipoDocumento.do" target="Body">&nbsp;&nbsp;Tipo de Documentos</a></li>
+                    <li><a href="/Inventario/OpPais.do" target="Body">&nbsp;&nbsp;Paises</a></li>
+                    <li><a href="/Inventario/OpDepartamento.do" target="Body">&nbsp;&nbsp;Departamentos</a></li>
+                    <li><a href="/Inventario/OpMunicipio.do" target="Body">&nbsp;&nbsp;Municipios</a></li>
+                </ul>
+            </div> 
         </div>
         <div id="navsite">
             <ul>

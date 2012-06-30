@@ -126,7 +126,7 @@
                             idMunicipio : {
                                 required : true
                             },
-                            Direccion : {
+                            direccion : {
                                 required : true,
                                 minlength : 3,
                                 maxlength : 45
@@ -159,12 +159,11 @@
                         errorElement: "label",
                         submitHandler: function(form){
                             form.submit();
-                            //alert('El formulario ha sido validado correctamente!');
                         }
                     });
  
                     $("#idPais").change(function(){
-                        $.post("Jsp/Comun/getDepartamento.jsp",{ id:$(this).val() },function(data){$("#idDepartamento").html(data);})
+                        $.post("Jsp/Comun/getDepartamento.jsp",{ id:$(this).val() },function(data){$("#idDepartamento").html(data);$.post("Jsp/Comun/getMunicipio.jsp",{ id:document.forms[0].idDepartamento.value, idPais:document.forms[0].idPais.value },function(data){$("#idMunicipio").html(data);})})
                     });
                     $("#idDepartamento").change(function(){
                         $.post("Jsp/Comun/getMunicipio.jsp",{ id:$(this).val(), idPais:document.forms[0].idPais.value },function(data){$("#idMunicipio").html(data);})
@@ -270,7 +269,6 @@
                                         }
                                         break;
                                 }
-
                             }
                         }
                     });
@@ -287,6 +285,7 @@
                     document.forms[0].identificacion.value="";
                     document.forms[0].razonSocial.value="";
                     document.forms[0].idPais.value="";
+                    $.post("Jsp/Comun/getDepartamento.jsp",{ id:document.forms[0].idPais.value },function(data){$("#idDepartamento").html(data);$.post("Jsp/Comun/getMunicipio.jsp",{ id:document.forms[0].idDepartamento.value, idPais:document.forms[0].idPais.value },function(data){$("#idMunicipio").html(data);})})
                     document.forms[0].idDepartamento.value="";
                     document.forms[0].idMunicipio.value="";
                     document.forms[0].direccion.value="";
@@ -403,7 +402,7 @@
                                         <html:option value="${cat.idPais}"><c:out value='${cat.nombre}'/></html:option>
                                     </c:forEach>
                                 </html:select></td>
-                            <% } else {%>
+                                <% } else {%>
                             <td><html:select property="idPais" styleId="idPais" size="1" style="width:240px;" disabled='false' value='<%= String.valueOf(request.getAttribute("getIdPais"))%>'>
                                     <% if (request.getAttribute("getIdentificacion") == "") {%>
                                     <html:option value=""><c:out value='[Seleccione]'/></html:option>
@@ -412,7 +411,7 @@
                                         <html:option value="${cat.idPais}"><c:out value='${cat.nombre}'/></html:option>
                                     </c:forEach>
                                 </html:select></td>
-                            <% }%> 
+                                <% }%> 
                         </tr>
                         <tr>
                             <td class="text">Departamento</td>
@@ -422,13 +421,13 @@
                                         <html:option value="${cat.idDepartamento}"><c:out value='${cat.nombre}'/></html:option>
                                     </c:forEach>
                                 </html:select></td>
-                            <% } else {%>
+                                <% } else {%>
                             <td><html:select property="idDepartamento" styleId="idDepartamento" size="1" style="width:240px;" disabled='false' value='<%= String.valueOf(request.getAttribute("getIdDepartamento"))%>'>
                                     <c:forEach items="${CMB_DEPARTAMENTO}" var="cat">
                                         <html:option value="${cat.idDepartamento}"><c:out value='${cat.nombre}'/></html:option>
                                     </c:forEach>
                                 </html:select></td>
-                            <% }%> 
+                                <% }%> 
                         </tr>
                         <tr>
                             <td class="text">Municipio</td>
@@ -438,13 +437,13 @@
                                         <html:option value="${cat.idMunicipio}"><c:out value='${cat.nombre}'/></html:option>
                                     </c:forEach>
                                 </html:select></td>
-                            <% } else {%>
+                                <% } else {%>
                             <td><html:select property="idMunicipio" styleId="idMunicipio" size="1" style="width:240px;" disabled='false' value='<%= String.valueOf(request.getAttribute("getIdMunicipio"))%>'>
                                     <c:forEach items="${CMB_MUNICIPIO}" var="cat">
                                         <html:option value="${cat.idMunicipio}"><c:out value='${cat.nombre}'/></html:option>
                                     </c:forEach>
                                 </html:select></td>
-                            <% }%> 
+                                <% }%> 
                         </tr>
                         <tr>
                             <td class="text">Direccion</td>
@@ -481,7 +480,7 @@
                                         <html:option value="${cat.idTipoEntidad}"><c:out value='${cat.nombre}'/></html:option>
                                     </c:forEach>
                                 </html:select></td>
-                            <% } else {%>
+                                <% } else {%>
                             <td><html:select property="idTipoEntidad" styleId="idTipoEntidad" size="1" style="width:240px;" disabled='false' value='<%= String.valueOf(request.getAttribute("getIdTipoEntidad"))%>'>
                                     <% if (request.getAttribute("getIdentificacion") == "") {%>
                                     <html:option value=""><c:out value='[Seleccione]'/></html:option>
@@ -490,7 +489,7 @@
                                         <html:option value="${cat.idTipoEntidad}"><c:out value='${cat.nombre}'/></html:option>
                                     </c:forEach>
                                 </html:select></td>
-                            <% }%> 
+                                <% }%> 
                         </tr>
                         <tr>
                             <td colspan="3"><a class="boton" href="javascript:nuevo();">Nuevo</a> <a class="boton" id="submit" href="javascript:guardar();">Guardar</a> <% if (request.getAttribute("getIdEntidad") != "") {%> <a class="boton" href="javascript:eliminar();">Eliminar</a> <% }%> <a class="boton" href="javascript:atras();">Volver</a></td>

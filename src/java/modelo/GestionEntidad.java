@@ -54,7 +54,7 @@ public class GestionEntidad extends ConeccionMySql {
 
             }
 
-            String query = "insert into entidad     (primerNombre, segundoNombre, primerApellido, segundoApellido, idTipoDocumento, identificacion, razonSocial"
+            String query = "insert into entidad     (primerNombre, segundoNombre, primerApellido, segundoApellido, idTipoDocumento, identificacion, razonSocial, idPais, idDepartamento, idMunicipio, direccion, telefono, email, idTipoEntidad"
                     + ") "
                     + "values('"
                     + f.getPrimerNombre() + "' ,'"

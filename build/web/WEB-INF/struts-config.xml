@@ -24,7 +24,8 @@
         <form-bean name="OpDepartamento" type="forms.DepartamentoOpForm"/>
         <form-bean name="Municipio" type="forms.MunicipioForm"/>
         <form-bean name="OpMunicipio" type="forms.MunicipioOpForm"/>
-
+        <form-bean name="PlantillaDispositivo" type="forms.PlantillaDispositivoForm"/>
+        <form-bean name="OpPlantillaDispositivo" type="forms.PlantillaDispositivoOpForm"/>
     </form-beans>
 
     <global-exceptions>
@@ -125,6 +126,17 @@
             <forward name="ok" path="/Jsp/Municipio/OpMunicipio.jsp"/>
             <forward name="modificar" path="/Jsp/Municipio/Municipio.jsp"/>
             <forward name="nuevo" path="/Jsp/Municipio/Municipio.jsp"/>
+            <forward name="error" path="/Jsp/error.jsp" />
+        </action>
+        <action input="/Jsp/PlantillaDispositivo/PlantillaDispositivo.jsp" name="PlantillaDispositivo" path="/PlantillaDispositivo" scope="session" type="actions.ActionPlantillaDispositivo">
+            <forward name="ok" path="/Jsp/PlantillaDispositivo/PlantillaDispositivo.jsp"/>
+            <forward name="atras" path="/Jsp/PlantillaDispositivo/OpPlantillaDispositivo.jsp"/>
+            <forward name="error" path="/Jsp/error.jsp" />
+        </action>
+        <action input="/Jsp/PlantillaDispositivo/OpPlantillaDispositivo.jsp" name="OpPlantillaDispositivo" path="/OpPlantillaDispositivo" scope="request" type="actions.ActionPlantillaDispositivoOp" validate="false">
+            <forward name="ok" path="/Jsp/PlantillaDispositivo/OpPlantillaDispositivo.jsp"/>
+            <forward name="modificar" path="/Jsp/PlantillaDispositivo/PlantillaDispositivo.jsp"/>
+            <forward name="nuevo" path="/Jsp/PlantillaDispositivo/PlantillaDispositivo.jsp"/>
             <forward name="error" path="/Jsp/error.jsp" />
         </action>
         <action path="/Logout" name="LoginForm" type="actions.ActionSalir">

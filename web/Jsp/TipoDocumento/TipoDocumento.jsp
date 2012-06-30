@@ -152,7 +152,7 @@
             
         </script>
 
-        <style>
+        <style type="text/css">
             .error-message, label.error {
                 color: #ff0000;
                 margin:0;
@@ -190,7 +190,7 @@
                         <%  }
                         %>
                         <tr>
-                            <td colspan="3"><a class="boton" href="javascript:nuevo();">Nuevo</a> <a class="boton" id="submit" href="javascript:guardar();" id="sved1">Guardar</a> <% if (request.getAttribute("getIdTipoDocumento") != "") {%> <a class="boton" href="javascript:eliminar();">Eliminar</a> <% }%> <a class="boton" href="javascript:atras();">Volver</a></td>
+                            <td colspan="3"><a class="boton" href="javascript:nuevo();">Nuevo</a> <a class="boton" id="submit" href="javascript:guardar();">Guardar</a> <% if (request.getAttribute("getIdTipoDocumento") != "") {%> <a class="boton" href="javascript:eliminar();">Eliminar</a> <% }%> <a class="boton" href="javascript:atras();">Volver</a></td>
                         </tr>
                         <%
                             if (request.getAttribute("respuesta") != "") {

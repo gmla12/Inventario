@@ -31,6 +31,34 @@ public class BeanEntidad implements Serializable{
     private Object nombreTipoDoc;
     private Object nombre;
 
+    public Object getDireccion() {
+        return direccion;
+    }
+
+    public Object getEmail() {
+        return email;
+    }
+
+    public Object getIdMunicipio() {
+        return idMunicipio;
+    }
+
+    public Object getIdPais() {
+        return idPais;
+    }
+
+    public Object getIdTipoEntidad() {
+        return idTipoEntidad;
+    }
+
+    public Object getRazonSocial() {
+        return razonSocial;
+    }
+
+    public Object getTelefono() {
+        return telefono;
+    }
+
     public Object getIdEntidad() {
         return idEntidad;
     }
