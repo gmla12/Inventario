@@ -20,6 +20,15 @@ public class BeanUsuarios implements Serializable{
     private Object idRol;
     private Object nombre;
     private Object nombreDocumento;
+    private Object nombreRol;
+
+    public Object getNombreRol() {
+        return nombreRol;
+    }
+
+    public void setNombreRol(Object nombreRol) {
+        this.nombreRol = nombreRol;
+    }
 
     public Object getNombre() {
         return nombre;

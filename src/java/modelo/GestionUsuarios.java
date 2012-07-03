@@ -134,8 +134,8 @@ public class GestionUsuarios extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idUsuario, p.idRol, p.idTipoDocumento, p.identificacion ";
-            query += "FROM usuario p ";
+            String query = "SELECT p.idUsuario, p.login, p.idRol, p.idTipoDocumento, p.identificacion, r.idRoles, r.nombre, e.idTipoDocumento, e.identificacion, IF(e.primernombre <> NULL AND e.primerapellido <> NULL, e.razonSocial, CONCAT(IF(e.primernombre <> NULL,'',CONCAT(e.primernombre,' ')), IF(e.segundonombre <> NULL,'',CONCAT(e.segundonombre,' ')), IF(e.primerapellido <> NULL,'',CONCAT(e.primerapellido,' ')), IF(e.segundoapellido <> NULL,'',CONCAT(e.segundoapellido,' ')))) as nombreE ";
+            query += "FROM usuario p INNER JOIN roles r ON p.idRol = r.idRoles INNER JOIN entidad e ON p.idTipoDocumento = e.idTipoDocumento AND p.identificacion = e.identificacion ";
             query += "WHERE ";
             query += "p.login = '" + fo.getUsuario() + "' ";
             query += "AND p.password = AES_ENCRYPT('" + fo.getPassw() + "', 'mundoodnum')";
@@ -154,6 +154,9 @@ public class GestionUsuarios extends ConeccionMySql {
                 bu.setIdRol(rs.getObject("p.idRol"));
                 bu.setIdTipoDocumento(rs.getObject("p.idTipoDocumento"));
                 bu.setIdentificacion(rs.getObject("p.identificacion"));
+                bu.setLogin(rs.getObject("p.login"));
+                bu.setNombre(rs.getObject("nombreE"));
+                bu.setNombreRol(rs.getObject("r.nombre"));
 
             }
 

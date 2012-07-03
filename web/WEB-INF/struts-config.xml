@@ -37,7 +37,7 @@
     <action-mappings>
         <action path="/Login" name="LoginForm" type="actions.InicioAction">
             <forward name="mal" path="/index.jsp" />
-            <forward name="ok" path="/Jsp/FrameP.jsp"/>
+            <forward name="ok" path="/Jsp/Top.jsp"/>
             <forward name="error" path="/Jsp/error.jsp" />
         </action>
         <action input="/Jsp/Entidad/Entidad.jsp" name="Entidad" path="/Entidad" scope="session" type="actions.ActionEntidad">

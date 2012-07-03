@@ -65,8 +65,9 @@ public class InicioAction extends Action {
                 fo.setMensaje("<h2>Usuario y Password Incorrecta!</h2>");
                 return mapping.findForward("mal");
             } else {
-                sesionOk.setAttribute("usuario", c.getIdRol());
-                sesionOk.setAttribute("nombre", "administrador");
+                sesionOk.setAttribute("usuario", c.getLogin());
+                sesionOk.setAttribute("nombre", c.getNombre());
+                sesionOk.setAttribute("rol", c.getNombreRol());
 
                 return mapping.findForward("ok");
             }

@@ -22,7 +22,7 @@ public class ConeccionMySql {
         try {
 
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-            cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/inventario", "root", "imporexport11");
+            cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/inventario", "root", "mySQL");
             resultado.add(false); //si ocurrio una excepcion
             resultado.add(cn); //si no hubo excepcion adiciona la conexion para enviarla como resultado
 

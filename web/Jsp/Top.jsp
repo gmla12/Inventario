@@ -11,7 +11,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Top</title>
+        <title>Sistema de Inventario</title>
         <link type="text/css" href="/Inventario/css/comun.css" rel="stylesheet" />
         <link type="text/css" href="/Inventario/css/menu.css" rel="stylesheet" />
         <link rel="stylesheet" href="/Inventario/css/themes/base/jquery.ui.all.css">
@@ -43,7 +43,6 @@
                 height:auto;
                 border:0px;
                 margin:0px;
-                background:url("data/iframeno.png");
                 position:relative;
                 top:-13px;
             }
@@ -57,6 +56,13 @@
                 position:relative;
                 top:-28px;
                 left:-5px;
+            }
+
+            .openventana { 
+                width: 16px; 
+                height: 16px; 
+                background-image: url(css/themes/ui-lightness/images/ui-icons_222222_256x240.png)/*{iconsContent}*/; 
+                background-position: -16px -33px; 
             }
         </style>
         <%
@@ -94,25 +100,25 @@
                     if ($(tab).find("iframe").length == 0) {
                         var html = [];
                         html.push('<div class="tabIframeWrapper">');
-                        html.push('<div class="openout"><a href="' + url + ' "><img src="data/world.png" border="0" alt="Open" title="Remove iFrame" /></a></div><iframe class="iframetab" src="' + url + '">Load Failed?</iframe>');
+                        html.push('<div class="openout"><img class="openventana" border="0" alt="Open" title="Abrir en ventana" /></div><iframe class="iframetab" src="' + url + '">Load Failed?</iframe>');
                         html.push('</div>');
                         $(tab).append(html.join(""));
-                        $(tab).find("iframe").height($(window).height()-80);
+                        $(tab).find("iframe").height($(window).height()-80-111);
                     }
                     return false;
                 }
                 
-                var $tab_title_input = $( "#tab_title"),
-                $tab_content_input = $( "#tab_content" );
                 var tab_counter = 2;
                 var reff = "#" + "{href}";
                 var labell = "#" + "{label}"
+                var urll = "";
                 
                 // tabs init with a custom tab template and an "add" callback filling in the content
                 var $tabs = $( "#tabs").tabs({
-                    tabTemplate: "<li><a class='tabref' href='" + reff + "' rel='Inicio.jsp'>" + labell + "</a><span class='ui-icon ui-icon-close'>Remove Tab</span></li>",
+                    tabTemplate: "<li><a class='tabref' href='" + reff + "' rel='" + urll + "'>" + labell + "</a><span class='ui-icon ui-icon-close'>Abrir en ventana</span></li>",
                     add: function( event, ui ) {
-                        var tab_content = '<div class="tabIframeWrapper"><div class="openout"><a href="' + 'Inicio.jsp' + ' "><img src="data/world.png" border="0" alt="Open" title="Remove iFrame" /></a></div><iframe class="iframetab" src="' + 'Inicio.jsp' + '">Load Failed?</iframe></div>';
+                        var alto = $(window).height()-80-111;
+                        var tab_content = '<div class="tabIframeWrapper"><div class="openout"><a href="' + urll + ' " target="_blank"><img class="openventana" border="0" alt="Open" title="Abrir en ventana" /></a></div><iframe class="iframetab" style="height:' + alto + 'px;" src="' + urll + '">Load Failed?</iframe></div>';
                         $( ui.panel ).append(tab_content);
                     }
                 });
@@ -125,50 +131,117 @@
                 });
                 
                 // actual addTab function: adds new tab using the title input from the form above
-                function addTab() {
-                    var tab_title = "prueba";
-                    $tabs.tabs( "add", "#tabs-" + tab_counter, tab_title );
+                function addTab(titulo, url) {
+                    urll = url;
+                    $tabs.tabs( "add", "#tabs-" + tab_counter, titulo );
+                    $tabs.tabs( "select", "#tabs-" + tab_counter);
                     tab_counter++;
                 }
-                $('#submit').click(function(e) {
+                
+                $('#principal').click(function(e) {
                     e.preventDefault();
-                    addTab();
+                    addTab("Principal", "Jsp/Inicio.jsp");
+                }); 
+                
+                $('#entidad').click(function(e) {
+                    e.preventDefault();
+                    addTab("Entidad", "OpEntidad.do");
+                }); 
+                
+                $('#tipoEntidad').click(function(e) {
+                    e.preventDefault();
+                    addTab("Tipo de Entidad", "OpTipoEntidad.do");
+                }); 
+                
+                $('#tipoDocumento').click(function(e) {
+                    e.preventDefault();
+                    addTab("Tipo de Documento", "OpTipoDocumento.do");
+                }); 
+                
+                $('#pais').click(function(e) {
+                    e.preventDefault();
+                    addTab("Paises", "OpPais.do");
+                }); 
+
+                $('#departamento').click(function(e) {
+                    e.preventDefault();
+                    addTab("Departamentos", "OpDepartamento.do");
+                }); 
+
+                $('#municipio').click(function(e) {
+                    e.preventDefault();
+                    addTab("Municipios", "OpMunicipio.do");
+                }); 
+
+                $('#plantillaDispositivo').click(function(e) {
+                    e.preventDefault();
+                    addTab("Plantilla de Dispositivo", "OpPlantillaDispositivo.do");
+                }); 
+
+                $('#usuario').click(function(e) {
+                    e.preventDefault();
+                    addTab("Usuarios", "OpUsuarios.do");
+                }); 
+
+                $('#rol').click(function(e) {
+                    e.preventDefault();
+                    addTab("Roles", "OpRoles.do");
+                }); 
+
+                $('#cerrar').click(function(e) {
+                    e.preventDefault();
+                    window.parent.location.href = '/Inventario/Jsp/CerrarSesion.jsp';
                 }); 
             });
         </script>
 
     </head>
-    <body style="background-image: url(/Inventario/css/top.png); background-repeat: no-repeat; background-position: center">
-        <div class="botonHome">
-            <a href="/Inventario/Jsp/Inicio.jsp" target="Body"><img src="/Inventario/img/hom.png" alt="Home Bellavista"/></a>
-        </div>
-        <div align="center" class="encabe"><h1>Sistema Comunidad Bellavista</h1></div>
+    <body>
+        <div class="encabe">Sistema de Inventario</div>
         <div class="divSesion">
             <table>
                 <tr>
-                    <td class="text">Usuario en Sesión :&nbsp;<%= session.getAttribute("usuario")%></td>
+                    <td style="font-size: 12px; font-family: Arial, Helvetica, sans-serif;"><b>Usuario:</b>&nbsp;<%= session.getAttribute("nombre")%></td>
+                </tr>
+                <tr>
+                    <td style="font-size: 12px; font-family: Arial, Helvetica, sans-serif;"><b>Rol:</b>&nbsp;<%= session.getAttribute("rol")%></td>
                 </tr>
             </table>
         </div>
-        <div class="divlogo"><img src="/Inventario/img/Bellavista.jpg" height="100" width="75"/></div>
         <div id='cssmenu'>
             <ul>
-                <li><a href="javascript:addTab();"><span>Principal</span></a></li>
-                <li class='has-sub '><a href='#'><span>Products</span></a>
+                <li><a href="#" id="principal"><span>Principal</span></a></li>
+                <li class='has-sub'><a href='#'><span>Maestros</span></a>
                     <ul>
-                        <li><a id="submit" href='javascript:addTab();'><span>Product 1</span></a></li>
-                        <li><a href='javascript:addTab();'><span>Product 2</span></a></li>
+                        <li class='has-sub2'><a href='#'><span>Entidades</span></a>
+                            <ul id="li1">
+                                <li><a id="entidad" href='#'><span>Entidad</span></a></li>
+                                <li><a id="tipoEntidad" href='#'><span>Tipos de Entidades</span></a></li>
+                            </ul>
+                        </li>
+                        <li><a id="tipoDocumento" href='#'><span>Tipos de Documento</span></a></li>
+                        <li><a id="pais" href='#'><span>Paises</span></a></li>
+                        <li><a id="departamento" href='#'><span>Departamentos</span></a></li>
+                        <li><a id="municipio" href='#'><span>Municipios</span></a></li>
+                        <li class='has-sub2'><a href='#'><span>Plantillas</span></a>
+                            <ul>
+                                <li><a id="plantillaDispositivo" href='#'><span>Plantillas de Dispositivos</span></a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </li>
-                <li><a href='javascript:addTab();'><span>About</span></a></li>
-                <li><a href='javascript:addTab();'><span>Contact</span></a></li>
+                <li class='has-sub'><a href='#'><span>Seguridad</span></a>
+                    <ul>
+                        <li><a id="usuario" href='#'><span>Usuarios</span></a></li>
+                        <li><a id="rol" href='#'><span>Roles</span></a></li>
+                    </ul>
+                </li>
+                <li><a id="cerrar" href='#'><span>Cerrar Sesion</span></a></li>
             </ul>
         </div>
-        <button id="add_tab">Add Tab</button>
-
         <div id="tabs">
             <ul>
-                <li><a class="tabref" href="#tabs-1" rel="Inicio.jsp">google</a> <span class="ui-icon ui-icon-close">Remove Tab</span></li>
+                <li><a class="tabref" href="#tabs-1" rel="Jsp/Inicio.jsp">Principal</a></li>
             </ul>
             <div id="tabs-1" class="tabMain">
             </div>
