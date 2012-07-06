@@ -100,7 +100,7 @@
                     if ($(tab).find("iframe").length == 0) {
                         var html = [];
                         html.push('<div class="tabIframeWrapper">');
-                        html.push('<div class="openout"><img class="openventana" border="0" alt="Open" title="Abrir en ventana" /></div><iframe class="iframetab" src="' + url + '">Load Failed?</iframe>');
+                        html.push('<div class="openout"><img class="openventana" border="0" alt="Abrir en ventana" title="Abrir en ventana" /></div><iframe class="iframetab" src="' + url + '">Load Failed?</iframe>');
                         html.push('</div>');
                         $(tab).append(html.join(""));
                         $(tab).find("iframe").height($(window).height()-80-111);
@@ -118,7 +118,7 @@
                     tabTemplate: "<li><a class='tabref' href='" + reff + "' rel='" + urll + "'>" + labell + "</a><span class='ui-icon ui-icon-close'>Abrir en ventana</span></li>",
                     add: function( event, ui ) {
                         var alto = $(window).height()-80-111;
-                        var tab_content = '<div class="tabIframeWrapper"><div class="openout"><a href="' + urll + ' " target="_blank"><img class="openventana" border="0" alt="Open" title="Abrir en ventana" /></a></div><iframe class="iframetab" style="height:' + alto + 'px;" src="' + urll + '">Load Failed?</iframe></div>';
+                        var tab_content = '<div class="tabIframeWrapper"><div class="openout"><a href="' + urll + ' " target="_blank"><img class="openventana" border="0" alt="Abrir en ventana" title="Abrir en ventana" /></a></div><iframe class="iframetab" style="height:' + alto + 'px;" src="' + urll + '">Load Failed?</iframe></div>';
                         $( ui.panel ).append(tab_content);
                     }
                 });

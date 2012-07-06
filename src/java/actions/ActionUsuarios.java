@@ -6,11 +6,9 @@ package actions;
 
 import forms.UsuariosForm;
 import java.util.ArrayList;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import modelo.GestionUsuarios;
-
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -49,7 +47,8 @@ public class ActionUsuarios extends Action {
             ArrayList<Object> resultado = new ArrayList<Object>();
             resultado = gr.IngresaUsuarios(fo, false, null);
             if ((Boolean) resultado.get(0) == false) {
-                if ((Integer) resultado.get(1) >= 1) {
+                if ((Integer) resultado.get(2) >= 1) {
+                    request.setAttribute("getIdUsuario", resultado.get(1));
                     request.setAttribute("respuesta", "Registro ingresado correctamente.");
                     System.out.println("Action Ingreso Usuarios");
                 } else {
@@ -107,7 +106,7 @@ public class ActionUsuarios extends Action {
 
                     request.setAttribute("respuesta", "Registro eliminado correctamente.");
                     System.out.println("Action Eliminar Usuarios");
-                    
+
                 } else {
 
                     request.setAttribute("getIdUsuario", fo.getIdUsuario());
@@ -119,10 +118,10 @@ public class ActionUsuarios extends Action {
 
                     request.setAttribute("respuesta", "Registro no fue eliminado correctamente, vuelvalo a intentar o contacte al programador.");
                     System.out.println("Action Eliminar Usuarios");
-                    
+
                 }
                 return mapping.findForward("ok");
-                
+
             } else {
 
                 request.setAttribute("error", resultado.get(1));

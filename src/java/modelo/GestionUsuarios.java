@@ -8,10 +8,7 @@ import forms.UsuariosOpForm;
 import forms.UsuariosForm;
 import forms.bean.BeanUsuarios;
 import forms.InicioForm;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import util.ConeccionMySql;
@@ -29,6 +26,7 @@ public class GestionUsuarios extends ConeccionMySql {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psInsertar = null;
 
         try {
 
@@ -54,24 +52,21 @@ public class GestionUsuarios extends ConeccionMySql {
                 cn = tCn;
 
             }
+            psInsertar = cn.prepareStatement("insert into usuario     (idUsuario, login, password, idRol, idTipoDocumento, identificacion) values (null,?,AES_ENCRYPT(?,'mundoodnum'),?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
+            psInsertar.setString(1, f.getLogin());
+            psInsertar.setString(2, f.getPassword());
+            psInsertar.setInt(3, f.getIdRol());
+            psInsertar.setInt(4, f.getIdTipoDocumento());
+            psInsertar.setInt(5, f.getIdentificacion());
+            psInsertar.executeUpdate(); // Se ejecuta la inserción.
 
-            String query = "insert into usuario     (login, password, idRol, idTipoDocumento, identificacion"
-                    + ") "
-                    + "values('"
-                    + f.getLogin() + "' ,"
-                    + "AES_ENCRYPT('" + f.getPassword() + "','mundoodnum') ,"
-                    + f.getIdRol() + " , "
-                    + f.getIdTipoDocumento() + " , "
-                    + f.getIdentificacion()
-                    + ")";
-
-            System.out.println(query);
-            st = cn.createStatement();
-
-            st.execute(query);
-            mod = st.getUpdateCount();
-
-            st.close();
+            // Se obtiene la clave generada
+            int claveGenerada = -1;
+            ResultSet rs = psInsertar.getGeneratedKeys();
+            while (rs.next()) {
+                claveGenerada = rs.getInt(1);
+            }
+            mod = psInsertar.getUpdateCount();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -80,6 +75,7 @@ public class GestionUsuarios extends ConeccionMySql {
             }
 
             resultado.add(false); //si no hubo un error asigna false
+            resultado.add(claveGenerada); // clave generada
             resultado.add(mod); // y el numero de registros consultados
 
         } catch (Exception e) {
@@ -108,6 +104,7 @@ public class GestionUsuarios extends ConeccionMySql {
         ArrayList<Object> resultado = new ArrayList<Object>();
         BeanUsuarios bu;
         bu = new BeanUsuarios();
+        PreparedStatement psSelectConClave = null;
 
         try {
 
@@ -134,18 +131,10 @@ public class GestionUsuarios extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idUsuario, p.login, p.idRol, p.idTipoDocumento, p.identificacion, r.idRoles, r.nombre, e.idTipoDocumento, e.identificacion, IF(e.primernombre <> NULL AND e.primerapellido <> NULL, e.razonSocial, CONCAT(IF(e.primernombre <> NULL,'',CONCAT(e.primernombre,' ')), IF(e.segundonombre <> NULL,'',CONCAT(e.segundonombre,' ')), IF(e.primerapellido <> NULL,'',CONCAT(e.primerapellido,' ')), IF(e.segundoapellido <> NULL,'',CONCAT(e.segundoapellido,' ')))) as nombreE ";
-            query += "FROM usuario p INNER JOIN roles r ON p.idRol = r.idRoles INNER JOIN entidad e ON p.idTipoDocumento = e.idTipoDocumento AND p.identificacion = e.identificacion ";
-            query += "WHERE ";
-            query += "p.login = '" + fo.getUsuario() + "' ";
-            query += "AND p.password = AES_ENCRYPT('" + fo.getPassw() + "', 'mundoodnum')";
-
-            System.out.println("***********************************************");
-            System.out.println("*****       Cargando grilla  GR_USUARIOS  *****");
-            System.out.println("***********************************************");
-
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            psSelectConClave = cn.prepareStatement("SELECT p.idUsuario, p.login, p.idRol, p.idTipoDocumento, p.identificacion, r.idRoles, r.nombre, e.idTipoDocumento, e.identificacion, IF(e.primernombre <> NULL AND e.primerapellido <> NULL, e.razonSocial, CONCAT(IF(e.primernombre <> NULL,'',CONCAT(e.primernombre,' ')), IF(e.segundonombre <> NULL,'',CONCAT(e.segundonombre,' ')), IF(e.primerapellido <> NULL,'',CONCAT(e.primerapellido,' ')), IF(e.segundoapellido <> NULL,'',CONCAT(e.segundoapellido,' ')))) as nombreE FROM usuario p INNER JOIN roles r ON p.idRol = r.idRoles INNER JOIN entidad e ON p.idTipoDocumento = e.idTipoDocumento AND p.identificacion = e.identificacion WHERE p.login = ? AND p.password = AES_ENCRYPT(?, 'mundoodnum')");
+            psSelectConClave.setString(1, fo.getUsuario());
+            psSelectConClave.setString(2, fo.getPassw());
+            ResultSet rs = psSelectConClave.executeQuery();
 
             while (rs.next()) {
                 bu = new BeanUsuarios();
@@ -159,8 +148,6 @@ public class GestionUsuarios extends ConeccionMySql {
                 bu.setNombreRol(rs.getObject("r.nombre"));
 
             }
-
-            st.close();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -195,6 +182,7 @@ public class GestionUsuarios extends ConeccionMySql {
         BeanUsuarios bu;
         bu = new BeanUsuarios();
         boolean encontro = false;
+        PreparedStatement psSelectConClave = null;
 
         try {
 
@@ -221,30 +209,21 @@ public class GestionUsuarios extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.login ";
-            query += "FROM usuario p ";
-            query += "WHERE ";
-            query += "p.login = '" + login + "' ";
+            psSelectConClave = cn.prepareStatement("SELECT p.login FROM usuario p WHERE p.login = ?");
+            psSelectConClave.setString(1, login);
+            ResultSet rs = psSelectConClave.executeQuery();
 
-            System.out.println("***********************************************");
-            System.out.println("*****       Cargando grilla  GR_USUARIOS  *****");
-            System.out.println("***********************************************");
-
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
             while (rs.next()) {
                 bu = new BeanUsuarios();
 
                 bu.setLogin(rs.getObject("p.login"));
-                String p =(String) bu.getLogin();
-                if (p.equals(login)){
+                String p = (String) bu.getLogin();
+                if (p.equals(login)) {
                     encontro = true;
                 }
-                
+
 
             }
-
-            st.close();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -276,6 +255,7 @@ public class GestionUsuarios extends ConeccionMySql {
     public ArrayList<Object> MostrarUsuarios(UsuariosOpForm f, Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psSelectConClave = null;
 
         try {
             GR_USUARIO = new ArrayList<Object>();
@@ -307,40 +287,83 @@ public class GestionUsuarios extends ConeccionMySql {
             query += "FROM usuario p INNER JOIN roles r ON p.idRol = r.idRoles INNER JOIN tipoDocumento t ON p.idTipoDocumento = t.idTipoDocumento";
             String query2 = "";
             if (f.getbLogin().isEmpty() != true) {
-                query2 = "p.login LIKE '%" + f.getbLogin() + "%'";
+                query2 = "p.login LIKE CONCAT('%',?,'%')";
             }
             if (f.getbIdRol().isEmpty() != true) {
                 if (query2.isEmpty() != true) {
-                    query2 += "AND p.idRol LIKE '%" + f.getbIdRol() + "%'";
-                } else {
-                    query2 = "p.idRol LIKE '%" + f.getbIdRol() + "%'";
+                    query2 += "AND ";
                 }
+                query2 += "p.idRol LIKE CONCAT('%',?,'%')";
             }
             if (f.getbIdTipoDocumento().isEmpty() != true) {
                 if (query2.isEmpty() != true) {
-                    query2 += "AND p.idTipoDocumento LIKE '%" + f.getbIdTipoDocumento() + "%'";
-                } else {
-                    query2 = "p.idTipoDocumento LIKE '%" + f.getbIdTipoDocumento() + "%'";
+                    query2 += "AND ";
                 }
+                query2 += "p.idTipoDocumento LIKE CONCAT('%',?,'%')";
             }
             if (f.getbIdentificacion().isEmpty() != true) {
                 if (query2.isEmpty() != true) {
-                    query2 += "AND p.identificacion LIKE '%" + f.getbIdentificacion() + "%'";
-                } else {
-                    query2 = "p.identificacion LIKE '%" + f.getbIdentificacion() + "%'";
+                    query2 += "AND ";
                 }
+                query2 += "p.identificacion LIKE CONCAT('%',?,'%')";
             }
             if (query2.isEmpty() != true) {
-                query += "WHERE " + query2;
+                query += " WHERE " + query2;
             }
-
-            System.out.println("***********************************************");
-            System.out.println("*****       Cargando grilla  GR_USUARIOS  *****");
-            System.out.println("***********************************************");
-
-            System.out.println(query);
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            psSelectConClave = cn.prepareStatement(query);
+            if (f.getbLogin().isEmpty() != true) {
+                psSelectConClave.setString(1, f.getbLogin());
+                if (f.getbIdRol().isEmpty() != true) {
+                    psSelectConClave.setString(2, f.getbIdRol());
+                    if (f.getbIdTipoDocumento().isEmpty() != true) {
+                        psSelectConClave.setString(3, f.getbIdTipoDocumento());
+                        if (f.getbIdentificacion().isEmpty() != true) {
+                            psSelectConClave.setString(4, f.getbIdentificacion());
+                        }
+                    } else {
+                        if (f.getbIdentificacion().isEmpty() != true) {
+                            psSelectConClave.setString(3, f.getbIdentificacion());
+                        }
+                    }
+                } else {
+                    if (f.getbIdTipoDocumento().isEmpty() != true) {
+                        psSelectConClave.setString(2, f.getbIdTipoDocumento());
+                        if (f.getbIdentificacion().isEmpty() != true) {
+                            psSelectConClave.setString(3, f.getbIdentificacion());
+                        }
+                    } else {
+                        if (f.getbIdentificacion().isEmpty() != true) {
+                            psSelectConClave.setString(2, f.getbIdentificacion());
+                        }
+                    }
+                }
+            } else {
+                if (f.getbIdRol().isEmpty() != true) {
+                    psSelectConClave.setString(1, f.getbIdRol());
+                    if (f.getbIdTipoDocumento().isEmpty() != true) {
+                        psSelectConClave.setString(2, f.getbIdTipoDocumento());
+                        if (f.getbIdentificacion().isEmpty() != true) {
+                            psSelectConClave.setString(3, f.getbIdentificacion());
+                        }
+                    } else {
+                        if (f.getbIdentificacion().isEmpty() != true) {
+                            psSelectConClave.setString(2, f.getbIdentificacion());
+                        }
+                    }
+                } else {
+                    if (f.getbIdTipoDocumento().isEmpty() != true) {
+                        psSelectConClave.setString(1, f.getbIdTipoDocumento());
+                        if (f.getbIdentificacion().isEmpty() != true) {
+                            psSelectConClave.setString(2, f.getbIdentificacion());
+                        }
+                    } else {
+                        if (f.getbIdentificacion().isEmpty() != true) {
+                            psSelectConClave.setString(1, f.getbIdentificacion());
+                        }
+                    }
+                }
+            }
+            ResultSet rs = psSelectConClave.executeQuery();
 
             BeanUsuarios bu;
             while (rs.next()) {
@@ -357,8 +380,6 @@ public class GestionUsuarios extends ConeccionMySql {
 
 
             }
-
-            st.close();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -391,6 +412,7 @@ public class GestionUsuarios extends ConeccionMySql {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psUpdate = null;
 
         try {
 
@@ -417,25 +439,38 @@ public class GestionUsuarios extends ConeccionMySql {
 
             }
 
-            String query = "UPDATE usuario SET login = '" + f.getLogin() + "'";
+            String query = "UPDATE usuario SET login = ?";
             if (f.getActPassword() != null) {
                 if (f.getActPassword().equals("on")) {
-                    query += "', password= AES_ENCRYPT('" + f.getPassword() + "', 'mundoodnum') ";
+                    query += ", password= AES_ENCRYPT(?, 'mundoodnum')";
                 }
             }
-            query += ", idRol =" + f.getIdRol();
-            query += ", idTipoDocumento =" + f.getIdTipoDocumento();
-            query += ", identificacion=" + f.getIdentificacion();
-            query += " WHERE idUsuario=" + f.getIdUsuario();
+            query += ", idRol =?";
+            query += ", idTipoDocumento =?";
+            query += ", identificacion=?";
+            query += " WHERE idUsuario=?";
+            psUpdate = cn.prepareStatement(query);
+            psUpdate.setString(1, f.getLogin());
+            boolean oo = false;
+            if (f.getActPassword() != null) {
+                if (f.getActPassword().equals("on")) {
+                    psUpdate.setString(2, f.getPassword());
+                    psUpdate.setInt(3, f.getIdRol());
+                    psUpdate.setInt(4, f.getIdTipoDocumento());
+                    psUpdate.setInt(5, f.getIdentificacion());
+                    psUpdate.setInt(6, f.getIdUsuario());
+                    oo = true;
+                }
+            }
+            if (oo == false) {
+                psUpdate.setInt(2, f.getIdRol());
+                psUpdate.setInt(3, f.getIdTipoDocumento());
+                psUpdate.setInt(4, f.getIdentificacion());
+                psUpdate.setInt(5, f.getIdUsuario());
+            }
+            psUpdate.executeUpdate();
 
-
-            System.out.println(query);
-            st = cn.createStatement();
-
-            st.executeUpdate(query);
-            mod = st.getUpdateCount();
-
-            st.close();
+            mod = psUpdate.getUpdateCount();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -468,6 +503,7 @@ public class GestionUsuarios extends ConeccionMySql {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psDelete = null;
 
         try {
 
@@ -494,17 +530,11 @@ public class GestionUsuarios extends ConeccionMySql {
 
             }
 
-            String query = "DELETE FROM usuario ";
-            query += "WHERE  idUsuario = " + f.getIdUsuario();
+            psDelete = cn.prepareStatement("DELETE FROM usuario WHERE  idUsuario = ?");
+            psDelete.setInt(1, f.getIdUsuario());
+            psDelete.executeUpdate();
 
-
-            System.out.println(query);
-            st = cn.createStatement();
-
-            st.executeUpdate(query);
-            mod = st.getUpdateCount();
-
-            st.close();
+            mod = psDelete.getUpdateCount();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -533,9 +563,10 @@ public class GestionUsuarios extends ConeccionMySql {
 
     }
 
-    public ArrayList<Object> MostrarUsuarioFormulario(String IdUsuario, Boolean transac, Connection tCn) {
+    public ArrayList<Object> MostrarUsuarioFormulario(int IdUsuario, Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psSelectConClave = null;
 
         try {
 
@@ -562,18 +593,9 @@ public class GestionUsuarios extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idUsuario, p.login, AES_DECRYPT(p.password,'mundoodnum') password, p.idRol, p.idTipoDocumento, p.identificacion ";
-            query += "FROM usuario p ";
-            query += "WHERE  p.idUsuario = " + IdUsuario;
-
-
-            System.out.println("***********************************************");
-            System.out.println("*****       MostrarUsuarioFormulario     *****");
-            System.out.println("***********************************************");
-
-            System.out.println(query);
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            psSelectConClave = cn.prepareStatement("SELECT p.idUsuario, p.login, AES_DECRYPT(p.password,'mundoodnum') password, p.idRol, p.idTipoDocumento, p.identificacion FROM usuario p WHERE  p.idUsuario =?");
+            psSelectConClave.setInt(1, IdUsuario);
+            ResultSet rs = psSelectConClave.executeQuery();
 
             BeanUsuarios bu;
             while (rs.next()) {
@@ -587,8 +609,6 @@ public class GestionUsuarios extends ConeccionMySql {
                 setIdentificacion(rs.getObject("p.identificacion"));
 
             }
-
-            st.close();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -825,7 +845,7 @@ public class GestionUsuarios extends ConeccionMySql {
     public void setIdTipoDocumento(Object idTipoDocumento) {
         this.idTipoDocumento = idTipoDocumento;
     }
-    
+
     public Object getIdentificacion() {
         return identificacion;
     }

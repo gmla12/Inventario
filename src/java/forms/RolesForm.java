@@ -12,15 +12,15 @@ import org.apache.struts.action.ActionForm;
  * @author Mario
  */
 public class RolesForm extends ActionForm{
-    private String idRoles;
+    private int idRoles;
     private String nombre;
     private String op;
 
-    public String getIdRoles() {
+    public int getIdRoles() {
         return idRoles;
     }
 
-    public void setIdRoles(String idRoles) {
+    public void setIdRoles(int idRoles) {
         this.idRoles = idRoles;
     }
 

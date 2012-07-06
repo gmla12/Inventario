@@ -12,15 +12,15 @@ import org.apache.struts.action.ActionForm;
  * @author Mario
  */
 public class TipoEntidadForm extends ActionForm{
-    private String idTipoEntidad;
+    private int idTipoEntidad;
     private String nombre;
     private String op;
 
-    public String getIdTipoEntidad() {
+    public int getIdTipoEntidad() {
         return idTipoEntidad;
     }
 
-    public void setIdTipoEntidad(String idTipoEntidad) {
+    public void setIdTipoEntidad(int idTipoEntidad) {
         this.idTipoEntidad = idTipoEntidad;
     }
 

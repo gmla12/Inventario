@@ -19,7 +19,7 @@ public class UsuariosOpForm extends ActionForm{
     private String bIdTipoDocumento;
     private String bIdentificacion;
     private String op;
-    private String id;
+    private int id;
 
     public String getbIdRol() {
         return bIdRol;
@@ -77,11 +77,11 @@ public class UsuariosOpForm extends ActionForm{
         this.op = op;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

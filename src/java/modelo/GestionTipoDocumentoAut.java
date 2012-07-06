@@ -4,14 +4,11 @@
  */
 package modelo;
 
-import forms.TipoDocumentoOpForm;
-import forms.TipoDocumentoForm;
 import forms.bean.BeanTipoDocumentoAut;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import util.ConeccionMySql;
 
@@ -29,6 +26,7 @@ public class GestionTipoDocumentoAut extends ConeccionMySql {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psInsertar = null;
 
         try {
 
@@ -55,22 +53,14 @@ public class GestionTipoDocumentoAut extends ConeccionMySql {
 
             }
 
-            String query = "insert into tipoDocumentoAut (idTipoDocumento, campoEntidad, habilitar, obligatorio"
-                    + ") "
-                    + "values("
-                    + idTipoDocumento + ", '"
-                    + campo + "', "
-                    + habilitar + ", "
-                    + obligatorio
-                    + ")";
+            psInsertar = cn.prepareStatement("insert into tipoDocumentoAut (idTipoDocumento, campoEntidad, habilitar, obligatorio) values (?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
+            psInsertar.setInt(1, idTipoDocumento);
+            psInsertar.setString(2, campo);
+            psInsertar.setBoolean(3, habilitar);
+            psInsertar.setBoolean(4, obligatorio);
+            psInsertar.executeUpdate(); // Se ejecuta la inserción.
 
-            System.out.println(query);
-            st = cn.createStatement();
-
-            st.execute(query);
-            mod = st.getUpdateCount();
-
-            st.close();
+            mod = psInsertar.getUpdateCount();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -102,6 +92,7 @@ public class GestionTipoDocumentoAut extends ConeccionMySql {
     public ArrayList<Object> MostrarTipoDocumentoAut(Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psSelectConClave = null;
 
         try {
 
@@ -130,16 +121,8 @@ public class GestionTipoDocumentoAut extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idTipoDocumento, p.campoEntidad, p.habilitar, p.obligatorio ";
-            query += "FROM tipoDocumentoAut p";
-
-            System.out.println("***********************************************");
-            System.out.println("*****       Cargando grilla  GR_TIPODOCUMENTOAUT  *****");
-            System.out.println("***********************************************");
-
-            System.out.println(query);
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            psSelectConClave = cn.prepareStatement("SELECT p.idTipoDocumento, p.campoEntidad, p.habilitar, p.obligatorio FROM tipoDocumentoAut p");
+            ResultSet rs = psSelectConClave.executeQuery();
 
             BeanTipoDocumentoAut bu;
             while (rs.next()) {
@@ -153,8 +136,6 @@ public class GestionTipoDocumentoAut extends ConeccionMySql {
                 GR_TIPODOCUMENTOANT.add(bu);
 
             }
-
-            st.close();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
                 cn.close();
@@ -184,6 +165,7 @@ public class GestionTipoDocumentoAut extends ConeccionMySql {
     public ArrayList<Object> MostrarTipoDocumentoAut(int idTipoDocumento, Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psSelectConClave = null;
 
         try {
 
@@ -212,16 +194,9 @@ public class GestionTipoDocumentoAut extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idTipoDocumento, p.campoEntidad, p.habilitar, p.obligatorio ";
-            query += "FROM tipoDocumentoAut p WHERE p.idTipoDocumento = " + idTipoDocumento;
-
-            System.out.println("***********************************************");
-            System.out.println("*****       Cargando grilla  GR_TIPODOCUMENTOAUT  *****");
-            System.out.println("***********************************************");
-
-            System.out.println(query);
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            psSelectConClave = cn.prepareStatement("SELECT p.idTipoDocumento, p.campoEntidad, p.habilitar, p.obligatorio FROM tipoDocumentoAut p WHERE p.idTipoDocumento = ?");
+            psSelectConClave.setInt(1, idTipoDocumento);
+            ResultSet rs = psSelectConClave.executeQuery();
 
             BeanTipoDocumentoAut bu;
             while (rs.next()) {
@@ -235,8 +210,6 @@ public class GestionTipoDocumentoAut extends ConeccionMySql {
                 GR_TIPODOCUMENTOANT.add(bu);
 
             }
-
-            st.close();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
                 cn.close();
@@ -266,8 +239,8 @@ public class GestionTipoDocumentoAut extends ConeccionMySql {
     public ArrayList<Object> MostrarTipoDocumentoAnt(int idTipoDocumento, String campo, Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
-
         BeanTipoDocumentoAut bu = new BeanTipoDocumentoAut();
+        PreparedStatement psSelectConClave = null;
 
         try {
 
@@ -294,16 +267,10 @@ public class GestionTipoDocumentoAut extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idTipoDocumento, p.campoEntidad, p.habilitar, p.obligatorio ";
-            query += "FROM tipoDocumentoAut p WHERE p.idTipoDocumento = " + idTipoDocumento + " AND p.campoEntidad = '" + campo + "'";
-
-            System.out.println("***********************************************");
-            System.out.println("*****       Cargando grilla  GR_TIPODOCUMENTOAUT  *****");
-            System.out.println("***********************************************");
-
-            System.out.println(query);
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            psSelectConClave = cn.prepareStatement("SELECT p.idTipoDocumento, p.campoEntidad, p.habilitar, p.obligatorio FROM tipoDocumentoAut p WHERE p.idTipoDocumento = ? AND p.campoEntidad = ?");
+            psSelectConClave.setInt(1, idTipoDocumento);
+            psSelectConClave.setString(2, campo);
+            ResultSet rs = psSelectConClave.executeQuery();
 
             while (rs.next()) {
                 bu = new BeanTipoDocumentoAut();
@@ -314,8 +281,6 @@ public class GestionTipoDocumentoAut extends ConeccionMySql {
                 bu.setObligatorio(rs.getObject("p.obligatorio"));
 
             }
-
-            st.close();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
                 cn.close();
@@ -346,6 +311,7 @@ public class GestionTipoDocumentoAut extends ConeccionMySql {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psUpdate = null;
 
         try {
 
@@ -372,17 +338,17 @@ public class GestionTipoDocumentoAut extends ConeccionMySql {
 
             }
 
-            String query = "UPDATE tipoDocumentoAut SET habilitar = " + habilitar + ", obligatorio = " + obligatorio;
-            query += " WHERE idTipoDocumento=" + idTipoDocumento + " AND campoEntidad = '" + campo + "'";
+            String query = "UPDATE tipoDocumentoAut SET habilitar = ?";
+            query += ", obligatorio = ?";
+            query += " WHERE idTipoDocumento = ? AND campoEntidad = ?";
+            psUpdate = cn.prepareStatement(query);
+            psUpdate.setBoolean(1, habilitar);
+            psUpdate.setBoolean(2, obligatorio);
+            psUpdate.setInt(3, idTipoDocumento);
+            psUpdate.setString(4, campo);
+            psUpdate.executeUpdate();
 
-
-            System.out.println(query);
-            st = cn.createStatement();
-
-            st.executeUpdate(query);
-            mod = st.getUpdateCount();
-
-            st.close();
+            mod = psUpdate.getUpdateCount();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
                 cn.close();
@@ -413,6 +379,7 @@ public class GestionTipoDocumentoAut extends ConeccionMySql {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psDelete = null;
 
         try {
 
@@ -439,17 +406,12 @@ public class GestionTipoDocumentoAut extends ConeccionMySql {
 
             }
 
-            String query = "DELETE FROM tipoDocumentoAut ";
-            query += "WHERE  idTipoDocumento = " + idTipoDocumento + ", campoEntidad = '" + campo + "'";
+            psDelete = cn.prepareStatement("DELETE FROM tipoDocumentoAut WHERE  idTipoDocumento = ? AND campoEntidad = ?");
+            psDelete.setInt(1, idTipoDocumento);
+            psDelete.setString(2, campo);
+            psDelete.executeUpdate();
 
-
-            System.out.println(query);
-            st = cn.createStatement();
-
-            st.executeUpdate(query);
-            mod = st.getUpdateCount();
-
-            st.close();
+            mod = psDelete.getUpdateCount();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
                 cn.close();
@@ -480,6 +442,7 @@ public class GestionTipoDocumentoAut extends ConeccionMySql {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psDelete = null;
 
         try {
 
@@ -506,17 +469,11 @@ public class GestionTipoDocumentoAut extends ConeccionMySql {
 
             }
 
-            String query = "DELETE FROM tipoDocumentoAut ";
-            query += "WHERE  idTipoDocumento = " + idTipoDocumento;
+            psDelete = cn.prepareStatement("DELETE FROM tipoDocumentoAut WHERE  idTipoDocumento = ?");
+            psDelete.setInt(1, idTipoDocumento);
+            psDelete.executeUpdate();
 
-
-            System.out.println(query);
-            st = cn.createStatement();
-
-            st.executeUpdate(query);
-            mod = st.getUpdateCount();
-
-            st.close();
+            mod = psDelete.getUpdateCount();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
                 cn.close();
@@ -524,76 +481,6 @@ public class GestionTipoDocumentoAut extends ConeccionMySql {
 
             resultado.add(false); //si no hubo un error asigna false
             resultado.add(mod); //  y el numero de registros consultados
-
-        } catch (Exception e) {
-
-            resultado.add(true); //si hubo error asigna true
-            resultado.add(e); //y asigna el error para retornar y visualizar
-
-            if (cn != null){
-                cn.rollback();
-                cn.close();
-            }
-            
-        } finally {
-
-            return resultado;
-
-        }
-
-    }
-
-    public ArrayList<Object> count(Boolean transac, Connection tCn) {
-
-        ArrayList<Object> resultado = new ArrayList<Object>();
-
-        Integer total = 0;
-
-        try {
-
-            if (transac == false) { //si no es una transaccion busca una nueva conexion
-
-                ArrayList<Object> resultad = new ArrayList<Object>();
-                resultad = (ArrayList) getConection();
-
-                if ((Boolean) resultad.get(0) == false) { // si no hubo error al obtener la conexion
-
-                    cn = (Connection) resultad.get(1);
-
-                } else { //si hubo error al obtener la conexion retorna el error para visualizar
-
-                    resultado.add(true);
-                    resultado.add(resultad.get(1));
-                    return resultado;
-
-                }
-
-            } else { //si es una transaccion asigna la conexion utilizada
-
-                cn = tCn;
-
-            }
-
-            String query = "SELECT count(*) FROM tipoDocumentoAut ";
-
-            System.out.println(query);
-            st = cn.createStatement();
-
-            ResultSet rs = st.executeQuery(query);
-
-            while (rs.next()) {
-
-                total = (Integer) rs.getObject("count");
-
-            }
-
-            st.close();
-            if (transac == false) { // si no es una transaccion cierra la conexion
-                cn.close();
-            }
-
-            resultado.add(false); //si no hubo un error asigna false
-            resultado.add(total); //  y el numero de registros consultados
 
         } catch (Exception e) {
 

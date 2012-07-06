@@ -7,10 +7,7 @@ package modelo;
 import forms.MunicipioForm;
 import forms.MunicipioOpForm;
 import forms.bean.BeanMunicipio;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import util.ConeccionMySql;
 
@@ -27,6 +24,7 @@ public class GestionMunicipio extends ConeccionMySql {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psInsertar = null;
 
         try {
 
@@ -53,22 +51,14 @@ public class GestionMunicipio extends ConeccionMySql {
 
             }
 
-            String query = "insert into municipios     (idMunicipio, idDepartamento, idPais, nombre"
-                    + ") "
-                    + "values('"
-                    + f.getIdMunicipio() + "', '"
-                    + f.getIdDepartamento() + "', '"
-                    + f.getIdPais() + "', '"
-                    + f.getNombre() + "'"
-                    + ")";
+            psInsertar = cn.prepareStatement("insert into municipios (idMunicipio, idDepartamento, idPais, nombre) values (?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
+            psInsertar.setString(1, f.getIdMunicipio());
+            psInsertar.setString(2, f.getIdDepartamento());
+            psInsertar.setString(3, f.getIdPais());
+            psInsertar.setString(4, f.getNombre());
+            psInsertar.executeUpdate(); // Se ejecuta la inserción.
 
-            System.out.println(query);
-            st = cn.createStatement();
-
-            st.execute(query);
-            mod = st.getUpdateCount();
-            
-            st.close();
+            mod = psInsertar.getUpdateCount();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -84,11 +74,11 @@ public class GestionMunicipio extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -101,6 +91,7 @@ public class GestionMunicipio extends ConeccionMySql {
     public ArrayList<Object> MostrarMunicipio(String idDepartamento, String idPais, Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psSelectConClave = null;
 
         try {
 
@@ -129,16 +120,10 @@ public class GestionMunicipio extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idMunicipio, p.idDepartamento, p.idPais, p.nombre ";
-            query += "FROM municipios p WHERE p.idPais = '" + idPais + "' AND p.idDepartamento = '" + idDepartamento + "'";
-
-            System.out.println("***********************************************");
-            System.out.println("*****       Cargando grilla  GR_MUNICIPIO  *****");
-            System.out.println("***********************************************");
-
-            System.out.println(query);
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            psSelectConClave = cn.prepareStatement("SELECT p.idMunicipio, p.idDepartamento, p.idPais, p.nombre FROM municipios p WHERE p.idPais = ? AND p.idDepartamento = ?");
+            psSelectConClave.setString(1, idPais);
+            psSelectConClave.setString(2, idDepartamento);
+            ResultSet rs = psSelectConClave.executeQuery();
 
             BeanMunicipio bu;
             while (rs.next()) {
@@ -154,8 +139,6 @@ public class GestionMunicipio extends ConeccionMySql {
 
             }
 
-            st.close();
-
             if (transac == false) { // si no es una transaccion cierra la conexion
 
                 cn.close();
@@ -170,11 +153,11 @@ public class GestionMunicipio extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -186,6 +169,7 @@ public class GestionMunicipio extends ConeccionMySql {
     public ArrayList<Object> MostrarMunicipioOP(MunicipioOpForm f, Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psSelectConClave = null;
 
         try {
 
@@ -218,40 +202,83 @@ public class GestionMunicipio extends ConeccionMySql {
             query += "FROM municipios p INNER JOIN paises r ON p.idPais = r.idPais INNER JOIN departamentos d ON p.idDepartamento = d.idDepartamento";
             String query2 = "";
             if (f.getbIdMunicipio().isEmpty() != true) {
-                query2 = "p.idMunicipio LIKE '%" + f.getbIdMunicipio() + "%'";
+                query2 = "p.idMunicipio LIKE CONCAT('%',?,'%')";
             }
             if (f.getbIdDepartamento().isEmpty() != true) {
                 if (query2.isEmpty() != true) {
-                    query2 += "AND p.idDepartamento LIKE '%" + f.getbIdDepartamento() + "%'";
-                } else {
-                    query2 = "p.idDepartamento LIKE '%" + f.getbIdDepartamento() + "%'";
+                    query2 += "AND ";
                 }
+                query2 += "p.idDepartamento LIKE CONCAT('%',?,'%')";
             }
             if (f.getbIdPais().isEmpty() != true) {
                 if (query2.isEmpty() != true) {
-                    query2 += "AND p.idPais LIKE '%" + f.getbIdPais() + "%'";
-                } else {
-                    query2 = "p.idPais LIKE '%" + f.getbIdPais() + "%'";
+                    query2 += "AND ";
                 }
+                query2 += "p.idPais LIKE CONCAT('%',?,'%')";
             }
             if (f.getbNombre().isEmpty() != true) {
                 if (query2.isEmpty() != true) {
-                    query2 += "AND p.nombre LIKE '%" + f.getbNombre() + "%'";
-                } else {
-                    query2 = "p.nombre LIKE '%" + f.getbNombre() + "%'";
+                    query2 += "AND ";
                 }
+                query2 += "p.nombre LIKE CONCAT('%',?,'%')";
             }
             if (query2.isEmpty() != true) {
                 query += " WHERE " + query2;
             }
-
-            System.out.println("***********************************************");
-            System.out.println("*****       Cargando grilla  GR_MUNICIPIO  *****");
-            System.out.println("***********************************************");
-
-            System.out.println(query);
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            psSelectConClave = cn.prepareStatement(query);
+            if (f.getbIdMunicipio().isEmpty() != true) {
+                psSelectConClave.setString(1, f.getbIdMunicipio());
+                if (f.getbIdDepartamento().isEmpty() != true) {
+                    psSelectConClave.setString(2, f.getbIdDepartamento());
+                    if (f.getbIdPais().isEmpty() != true) {
+                        psSelectConClave.setString(3, f.getbIdPais());
+                        if (f.getbNombre().isEmpty() != true) {
+                            psSelectConClave.setString(4, f.getbNombre());
+                        }
+                    } else {
+                        if (f.getbNombre().isEmpty() != true) {
+                            psSelectConClave.setString(3, f.getbNombre());
+                        }
+                    }
+                } else {
+                    if (f.getbIdPais().isEmpty() != true) {
+                        psSelectConClave.setString(2, f.getbIdPais());
+                        if (f.getbNombre().isEmpty() != true) {
+                            psSelectConClave.setString(3, f.getbNombre());
+                        }
+                    } else {
+                        if (f.getbNombre().isEmpty() != true) {
+                            psSelectConClave.setString(2, f.getbNombre());
+                        }
+                    }
+                }
+            } else {
+                if (f.getbIdDepartamento().isEmpty() != true) {
+                    psSelectConClave.setString(1, f.getbIdDepartamento());
+                    if (f.getbIdPais().isEmpty() != true) {
+                        psSelectConClave.setString(2, f.getbIdPais());
+                        if (f.getbNombre().isEmpty() != true) {
+                            psSelectConClave.setString(3, f.getbNombre());
+                        }
+                    } else {
+                        if (f.getbNombre().isEmpty() != true) {
+                            psSelectConClave.setString(2, f.getbNombre());
+                        }
+                    }
+                } else {
+                    if (f.getbIdPais().isEmpty() != true) {
+                        psSelectConClave.setString(1, f.getbIdPais());
+                        if (f.getbNombre().isEmpty() != true) {
+                            psSelectConClave.setString(2, f.getbNombre());
+                        }
+                    } else {
+                        if (f.getbNombre().isEmpty() != true) {
+                            psSelectConClave.setString(1, f.getbNombre());
+                        }
+                    }
+                }
+            }
+            ResultSet rs = psSelectConClave.executeQuery();
 
             BeanMunicipio bu;
             while (rs.next()) {
@@ -269,8 +296,6 @@ public class GestionMunicipio extends ConeccionMySql {
 
             }
 
-            st.close();
-
             if (transac == false) { // si no es una transaccion cierra la conexion
 
                 cn.close();
@@ -285,11 +310,11 @@ public class GestionMunicipio extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -302,6 +327,7 @@ public class GestionMunicipio extends ConeccionMySql {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psUpdate = null;
 
         try {
 
@@ -328,17 +354,16 @@ public class GestionMunicipio extends ConeccionMySql {
 
             }
 
-            String query = "UPDATE municipios SET nombre = '" + f.getNombre() + "'";
-            query += " WHERE idMunicipio = '" + f.getIdMunicipio() + "' AND idDepartamento = '" + f.getIdDepartamento() + "' AND idPais = '" + f.getIdPais() + "'";
+            String query = "UPDATE municipios SET nombre = ?";
+            query += " WHERE idMunicipio = ? AND idDepartamento = ? AND idPais = ?";
+            psUpdate = cn.prepareStatement(query);
+            psUpdate.setString(1, f.getNombre());
+            psUpdate.setString(2, f.getIdMunicipio());
+            psUpdate.setString(3, f.getIdDepartamento());
+            psUpdate.setString(4, f.getIdPais());
+            psUpdate.executeUpdate();
 
-
-            System.out.println(query);
-            st = cn.createStatement();
-
-            st.executeUpdate(query);
-            mod = st.getUpdateCount();
-
-            st.close();
+            mod = psUpdate.getUpdateCount();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -354,11 +379,11 @@ public class GestionMunicipio extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -371,6 +396,7 @@ public class GestionMunicipio extends ConeccionMySql {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psDelete = null;
 
         try {
 
@@ -397,17 +423,11 @@ public class GestionMunicipio extends ConeccionMySql {
 
             }
 
-            String query = "DELETE FROM municipios ";
-            query += "WHERE  idMunicipio = '" + f.getIdMunicipio() + "' AND idDepartamento = '" + f.getIdDepartamento() + "' AND idPais = '" + f.getIdPais() + "'";
-
-
-            System.out.println(query);
-            st = cn.createStatement();
-
-            st.executeUpdate(query);
-            mod = st.getUpdateCount();
-
-            st.close();
+            psDelete = cn.prepareStatement("DELETE FROM municipios WHERE  idMunicipio = ? AND idDepartamento = ? AND idPais = ?");
+            psDelete.setString(1, f.getIdMunicipio());
+            psDelete.setString(2, f.getIdDepartamento());
+            psDelete.setString(3, f.getIdPais());
+            psDelete.executeUpdate();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -423,12 +443,12 @@ public class GestionMunicipio extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
-       } finally {
+
+        } finally {
 
             return resultado;
 
@@ -442,6 +462,7 @@ public class GestionMunicipio extends ConeccionMySql {
         BeanMunicipio bu;
         bu = new BeanMunicipio();
         boolean encontro = false;
+        PreparedStatement psSelectConClave = null;
 
         try {
 
@@ -468,36 +489,27 @@ public class GestionMunicipio extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idMunicipio, p.idDepartamento, p.idPais ";
-            query += "FROM municipios p ";
-            query += "WHERE ";
-            query += "p.idMunicipio = '" + idMunicipio + "' ";
-            query += "AND p.idDepartamento = '" + idDepartamento + "' ";
-            query += "AND p.idPais = '" + idPais + "' ";
+            psSelectConClave = cn.prepareStatement("SELECT p.idMunicipio, p.idDepartamento, p.idPais FROM municipios p WHERE p.idMunicipio = ? AND p.idDepartamento = ? AND p.idPais = ?");
+            psSelectConClave.setString(1, idMunicipio);
+            psSelectConClave.setString(2, idDepartamento);
+            psSelectConClave.setString(3, idPais);
+            ResultSet rs = psSelectConClave.executeQuery();
 
-            System.out.println("***********************************************");
-            System.out.println("*****       Buscar idMunicipio  *****");
-            System.out.println("***********************************************");
-
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
             while (rs.next()) {
                 bu = new BeanMunicipio();
 
                 bu.setIdMunicipio(rs.getObject("p.idMunicipio"));
                 bu.setIdDepartamento(rs.getObject("p.idDepartamento"));
                 bu.setIdPais(rs.getObject("p.idPais"));
-                String p =(String) bu.getIdMunicipio();
-                String p2 =(String) bu.getIdDepartamento();
-                String p3 =(String) bu.getIdPais();
-                if (p.equals(idMunicipio) && p2.equals(idDepartamento) && p3.equals(idPais)){
+                String p = (String) bu.getIdMunicipio();
+                String p2 = (String) bu.getIdDepartamento();
+                String p3 = (String) bu.getIdPais();
+                if (p.equals(idMunicipio) && p2.equals(idDepartamento) && p3.equals(idPais)) {
                     encontro = true;
                 }
-                
+
 
             }
-
-            st.close();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -525,10 +537,11 @@ public class GestionMunicipio extends ConeccionMySql {
         }
 
     }
-    
+
     public ArrayList<Object> MostrarMunicipioFormulario(String IdMunicipio, String IdDepartamento, String IdPais, Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psSelectConClave = null;
 
         try {
 
@@ -555,18 +568,11 @@ public class GestionMunicipio extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idMunicipio, p.idDepartamento, p.idPais, p.nombre ";
-            query += "FROM municipios p ";
-            query += "WHERE  p.idMunicipio = '" + IdMunicipio + "' AND p.idDepartamento = '" + IdDepartamento + "' AND p.idPais = '" + IdPais + "'";
-
-
-            System.out.println("***********************************************");
-            System.out.println("*****       MostrarMunicipioFormulario     *****");
-            System.out.println("***********************************************");
-
-            System.out.println(query);
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            psSelectConClave = cn.prepareStatement("SELECT p.idMunicipio, p.idDepartamento, p.idPais, p.nombre FROM municipios p WHERE p.idMunicipio = ? AND p.idDepartamento = ? AND p.idPais = ?");
+            psSelectConClave.setString(1, IdMunicipio);
+            psSelectConClave.setString(2, IdDepartamento);
+            psSelectConClave.setString(3, IdPais);
+            ResultSet rs = psSelectConClave.executeQuery();
 
             BeanMunicipio bu;
             while (rs.next()) {
@@ -578,8 +584,6 @@ public class GestionMunicipio extends ConeccionMySql {
                 setNombre(rs.getObject("p.nombre"));
 
             }
-
-            st.close();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -594,11 +598,11 @@ public class GestionMunicipio extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -621,11 +625,11 @@ public class GestionMunicipio extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -713,7 +717,6 @@ public class GestionMunicipio extends ConeccionMySql {
         }
 
     }
-
 //    private ArrayList<Object> GR_USUARIOS2;
 //
 //    public ArrayList<Object> MostrarUsuarios2(String aux, String aux2) {
@@ -766,7 +769,6 @@ public class GestionMunicipio extends ConeccionMySql {
 //        return GR_USUARIOS2;
 //    }
 //}
-
     private Object idMunicipio;
     private Object idDepartamento;
     private Object idPais;

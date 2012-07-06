@@ -15,7 +15,7 @@ public class TipoEntidadOpForm extends ActionForm{
     private String bIdTipoEntidad;
     private String bNombre;
     private String op;
-    private String id;
+    private int id;
 
     public String getOp() {
         return op;
@@ -25,11 +25,11 @@ public class TipoEntidadOpForm extends ActionForm{
         this.op = op;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

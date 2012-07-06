@@ -4,14 +4,10 @@
  */
 package modelo;
 
-import forms.RolesOpForm;
 import forms.RolesForm;
+import forms.RolesOpForm;
 import forms.bean.BeanRoles;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.text.SimpleDateFormat;
+import java.sql.*;
 import java.util.ArrayList;
 import util.ConeccionMySql;
 
@@ -28,6 +24,7 @@ public class GestionRoles extends ConeccionMySql {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psInsertar = null;
 
         try {
 
@@ -54,19 +51,17 @@ public class GestionRoles extends ConeccionMySql {
 
             }
 
-            String query = "insert into roles     (nombre"
-                    + ") "
-                    + "values('"
-                    + f.getNombre() + "'"
-                    + ")";
+            psInsertar = cn.prepareStatement("insert into roles (idRoles, nombre) values (null,?)", PreparedStatement.RETURN_GENERATED_KEYS);
+            psInsertar.setString(1, f.getNombre());
+            psInsertar.executeUpdate(); // Se ejecuta la inserción.
 
-            System.out.println(query);
-            st = cn.createStatement();
-
-            st.execute(query);
-            mod = st.getUpdateCount();
-            
-            st.close();
+            // Se obtiene la clave generada
+            int claveGenerada = -1;
+            ResultSet rs = psInsertar.getGeneratedKeys();
+            while (rs.next()) {
+                claveGenerada = rs.getInt(1);
+            }
+            mod = psInsertar.getUpdateCount();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -75,6 +70,7 @@ public class GestionRoles extends ConeccionMySql {
             }
 
             resultado.add(false); //si no hubo un error asigna false
+            resultado.add(claveGenerada); // clave Generada
             resultado.add(mod); // y el numero de registros consultados
 
         } catch (SQLException e) {
@@ -82,11 +78,11 @@ public class GestionRoles extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -99,6 +95,7 @@ public class GestionRoles extends ConeccionMySql {
     public ArrayList<Object> MostrarRoles(Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psSelectConClave = null;
 
         try {
 
@@ -127,16 +124,8 @@ public class GestionRoles extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idRoles, p.nombre ";
-            query += "FROM roles p ";
-
-            System.out.println("***********************************************");
-            System.out.println("*****       Cargando grilla  GR_ROLES  *****");
-            System.out.println("***********************************************");
-
-            System.out.println(query);
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            psSelectConClave = cn.prepareStatement("SELECT p.idRoles, p.nombre FROM roles p ");
+            ResultSet rs = psSelectConClave.executeQuery();
 
             BeanRoles bu;
             while (rs.next()) {
@@ -149,8 +138,6 @@ public class GestionRoles extends ConeccionMySql {
 
 
             }
-
-            st.close();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -166,11 +153,11 @@ public class GestionRoles extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -182,6 +169,7 @@ public class GestionRoles extends ConeccionMySql {
     public ArrayList<Object> MostrarRolesOP(RolesOpForm f, Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psSelectConClave = null;
 
         try {
 
@@ -214,19 +202,16 @@ public class GestionRoles extends ConeccionMySql {
             query += "FROM roles p ";
             String query2 = "";
             if (f.getbNombre().isEmpty() != true) {
-                query2 = "p.nombre LIKE '%" + f.getbNombre() + "%'";
+                query2 = "p.nombre LIKE CONCAT('%',?,'%')";
             }
             if (query2.isEmpty() != true) {
                 query += "WHERE " + query2;
             }
-
-            System.out.println("***********************************************");
-            System.out.println("*****       Cargando grilla  GR_ROLES  *****");
-            System.out.println("***********************************************");
-
-            System.out.println(query);
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            psSelectConClave = cn.prepareStatement(query);
+            if (f.getbNombre().isEmpty() != true) {
+                psSelectConClave.setString(1, f.getbNombre());
+            }
+            ResultSet rs = psSelectConClave.executeQuery();
 
             BeanRoles bu;
             while (rs.next()) {
@@ -239,8 +224,6 @@ public class GestionRoles extends ConeccionMySql {
                 GR_ROLES.add(bu);
 
             }
-
-            st.close();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -256,11 +239,11 @@ public class GestionRoles extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -273,6 +256,7 @@ public class GestionRoles extends ConeccionMySql {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psUpdate = null;
 
         try {
 
@@ -299,17 +283,14 @@ public class GestionRoles extends ConeccionMySql {
 
             }
 
-            String query = "UPDATE roles SET nombre = '" + f.getNombre() + "'";
-            query += " WHERE idRoles=" + f.getIdRoles();
+            String query = "UPDATE roles SET nombre = ?";
+            query += " WHERE idRoles = ?";
+            psUpdate = cn.prepareStatement(query);
+            psUpdate.setString(1, f.getNombre());
+            psUpdate.setInt(2, f.getIdRoles());
+            psUpdate.executeUpdate();
 
-
-            System.out.println(query);
-            st = cn.createStatement();
-
-            st.executeUpdate(query);
-            mod = st.getUpdateCount();
-
-            st.close();
+            mod = psUpdate.getUpdateCount();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -325,11 +306,11 @@ public class GestionRoles extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -342,6 +323,7 @@ public class GestionRoles extends ConeccionMySql {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psDelete = null;
 
         try {
 
@@ -368,17 +350,11 @@ public class GestionRoles extends ConeccionMySql {
 
             }
 
-            String query = "DELETE FROM roles ";
-            query += "WHERE  idRoles = " + f.getIdRoles();
+            psDelete = cn.prepareStatement("DELETE FROM roles WHERE idRoles = ?");
+            psDelete.setInt(1, f.getIdRoles());
+            psDelete.executeUpdate();
 
-
-            System.out.println(query);
-            st = cn.createStatement();
-
-            st.executeUpdate(query);
-            mod = st.getUpdateCount();
-
-            st.close();
+            mod = psDelete.getUpdateCount();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -394,12 +370,12 @@ public class GestionRoles extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
-       } finally {
+
+        } finally {
 
             return resultado;
 
@@ -407,9 +383,10 @@ public class GestionRoles extends ConeccionMySql {
 
     }
 
-    public ArrayList<Object> MostrarRolesFormulario(String IdRoles, Boolean transac, Connection tCn) {
+    public ArrayList<Object> MostrarRolesFormulario(int IdRoles, Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psSelectConClave = null;
 
         try {
 
@@ -436,18 +413,9 @@ public class GestionRoles extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idRoles, p.nombre ";
-            query += "FROM roles p ";
-            query += "WHERE  p.idRoles = " + IdRoles;
-
-
-            System.out.println("***********************************************");
-            System.out.println("*****       MostrarRolesFormulario     *****");
-            System.out.println("***********************************************");
-
-            System.out.println(query);
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            psSelectConClave = cn.prepareStatement("SELECT p.idRoles, p.nombre FROM roles p WHERE p.idRoles = ?");
+            psSelectConClave.setInt(1, IdRoles);
+            ResultSet rs = psSelectConClave.executeQuery();
 
             BeanRoles bu;
             while (rs.next()) {
@@ -457,8 +425,6 @@ public class GestionRoles extends ConeccionMySql {
                 setNombre(rs.getObject("p.nombre"));
 
             }
-
-            st.close();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -473,11 +439,11 @@ public class GestionRoles extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -500,11 +466,11 @@ public class GestionRoles extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -592,7 +558,6 @@ public class GestionRoles extends ConeccionMySql {
         }
 
     }
-
 //    private ArrayList<Object> GR_USUARIOS2;
 //
 //    public ArrayList<Object> MostrarUsuarios2(String aux, String aux2) {

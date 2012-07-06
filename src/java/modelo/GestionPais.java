@@ -7,10 +7,7 @@ package modelo;
 import forms.PaisOpForm;
 import forms.PaisForm;
 import forms.bean.BeanPais;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import util.ConeccionMySql;
@@ -28,6 +25,7 @@ public class GestionPais extends ConeccionMySql {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psInsertar = null;
 
         try {
 
@@ -54,20 +52,12 @@ public class GestionPais extends ConeccionMySql {
 
             }
 
-            String query = "insert into paises     (idPais, nombre"
-                    + ") "
-                    + "values('"
-                    + f.getIdPais() + "', '"
-                    + f.getNombre() + "'"
-                    + ")";
+            psInsertar = cn.prepareStatement("insert into paises (idPais, nombre) values (?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
+            psInsertar.setString(1, f.getIdPais());
+            psInsertar.setString(2, f.getNombre());
+            psInsertar.executeUpdate(); // Se ejecuta la inserción.
 
-            System.out.println(query);
-            st = cn.createStatement();
-
-            st.execute(query);
-            mod = st.getUpdateCount();
-            
-            st.close();
+            mod = psInsertar.getUpdateCount();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -83,11 +73,11 @@ public class GestionPais extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -100,6 +90,7 @@ public class GestionPais extends ConeccionMySql {
     public ArrayList<Object> MostrarPais(Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psSelectConClave = null;
 
         try {
 
@@ -128,16 +119,8 @@ public class GestionPais extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idPais, p.nombre ";
-            query += "FROM paises p ";
-
-            System.out.println("***********************************************");
-            System.out.println("*****       Cargando grilla  GR_PAIS  *****");
-            System.out.println("***********************************************");
-
-            System.out.println(query);
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            psSelectConClave = cn.prepareStatement("SELECT p.idPais, p.nombre FROM paises p");
+            ResultSet rs = psSelectConClave.executeQuery();
 
             BeanPais bu;
             while (rs.next()) {
@@ -150,8 +133,6 @@ public class GestionPais extends ConeccionMySql {
 
 
             }
-
-            st.close();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -167,11 +148,11 @@ public class GestionPais extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -183,6 +164,7 @@ public class GestionPais extends ConeccionMySql {
     public ArrayList<Object> MostrarPaisOP(PaisOpForm f, Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psSelectConClave = null;
 
         try {
 
@@ -215,26 +197,29 @@ public class GestionPais extends ConeccionMySql {
             query += "FROM paises p ";
             String query2 = "";
             if (f.getbIdPais().isEmpty() != true) {
-                query2 = "p.idPais LIKE '%" + f.getbIdPais() + "%'";
+                query2 = "p.idPais LIKE CONCAT('%',?,'%')";
             }
             if (f.getbNombre().isEmpty() != true) {
                 if (query2.isEmpty() != true) {
-                    query2 += "AND p.nombre LIKE '%" + f.getbNombre() + "%'";
-                } else {
-                    query2 = "p.nombre LIKE '%" + f.getbNombre() + "%'";
+                    query2 += "AND ";
                 }
+                query2 += "p.nombre LIKE CONCAT('%',?,'%')";
             }
             if (query2.isEmpty() != true) {
                 query += "WHERE " + query2;
             }
-
-            System.out.println("***********************************************");
-            System.out.println("*****       Cargando grilla  GR_PAIS  *****");
-            System.out.println("***********************************************");
-
-            System.out.println(query);
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            psSelectConClave = cn.prepareStatement(query);
+            if (f.getbIdPais().isEmpty() != true) {
+                psSelectConClave.setString(1, f.getbIdPais());
+                if (f.getbNombre().isEmpty() != true) {
+                    psSelectConClave.setString(2, f.getbNombre());
+                }
+            } else {
+                if (f.getbNombre().isEmpty() != true) {
+                    psSelectConClave.setString(1, f.getbNombre());
+                }
+            }
+            ResultSet rs = psSelectConClave.executeQuery();
 
             BeanPais bu;
             while (rs.next()) {
@@ -247,8 +232,6 @@ public class GestionPais extends ConeccionMySql {
                 GR_PAIS.add(bu);
 
             }
-
-            st.close();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -264,11 +247,11 @@ public class GestionPais extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -281,6 +264,7 @@ public class GestionPais extends ConeccionMySql {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psUpdate = null;
 
         try {
 
@@ -307,17 +291,14 @@ public class GestionPais extends ConeccionMySql {
 
             }
 
-            String query = "UPDATE paises SET nombre = '" + f.getNombre() + "'";
-            query += " WHERE idPais = '" + f.getIdPais() + "'";
+            String query = "UPDATE paises SET nombre = ?";
+            query += " WHERE idPais = ?";
+            psUpdate = cn.prepareStatement(query);
+            psUpdate.setString(1, f.getNombre());
+            psUpdate.setString(2, f.getIdPais());
+            psUpdate.executeUpdate();
 
-
-            System.out.println(query);
-            st = cn.createStatement();
-
-            st.executeUpdate(query);
-            mod = st.getUpdateCount();
-
-            st.close();
+            mod = psUpdate.getUpdateCount();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -333,11 +314,11 @@ public class GestionPais extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -350,6 +331,7 @@ public class GestionPais extends ConeccionMySql {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psDelete = null;
 
         try {
 
@@ -376,17 +358,11 @@ public class GestionPais extends ConeccionMySql {
 
             }
 
-            String query = "DELETE FROM paises ";
-            query += "WHERE  idPais = '" + f.getIdPais() + "'";
+            psDelete = cn.prepareStatement("DELETE FROM paises WHERE  idPais = ");
+            psDelete.setString(1, f.getIdPais());
+            psDelete.executeUpdate();
 
-
-            System.out.println(query);
-            st = cn.createStatement();
-
-            st.executeUpdate(query);
-            mod = st.getUpdateCount();
-
-            st.close();
+            mod = psDelete.getUpdateCount();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -402,12 +378,12 @@ public class GestionPais extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
-       } finally {
+
+        } finally {
 
             return resultado;
 
@@ -421,6 +397,7 @@ public class GestionPais extends ConeccionMySql {
         BeanPais bu;
         bu = new BeanPais();
         boolean encontro = false;
+        PreparedStatement psSelectConClave = null;
 
         try {
 
@@ -447,30 +424,21 @@ public class GestionPais extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idPais ";
-            query += "FROM paises p ";
-            query += "WHERE ";
-            query += "p.idPais = '" + idPais + "' ";
+            psSelectConClave = cn.prepareStatement("SELECT p.idPais FROM paises p WHERE p.idPais = ?");
+            psSelectConClave.setString(1, idPais);
+            ResultSet rs = psSelectConClave.executeQuery();
 
-            System.out.println("***********************************************");
-            System.out.println("*****       Buscar idPais  *****");
-            System.out.println("***********************************************");
-
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
             while (rs.next()) {
                 bu = new BeanPais();
 
                 bu.setIdPais(rs.getObject("p.idPais"));
-                String p =(String) bu.getIdPais();
-                if (p.equals(idPais)){
+                String p = (String) bu.getIdPais();
+                if (p.equals(idPais)) {
                     encontro = true;
                 }
-                
+
 
             }
-
-            st.close();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -498,10 +466,11 @@ public class GestionPais extends ConeccionMySql {
         }
 
     }
-    
+
     public ArrayList<Object> MostrarPaisFormulario(String IdPais, Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psSelectConClave = null;
 
         try {
 
@@ -528,18 +497,9 @@ public class GestionPais extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idPais, p.nombre ";
-            query += "FROM paises p ";
-            query += "WHERE  p.idPais = '" + IdPais + "'";
-
-
-            System.out.println("***********************************************");
-            System.out.println("*****       MostrarPaisFormulario     *****");
-            System.out.println("***********************************************");
-
-            System.out.println(query);
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            psSelectConClave = cn.prepareStatement("SELECT p.idPais, p.nombre FROM paises p WHERE p.idPais = ?");
+            psSelectConClave.setString(1, IdPais);
+            ResultSet rs = psSelectConClave.executeQuery();
 
             BeanPais bu;
             while (rs.next()) {
@@ -549,8 +509,6 @@ public class GestionPais extends ConeccionMySql {
                 setNombre(rs.getObject("p.nombre"));
 
             }
-
-            st.close();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -565,11 +523,11 @@ public class GestionPais extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -592,11 +550,11 @@ public class GestionPais extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -684,7 +642,6 @@ public class GestionPais extends ConeccionMySql {
         }
 
     }
-
 //    private ArrayList<Object> GR_USUARIOS2;
 //
 //    public ArrayList<Object> MostrarUsuarios2(String aux, String aux2) {

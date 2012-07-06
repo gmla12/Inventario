@@ -193,20 +193,81 @@ public class ActionEntidadOp extends Action {
                                                 }
 
                                                 request.setAttribute("getIdEntidad", g.getIdEntidad());
-                                                request.setAttribute("getPrimerNombre", g.getPrimerNombre());
-                                                request.setAttribute("getSegundoNombre", g.getSegundoNombre());
-                                                request.setAttribute("getPrimerApellido", g.getPrimerApellido());
-                                                request.setAttribute("getSegundoApellido", g.getSegundoApellido());
                                                 request.setAttribute("getIdTipoDocumento", g.getIdTipoDocumento());
                                                 request.setAttribute("getIdentificacion", g.getIdentificacion());
-                                                request.setAttribute("getRazonSocial", g.getRazonSocial());
-                                                request.setAttribute("getIdPais", g.getIdPais());
-                                                request.setAttribute("getIdDepartamento", g.getIdDepartamento());
-                                                request.setAttribute("getIdMunicipio", g.getIdMunicipio());
-                                                request.setAttribute("getDireccion", g.getDireccion());
-                                                request.setAttribute("getTelefono", g.getTelefono());
-                                                request.setAttribute("getEmail", g.getEmail());
-                                                request.setAttribute("getIdTipoEntidad", g.getIdTipoEntidad());
+                                                Object o;
+                                                if (g.getPrimerNombre()==null){
+                                                    o = "";
+                                                }else{
+                                                    o = g.getPrimerNombre();
+                                                }
+                                                request.setAttribute("getPrimerNombre", o);
+                                                if (g.getSegundoNombre()==null){
+                                                    o = "";
+                                                }else{
+                                                    o = g.getSegundoNombre();
+                                                }                                                
+                                                request.setAttribute("getSegundoNombre", o);
+                                                if (g.getPrimerApellido()==null){
+                                                    o = "";
+                                                }else{
+                                                    o = g.getPrimerApellido();
+                                                } 
+                                                request.setAttribute("getPrimerApellido", o);
+                                                if (g.getSegundoApellido()==null){
+                                                    o = "";
+                                                }else{
+                                                    o = g.getSegundoApellido();
+                                                } 
+                                                request.setAttribute("getSegundoApellido", o);
+                                                if (g.getRazonSocial()==null){
+                                                    o = "";
+                                                }else{
+                                                    o = g.getRazonSocial();
+                                                } 
+                                                request.setAttribute("getRazonSocial", o);
+                                                if (g.getIdPais()==null){
+                                                    o = "";
+                                                }else{
+                                                    o = g.getIdPais();
+                                                } 
+                                                request.setAttribute("getIdPais", o);
+                                                if (g.getIdDepartamento()==null){
+                                                    o = "";
+                                                }else{
+                                                    o = g.getIdDepartamento();
+                                                } 
+                                                request.setAttribute("getIdDepartamento", o);
+                                                if (g.getIdMunicipio()==null){
+                                                    o = "";
+                                                }else{
+                                                    o = g.getIdMunicipio();
+                                                } 
+                                                request.setAttribute("getIdMunicipio", o);
+                                                if (g.getDireccion()==null){
+                                                    o = "";
+                                                }else{
+                                                    o = g.getDireccion();
+                                                } 
+                                                request.setAttribute("getDireccion", o);
+                                                if (g.getTelefono()==null){
+                                                    o = "";
+                                                }else{
+                                                    o = g.getTelefono();
+                                                } 
+                                                request.setAttribute("getTelefono", o);
+                                                if (g.getEmail()==null){
+                                                    o = "";
+                                                }else{
+                                                    o = g.getEmail();
+                                                } 
+                                                request.setAttribute("getEmail", o);
+                                                if (g.getIdTipoEntidad()==null){
+                                                    o = "";
+                                                }else{
+                                                    o = g.getIdTipoEntidad();
+                                                } 
+                                                request.setAttribute("getIdTipoEntidad", o);
 
                                                 session.setAttribute("CMB_TIPODOCUMENTO", (ArrayList) resultado2.get(1));
                                                 session.setAttribute("CMB_PAIS", (ArrayList) resultado3.get(1));

@@ -12,13 +12,13 @@ import org.apache.struts.action.ActionForm;
  * @author Mario
  */
 public class EntidadForm extends ActionForm{
-    private String idEntidad;
+    private int idEntidad;
     private String primerNombre;
     private String segundoNombre;
     private String primerApellido;
     private String segundoApellido;
-    private String idTipoDocumento;
-    private String identificacion;
+    private int idTipoDocumento;
+    private int identificacion;
     private String razonSocial;
     private String idPais;
     private String idDepartamento;
@@ -26,30 +26,30 @@ public class EntidadForm extends ActionForm{
     private String direccion;
     private String telefono;
     private String email;
-    private String idTipoEntidad;
+    private int idTipoEntidad;
     private String op;
 
-    public String getIdTipoDocumento() {
+    public int getIdTipoDocumento() {
         return idTipoDocumento;
     }
 
-    public void setIdTipoDocumento(String idTipoDocumento) {
+    public void setIdTipoDocumento(int idTipoDocumento) {
         this.idTipoDocumento = idTipoDocumento;
     }
 
-    public String getIdEntidad() {
+    public int getIdEntidad() {
         return idEntidad;
     }
 
-    public void setIdEntidad(String idEntidad) {
+    public void setIdEntidad(int idEntidad) {
         this.idEntidad = idEntidad;
     }
 
-    public String getIdentificacion() {
+    public int getIdentificacion() {
         return identificacion;
     }
 
-    public void setIdentificacion(String identificacion) {
+    public void setIdentificacion(int identificacion) {
         this.identificacion = identificacion;
     }
 
@@ -133,11 +133,11 @@ public class EntidadForm extends ActionForm{
         this.idPais = idPais;
     }
 
-    public String getIdTipoEntidad() {
+    public int getIdTipoEntidad() {
         return idTipoEntidad;
     }
 
-    public void setIdTipoEntidad(String idTipoEntidad) {
+    public void setIdTipoEntidad(int idTipoEntidad) {
         this.idTipoEntidad = idTipoEntidad;
     }
 

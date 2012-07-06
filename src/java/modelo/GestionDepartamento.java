@@ -7,10 +7,7 @@ package modelo;
 import forms.DepartamentoForm;
 import forms.DepartamentoOpForm;
 import forms.bean.BeanDepartamento;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import util.ConeccionMySql;
 
@@ -27,6 +24,7 @@ public class GestionDepartamento extends ConeccionMySql {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psInsertar = null;
 
         try {
 
@@ -53,21 +51,13 @@ public class GestionDepartamento extends ConeccionMySql {
 
             }
 
-            String query = "insert into departamentos     (idDepartamento, idPais, nombre"
-                    + ") "
-                    + "values('"
-                    + f.getIdDepartamento() + "', '"
-                    + f.getIdPais() + "', '"
-                    + f.getNombre() + "'"
-                    + ")";
+            psInsertar = cn.prepareStatement("insert into departamentos (idDepartamento, idPais, nombre) values(?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
+            psInsertar.setString(1, f.getIdDepartamento());
+            psInsertar.setString(2, f.getIdPais());
+            psInsertar.setString(3, f.getNombre());
+            psInsertar.executeUpdate(); // Se ejecuta la inserción.
 
-            System.out.println(query);
-            st = cn.createStatement();
-
-            st.execute(query);
-            mod = st.getUpdateCount();
-            
-            st.close();
+            mod = psInsertar.getUpdateCount();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -83,11 +73,11 @@ public class GestionDepartamento extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -100,6 +90,7 @@ public class GestionDepartamento extends ConeccionMySql {
     public ArrayList<Object> MostrarDepartamento(String id, Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psSelectConClave = null;
 
         try {
 
@@ -128,16 +119,9 @@ public class GestionDepartamento extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idDepartamento, p.idPais, p.nombre ";
-            query += "FROM departamentos p WHERE p.idPais = '" + id + "'";
-
-            System.out.println("***********************************************");
-            System.out.println("*****       Cargando grilla  GR_DEPARTAMENTO  *****");
-            System.out.println("***********************************************");
-
-            System.out.println(query);
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            psSelectConClave = cn.prepareStatement("SELECT p.idDepartamento, p.idPais, p.nombre FROM departamentos p WHERE p.idPais =?");
+            psSelectConClave.setString(1, id);
+            ResultSet rs = psSelectConClave.executeQuery();
 
             BeanDepartamento bu;
             while (rs.next()) {
@@ -151,8 +135,6 @@ public class GestionDepartamento extends ConeccionMySql {
 
 
             }
-
-            st.close();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -168,11 +150,11 @@ public class GestionDepartamento extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -184,6 +166,7 @@ public class GestionDepartamento extends ConeccionMySql {
     public ArrayList<Object> MostrarDepartamentoOP(DepartamentoOpForm f, Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psSelectConClave = null;
 
         try {
 
@@ -216,33 +199,50 @@ public class GestionDepartamento extends ConeccionMySql {
             query += "FROM departamentos p INNER JOIN paises r ON p.idPais = r.idPais";
             String query2 = "";
             if (f.getbIdDepartamento().isEmpty() != true) {
-                query2 = "p.idDepartamento LIKE '%" + f.getbIdDepartamento() + "%'";
+                query2 = "p.idDepartamento LIKE CONCAT('%',?,'%')";
             }
             if (f.getbIdPais().isEmpty() != true) {
                 if (query2.isEmpty() != true) {
-                    query2 += "AND p.idPais LIKE '%" + f.getbIdPais() + "%'";
-                } else {
-                    query2 = "p.idPais LIKE '%" + f.getbIdPais() + "%'";
+                    query2 += "AND ";
                 }
+                query2 += "p.idPais LIKE CONCAT('%',?,'%')";
             }
             if (f.getbNombre().isEmpty() != true) {
                 if (query2.isEmpty() != true) {
-                    query2 += "AND p.nombre LIKE '%" + f.getbNombre() + "%'";
-                } else {
-                    query2 = "p.nombre LIKE '%" + f.getbNombre() + "%'";
+                    query2 += "AND ";
                 }
+                query2 += "p.nombre LIKE CONCAT('%',?,'%')";
             }
             if (query2.isEmpty() != true) {
                 query += " WHERE " + query2;
             }
 
-            System.out.println("***********************************************");
-            System.out.println("*****       Cargando grilla  GR_DEPARTAMENTO  *****");
-            System.out.println("***********************************************");
-
-            System.out.println(query);
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            psSelectConClave = cn.prepareStatement(query);
+            if (f.getbIdDepartamento().isEmpty() != true) {
+                psSelectConClave.setString(1, f.getbIdDepartamento());
+                if (f.getbIdPais().isEmpty() != true) {
+                    psSelectConClave.setString(2, f.getbIdPais());
+                    if (f.getbNombre().isEmpty() != true) {
+                        psSelectConClave.setString(3, f.getbNombre());
+                    }
+                } else {
+                    if (f.getbNombre().isEmpty() != true) {
+                        psSelectConClave.setString(2, f.getbNombre());
+                    }
+                }
+            } else {
+                if (f.getbIdPais().isEmpty() != true) {
+                    psSelectConClave.setString(1, f.getbIdPais());
+                    if (f.getbNombre().isEmpty() != true) {
+                        psSelectConClave.setString(2, f.getbNombre());
+                    }
+                } else {
+                    if (f.getbNombre().isEmpty() != true) {
+                        psSelectConClave.setString(1, f.getbNombre());
+                    }
+                }
+            }
+            ResultSet rs = psSelectConClave.executeQuery();
 
             BeanDepartamento bu;
             while (rs.next()) {
@@ -258,8 +258,6 @@ public class GestionDepartamento extends ConeccionMySql {
 
             }
 
-            st.close();
-
             if (transac == false) { // si no es una transaccion cierra la conexion
 
                 cn.close();
@@ -274,11 +272,11 @@ public class GestionDepartamento extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -291,6 +289,7 @@ public class GestionDepartamento extends ConeccionMySql {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psUpdate = null;
 
         try {
 
@@ -317,17 +316,15 @@ public class GestionDepartamento extends ConeccionMySql {
 
             }
 
-            String query = "UPDATE departamentos SET nombre = '" + f.getNombre() + "'";
-            query += " WHERE idDepartamento = '" + f.getIdDepartamento() + "' AND idPais = '" + f.getIdPais() + "'";
+            String query = "UPDATE departamentos SET nombre = ?";
+            query += " WHERE idDepartamento = ? AND AND idPais = ?";
+            psUpdate = cn.prepareStatement(query);
+            psUpdate.setString(1, f.getNombre());
+            psUpdate.setString(2, f.getIdDepartamento());
+            psUpdate.setString(3, f.getIdPais());
+            psUpdate.executeUpdate();
 
-
-            System.out.println(query);
-            st = cn.createStatement();
-
-            st.executeUpdate(query);
-            mod = st.getUpdateCount();
-
-            st.close();
+            mod = psUpdate.getUpdateCount();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -343,11 +340,11 @@ public class GestionDepartamento extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -360,6 +357,7 @@ public class GestionDepartamento extends ConeccionMySql {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psDelete = null;
 
         try {
 
@@ -386,17 +384,12 @@ public class GestionDepartamento extends ConeccionMySql {
 
             }
 
-            String query = "DELETE FROM departamentos ";
-            query += "WHERE idDepartamento = '" + f.getIdDepartamento() + "' AND idPais = '" + f.getIdPais() + "'";
+            psDelete = cn.prepareStatement("DELETE FROM departamentos WHERE idDepartamento = ? AND AND idPais = ?");
+            psDelete.setString(1, f.getIdDepartamento());
+            psDelete.setString(2, f.getIdPais());
+            psDelete.executeUpdate();
 
-
-            System.out.println(query);
-            st = cn.createStatement();
-
-            st.executeUpdate(query);
-            mod = st.getUpdateCount();
-
-            st.close();
+            mod = psDelete.getUpdateCount();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -412,12 +405,12 @@ public class GestionDepartamento extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
-       } finally {
+
+        } finally {
 
             return resultado;
 
@@ -431,6 +424,7 @@ public class GestionDepartamento extends ConeccionMySql {
         BeanDepartamento bu;
         bu = new BeanDepartamento();
         boolean encontro = false;
+        PreparedStatement psSelectConClave = null;
 
         try {
 
@@ -457,33 +451,24 @@ public class GestionDepartamento extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idDepartamento, p.idPais ";
-            query += "FROM departamentos p ";
-            query += "WHERE ";
-            query += "p.idDepartamento = '" + idDepartamento + "' ";
-            query += "AND p.idPais = '" + idPais + "' ";
+            psSelectConClave = cn.prepareStatement("SELECT p.idDepartamento, p.idPais FROM departamentos p WHERE p.idDepartamento = ? AND p.idPais = ?");
+            psSelectConClave.setString(1, idDepartamento);
+            psSelectConClave.setString(2, idPais);
+            ResultSet rs = psSelectConClave.executeQuery();
 
-            System.out.println("***********************************************");
-            System.out.println("*****       Buscar idDepartamento  *****");
-            System.out.println("***********************************************");
-
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
             while (rs.next()) {
                 bu = new BeanDepartamento();
 
                 bu.setIdDepartamento(rs.getObject("p.idDepartamento"));
                 bu.setIdPais(rs.getObject("p.idPais"));
-                String p =(String) bu.getIdDepartamento();
-                String p2 =(String) bu.getIdPais();
-                if (p.equals(idDepartamento) && p2.equals(idPais)){
+                String p = (String) bu.getIdDepartamento();
+                String p2 = (String) bu.getIdPais();
+                if (p.equals(idDepartamento) && p2.equals(idPais)) {
                     encontro = true;
                 }
-                
+
 
             }
-
-            st.close();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -511,10 +496,11 @@ public class GestionDepartamento extends ConeccionMySql {
         }
 
     }
-    
+
     public ArrayList<Object> MostrarDepartamentoFormulario(String IdDepartamento, String IdPais, Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psSelectConClave = null;
 
         try {
 
@@ -541,18 +527,10 @@ public class GestionDepartamento extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idDepartamento, p.idPais, p.nombre ";
-            query += "FROM departamentos p ";
-            query += "WHERE p.idDepartamento = '" + IdDepartamento + "' AND p.idPais = '" + IdPais + "'";
-
-
-            System.out.println("***********************************************");
-            System.out.println("*****       MostrarDepartamentoFormulario     *****");
-            System.out.println("***********************************************");
-
-            System.out.println(query);
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            psSelectConClave = cn.prepareStatement("SELECT p.idDepartamento, p.idPais, p.nombre FROM departamentos p WHERE p.idDepartamento = ? AND p.idPais = ?");
+            psSelectConClave.setString(1, IdDepartamento);
+            psSelectConClave.setString(2, IdPais);
+            ResultSet rs = psSelectConClave.executeQuery();
 
             BeanDepartamento bu;
             while (rs.next()) {
@@ -563,8 +541,6 @@ public class GestionDepartamento extends ConeccionMySql {
                 setNombre(rs.getObject("p.nombre"));
 
             }
-
-            st.close();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -579,11 +555,11 @@ public class GestionDepartamento extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -606,11 +582,11 @@ public class GestionDepartamento extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -698,7 +674,6 @@ public class GestionDepartamento extends ConeccionMySql {
         }
 
     }
-
 //    private ArrayList<Object> GR_USUARIOS2;
 //
 //    public ArrayList<Object> MostrarUsuarios2(String aux, String aux2) {
@@ -751,7 +726,6 @@ public class GestionDepartamento extends ConeccionMySql {
 //        return GR_USUARIOS2;
 //    }
 //}
-
     private Object idDepartamento;
     private Object idPais;
     private Object nombre;

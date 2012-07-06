@@ -46,7 +46,7 @@
         <script type="text/javascript">
             $(function(){ 
                 jQuery("#list4").jqGrid({
-                    url:'Jsp/PlantillaDispositovo/getGriddahicoOp.jsp?op=bus',
+                    url:'Jsp/PlantillaDispositivo/getGriddahicoOp.jsp?op=bus',
                     datatype: "json",
                     colNames:['ID', 'Nombre', 'Puede se Hija', 'Editar'],
                     colModel:[
@@ -93,8 +93,8 @@
                 <legend>Consulta de Plantillas de Dispositivos</legend>
                 <table>
                     <tr>
-                        <td>Nombre de la Plantilla<input type="text" name="bNombre" value="<%= session.getAttribute("getbNombre")%>"/> </td>
-                        <td>Puede se Hija?<html:select property="bHija" styleId="bHija" size="1" style="width:240px;" value='<%= session.getAttribute("getbHija")%>'>
+                        <td>Nombre de la Plantilla<input size="45" type="text" name="bNombre" value="<%= session.getAttribute("getbNombre")%>"/> </td>
+                        <td>Puede se Hija?<html:select property="bHija" styleId="bHija" size="1" style="width:80px;" value='<%= (String) session.getAttribute("getbHija")%>'>
                                 <html:option value=""><c:out value='[Todos]'/></html:option>
                                 <html:option value="true"><c:out value='Si'/></html:option>
                                 <html:option value="false"><c:out value='No'/></html:option>

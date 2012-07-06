@@ -34,6 +34,7 @@
         if ((Boolean) resultado.get(0) == false) {
 
             ArrayList<Object> GR_AUT = (ArrayList) resultado.get(1);
+            session.setAttribute("CMB_MUNICIPIO", (ArrayList) resultado.get(1));
             BeanMunicipio buMunicipio2;
             json = "";
 

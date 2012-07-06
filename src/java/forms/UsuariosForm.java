@@ -12,20 +12,20 @@ import org.apache.struts.action.ActionForm;
  * @author Mario
  */
 public class UsuariosForm extends ActionForm{
-    private String idUsuario;
+    private int idUsuario;
     private String login;
     private String password;
-    private String idTipoDocumento;
-    private String identificacion;
-    private String idRol;
+    private int idTipoDocumento;
+    private int identificacion;
+    private int idRol;
     private String op;
     private String actPassword;
 
-    public String getIdUsuario() {
+    public int getIdUsuario() {
         return idUsuario;
     }
 
-    public void setIdUsuario(String idUsuario) {
+    public void setIdUsuario(int idUsuario) {
         this.idUsuario = idUsuario;
     }
 
@@ -53,27 +53,27 @@ public class UsuariosForm extends ActionForm{
         this.password = password;
     }
 
-    public String getIdRol() {
+    public int getIdRol() {
         return idRol;
     }
 
-    public void setIdRol(String idRol) {
+    public void setIdRol(int idRol) {
         this.idRol = idRol;
     }
 
-    public String getIdTipoDocumento() {
+    public int getIdTipoDocumento() {
         return idTipoDocumento;
     }
 
-    public void setIdTipoDocumento(String idTipoDocumento) {
+    public void setIdTipoDocumento(int idTipoDocumento) {
         this.idTipoDocumento = idTipoDocumento;
     }
 
-    public String getIdentificacion() {
+    public int getIdentificacion() {
         return identificacion;
     }
 
-    public void setIdentificacion(String identificacion) {
+    public void setIdentificacion(int identificacion) {
         this.identificacion = identificacion;
     }
 

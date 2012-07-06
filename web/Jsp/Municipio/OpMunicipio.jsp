@@ -106,13 +106,13 @@
                         <td><a class="boton" href="javascript:nuevo()">Nuevo</a></td>
                     </tr>
                     <tr>
-                        <td>Pais<html:select property="bIdPais" styleId="bIdPais" size="1" style="width:240px;" value='<%= String.valueOf(request.getAttribute("getbIdPais"))%>'>
+                        <td>Pais<html:select property="bIdPais" styleId="bIdPais" size="1" style="width:240px;" value='<%= String.valueOf(session.getAttribute("getbIdPais"))%>'>
                                 <html:option value=""><c:out value='[Todos]'/></html:option>    
                                 <c:forEach items="${CMB_PAIS}" var="cat">
                                     <html:option value="${cat.idPais}"><c:out value='${cat.nombre}'/></html:option>
                                 </c:forEach>
                         </html:select></td>
-                        <td>Departamento<html:select property="bIdDepartamento" styleId="bIdDepartamento" size="1" style="width:240px;" value='<%= String.valueOf(request.getAttribute("getbIdDepartamento"))%>'>
+                        <td>Departamento<html:select property="bIdDepartamento" styleId="bIdDepartamento" size="1" style="width:240px;" value='<%= String.valueOf(session.getAttribute("getbIdDepartamento"))%>'>
                                 <html:option value=""><c:out value='[Todos]'/></html:option>    
                                 <c:forEach items="${CMB_DEPARTAMENTO}" var="cat">
                                     <html:option value="${cat.idDepartamento}"><c:out value='${cat.nombre}'/></html:option>

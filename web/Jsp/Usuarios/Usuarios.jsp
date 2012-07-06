@@ -63,14 +63,7 @@
                             }
                         },
                         idTipoDocumento : {
-                            required : true,
-                            remote: { 
-                                url: "Jsp/Usuarios/getUsuario.jsp", //valida si existe la identificacion
-                                type: "post", 
-                                data: { 
-                                    identificacion: function() { return $("#identificacion").val() } 
-                                } 
-                            }
+                            required : true
                         },
                         identificacion : {
                             required : true,

@@ -25,11 +25,12 @@
     boolean op2 = (Boolean) Boolean.valueOf(request.getParameter("lectura"));
     String op3 = request.getParameter("idTipoDocumento");
     if (op != null && op.equals("") == false) {
-        String id = String.valueOf(op);
+        int id = Integer.parseInt(op);
+        int id2 = Integer.parseInt(op3);
 
         GestionEntidad gr = new GestionEntidad();
         ArrayList<Object> resultado = new ArrayList<Object>();
-        resultado = gr.BuscarEntidad(op3, id, false, null);
+        resultado = gr.BuscarEntidad(id2, id, false, null);
         if ((Boolean) resultado.get(0) == false) {
             if ((Boolean) resultado.get(1) == true) {
                 if (op2 == false) {

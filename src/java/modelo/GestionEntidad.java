@@ -4,14 +4,10 @@
  */
 package modelo;
 
-import forms.EntidadOpForm;
 import forms.EntidadForm;
+import forms.EntidadOpForm;
 import forms.bean.BeanEntidad;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.text.SimpleDateFormat;
+import java.sql.*;
 import java.util.ArrayList;
 import util.ConeccionMySql;
 
@@ -28,6 +24,7 @@ public class GestionEntidad extends ConeccionMySql {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psInsertar = null;
 
         try {
 
@@ -54,32 +51,30 @@ public class GestionEntidad extends ConeccionMySql {
 
             }
 
-            String query = "insert into entidad     (primerNombre, segundoNombre, primerApellido, segundoApellido, idTipoDocumento, identificacion, razonSocial, idPais, idDepartamento, idMunicipio, direccion, telefono, email, idTipoEntidad"
-                    + ") "
-                    + "values('"
-                    + f.getPrimerNombre() + "' ,'"
-                    + f.getSegundoNombre() + "' ,'"
-                    + f.getPrimerApellido() + "' ,'"
-                    + f.getSegundoApellido() + "' ,"
-                    + f.getIdTipoDocumento() + " , "
-                    + f.getIdentificacion() + ", '"
-                    + f.getRazonSocial() + "', '"
-                    + f.getIdPais() + "', '"
-                    + f.getIdDepartamento() + "', '"
-                    + f.getIdMunicipio() + "', '"
-                    + f.getDireccion() + "', '"
-                    + f.getTelefono() + "', '"
-                    + f.getEmail() + "', "
-                    + f.getIdTipoEntidad()
-                    + ")";
+            psInsertar = cn.prepareStatement("insert into entidad (idEntidad, primerNombre, segundoNombre, primerApellido, segundoApellido, idTipoDocumento, identificacion, razonSocial, idPais, idDepartamento, idMunicipio, direccion, telefono, email, idTipoEntidad) values (null,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
+            psInsertar.setString(1, f.getPrimerNombre());
+            psInsertar.setString(2, f.getSegundoNombre());
+            psInsertar.setString(3, f.getPrimerApellido());
+            psInsertar.setString(4, f.getSegundoApellido());
+            psInsertar.setInt(5, f.getIdTipoDocumento());
+            psInsertar.setInt(6, f.getIdentificacion());
+            psInsertar.setString(7, f.getRazonSocial());
+            psInsertar.setString(8, f.getIdPais());
+            psInsertar.setString(9, f.getIdDepartamento());
+            psInsertar.setString(10, f.getIdMunicipio());
+            psInsertar.setString(11, f.getDireccion());
+            psInsertar.setString(12, f.getTelefono());
+            psInsertar.setString(13, f.getEmail());
+            psInsertar.setInt(14, f.getIdTipoEntidad());
+            psInsertar.executeUpdate(); // Se ejecuta la inserción.
 
-            System.out.println(query);
-            st = cn.createStatement();
-
-            st.execute(query);
-            mod = st.getUpdateCount();
-
-            st.close();
+            // Se obtiene la clave generada
+            int claveGenerada = -1;
+            ResultSet rs = psInsertar.getGeneratedKeys();
+            while (rs.next()) {
+                claveGenerada = rs.getInt(1);
+            }
+            mod = psInsertar.getUpdateCount();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -88,6 +83,7 @@ public class GestionEntidad extends ConeccionMySql {
             }
 
             resultado.add(false); //si no hubo un error asigna false
+            resultado.add(claveGenerada); // clave generada
             resultado.add(mod); // y el numero de registros consultados
 
         } catch (SQLException e) {
@@ -95,11 +91,11 @@ public class GestionEntidad extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -112,12 +108,12 @@ public class GestionEntidad extends ConeccionMySql {
     public ArrayList<Object> BuscarEntidad(EntidadForm fo, Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
-        
         BeanEntidad bu;
         bu = new BeanEntidad();
+        PreparedStatement psSelectConClave = null;
 
         try {
-            
+
             if (transac == false) { //si no es una transaccion busca una nueva conexion
 
                 ArrayList<Object> resultad = new ArrayList<Object>();
@@ -141,17 +137,13 @@ public class GestionEntidad extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idEntidad, p.primerNombre, p.segundoNombre, p.primerApellido, p.segundoApellido, p.idTipoDocumento, p.identificacion, p.razonSocial, p.idPais, p.idDepartamento, p.idMunicipio, p.direccion, p.telefono, p.email, p.idTipoEntidad ";
-            query += "FROM entidad p ";
-            query += "WHERE ";
-            query += "p.identificacion = " + fo.getIdentificacion();
-
             System.out.println("***********************************************");
             System.out.println("*****       Buscar Entidad  *****");
             System.out.println("***********************************************");
 
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            psSelectConClave = cn.prepareStatement("SELECT p.idEntidad, p.primerNombre, p.segundoNombre, p.primerApellido, p.segundoApellido, p.idTipoDocumento, p.identificacion, p.razonSocial, p.idPais, p.idDepartamento, p.idMunicipio, p.direccion, p.telefono, p.email, p.idTipoEntidad FROM entidad p WHERE p.identificacion=?");
+            psSelectConClave.setInt(1, fo.getIdentificacion());
+            ResultSet rs = psSelectConClave.executeQuery();
 
             while (rs.next()) {
                 bu = new BeanEntidad();
@@ -172,8 +164,6 @@ public class GestionEntidad extends ConeccionMySql {
 
             }
 
-            st.close();
-
             if (transac == false) { // si no es una transaccion cierra la conexion
 
                 cn.close();
@@ -188,11 +178,11 @@ public class GestionEntidad extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -201,15 +191,16 @@ public class GestionEntidad extends ConeccionMySql {
 
     }
 
-    public ArrayList<Object> BuscarEntidad(String idTipoDocumento, String identificacion, Boolean transac, Connection tCn) {
+    public ArrayList<Object> BuscarEntidad(int idTipoDocumento, int identificacion, Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
         BeanEntidad bu;
         bu = new BeanEntidad();
         boolean encontro = false;
-        
+        PreparedStatement psSelectConClave = null;
+
         try {
-            
+
             if (transac == false) { //si no es una transaccion busca una nueva conexion
 
                 ArrayList<Object> resultad = new ArrayList<Object>();
@@ -233,32 +224,27 @@ public class GestionEntidad extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idTipoDocumento, p.identificacion ";
-            query += "FROM entidad p ";
-            query += "WHERE ";
-            query += "p.idTipoDocumento = " + idTipoDocumento + " AND p.identificacion = " + identificacion;
-
             System.out.println("***********************************************");
             System.out.println("*****       Buscar Entidad  *****");
             System.out.println("***********************************************");
 
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            psSelectConClave = cn.prepareStatement("SELECT p.idTipoDocumento, p.identificacion FROM entidad p WHERE p.idTipoDocumento=? AND p.identificacion=?");
+            psSelectConClave.setInt(1, idTipoDocumento);
+            psSelectConClave.setInt(2, identificacion);
+            ResultSet rs = psSelectConClave.executeQuery();
 
             while (rs.next()) {
                 bu = new BeanEntidad();
 
                 bu.setIdTipoDocumento(rs.getObject("p.idTipoDocumento"));
                 bu.setIdentificacion(rs.getObject("p.identificacion"));
-                
-                String p =(String) bu.getIdTipoDocumento().toString();
-                String p2 =(String) bu.getIdentificacion().toString();
-                if ((p.equals(idTipoDocumento)) && (p2.equals(identificacion))){
+
+                int p = Integer.parseInt(bu.getIdTipoDocumento().toString());
+                int p2 = Integer.parseInt(bu.getIdentificacion().toString());
+                if (p == idTipoDocumento && p2 == identificacion) {
                     encontro = true;
                 }
             }
-
-            st.close();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -274,11 +260,11 @@ public class GestionEntidad extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -290,11 +276,12 @@ public class GestionEntidad extends ConeccionMySql {
     public ArrayList<Object> MostrarEntidad(EntidadOpForm f, Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
-        
+        PreparedStatement psSelectConClave = null;
+
         try {
-            
+
             GR_ENTIDAD = new ArrayList<Object>();
-            
+
             if (transac == false) { //si no es una transaccion busca una nueva conexion
 
                 ArrayList<Object> resultad = new ArrayList<Object>();
@@ -322,33 +309,61 @@ public class GestionEntidad extends ConeccionMySql {
             query += "FROM entidad p INNER JOIN tipoDocumento r ON p.idTipoDocumento = r.idTipoDocumento ";
             String query2 = "";
             if (f.getbNombre().isEmpty() != true) {
-                query2 = "nombre LIKE '%" + f.getbNombre() + "%'";
+                query2 += "(p.primernombre LIKE CONCAT('%',?,'%')";
+                query2 += " OR p.segundonombre LIKE CONCAT('%',?,'%')";
+                query2 += " OR p.primerapellido LIKE CONCAT('%',?,'%')";
+                query2 += " OR p.segundonombre LIKE CONCAT('%',?,'%')";
+                query2 += " OR p.razonsocial LIKE CONCAT('%',?,'%'))";
             }
             if (f.getbIdTipoDocumento().isEmpty() != true) {
                 if (query2.isEmpty() != true) {
-                    query2 += "AND p.idTipoDocumento LIKE '%" + f.getbIdTipoDocumento() + "%'";
-                } else {
-                    query2 = "p.idTipoDocumento LIKE '%" + f.getbIdTipoDocumento() + "%'";
+                    query2 += "AND ";
                 }
+                query2 += "p.idTipoDocumento LIKE CONCAT('%',?,'%')";
             }
             if (f.getbIdentificacion().isEmpty() != true) {
                 if (query2.isEmpty() != true) {
-                    query2 += "AND p.identificacion LIKE '%" + f.getbIdentificacion() + "%'";
-                } else {
-                    query2 = "p.identificacion LIKE '%" + f.getbIdentificacion() + "%'";
+                    query2 += "AND ";
                 }
+                query2 += "p.identificacion LIKE CONCAT('%',?,'%')";
             }
             if (query2.isEmpty() != true) {
-                query += "WHERE " + query2;
+                query += " WHERE " + query2;
             }
 
             System.out.println("***********************************************");
             System.out.println("*****       Cargando grilla  GR_ENTIDAD  *****");
             System.out.println("***********************************************");
-
-            System.out.println(query);
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            psSelectConClave = cn.prepareStatement(query);
+            if (f.getbNombre().isEmpty() != true) {
+                psSelectConClave.setString(1, f.getbNombre());
+                psSelectConClave.setString(2, f.getbNombre());
+                psSelectConClave.setString(3, f.getbNombre());
+                psSelectConClave.setString(4, f.getbNombre());
+                psSelectConClave.setString(5, f.getbNombre());
+                if (f.getbIdTipoDocumento().isEmpty() != true) {
+                    psSelectConClave.setString(6, f.getbIdTipoDocumento());
+                    if (f.getbIdentificacion().isEmpty() != true) {
+                        psSelectConClave.setString(7, f.getbIdentificacion());
+                    }
+                } else {
+                    if (f.getbIdentificacion().isEmpty() != true) {
+                        psSelectConClave.setString(6, f.getbIdentificacion());
+                    }
+                }
+            } else {
+                if (f.getbIdTipoDocumento().isEmpty() != true) {
+                    psSelectConClave.setString(1, f.getbIdTipoDocumento());
+                    if (f.getbIdentificacion().isEmpty() != true) {
+                        psSelectConClave.setString(2, f.getbIdentificacion());
+                    }
+                } else {
+                    if (f.getbIdentificacion().isEmpty() != true) {
+                        psSelectConClave.setString(1, f.getbIdentificacion());
+                    }
+                }
+            }
+            ResultSet rs = psSelectConClave.executeQuery();
 
             BeanEntidad bu;
             while (rs.next()) {
@@ -364,8 +379,6 @@ public class GestionEntidad extends ConeccionMySql {
 
             }
 
-            st.close();
-
             if (transac == false) { // si no es una transaccion cierra la conexion
 
                 cn.close();
@@ -380,24 +393,25 @@ public class GestionEntidad extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
 
         }
-        
+
     }
 
     public ArrayList<Object> ModificaEntidad(EntidadForm f, Boolean transac, Connection tCn) {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
-        
+        PreparedStatement psUpdate = null;
+
         try {
 
             if (transac == false) { //si no es una transaccion busca una nueva conexion
@@ -423,30 +437,40 @@ public class GestionEntidad extends ConeccionMySql {
 
             }
 
-            String query = "UPDATE entidad SET primerNombre = '" + f.getPrimerNombre();
-            query += "', SegundoNombre ='" + f.getSegundoNombre();
-            query += "', PrimerApellido ='" + f.getPrimerApellido();
-            query += "', SegundoApellido ='" + f.getSegundoApellido();
-            query += "', idTipoDocumento =" + f.getIdTipoDocumento();
-            query += ", identificacion=" + f.getIdentificacion();
-            query += ", razonSocial='" + f.getRazonSocial();
-            query += "', idPais='" + f.getIdPais();
-            query += "', idDepartamento='" + f.getIdDepartamento();
-            query += "', idMunicipio='" + f.getIdMunicipio();
-            query += "', direccion='" + f.getDireccion();
-            query += "', telefono='" + f.getTelefono();
-            query += "', email='" + f.getEmail();
-            query += "', idTipoEntidad=" + f.getIdTipoEntidad();
-            query += " WHERE idEntidad=" + f.getIdEntidad();
+            String query = "UPDATE entidad SET primerNombre = ?";
+            query += ", SegundoNombre =?";
+            query += ", PrimerApellido =?";
+            query += ", SegundoApellido =?";
+            query += ", idTipoDocumento =?";
+            query += ", identificacion=?";
+            query += ", razonSocial=?";
+            query += ", idPais=?";
+            query += ", idDepartamento=?";
+            query += ", idMunicipio=?";
+            query += ", direccion=?";
+            query += ", telefono=?";
+            query += ", email=?";
+            query += ", idTipoEntidad=?";
+            query += " WHERE idEntidad=?";
+            psUpdate = cn.prepareStatement(query);
+            psUpdate.setString(1, f.getPrimerNombre());
+            psUpdate.setString(2, f.getSegundoNombre());
+            psUpdate.setString(3, f.getPrimerApellido());
+            psUpdate.setString(4, f.getSegundoApellido());
+            psUpdate.setInt(5, f.getIdTipoDocumento());
+            psUpdate.setInt(6, f.getIdentificacion());
+            psUpdate.setString(7, f.getRazonSocial());
+            psUpdate.setString(8, f.getIdPais());
+            psUpdate.setString(9, f.getIdDepartamento());
+            psUpdate.setString(10, f.getIdMunicipio());
+            psUpdate.setString(11, f.getDireccion());
+            psUpdate.setString(12, f.getTelefono());
+            psUpdate.setString(13, f.getEmail());
+            psUpdate.setInt(14, f.getIdTipoEntidad());
+            psUpdate.setInt(15, f.getIdEntidad());
+            psUpdate.executeUpdate();
 
-
-            System.out.println(query);
-            st = cn.createStatement();
-
-            st.executeUpdate(query);
-            mod = st.getUpdateCount();
-
-            st.close();
+            mod = psUpdate.getUpdateCount();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -462,11 +486,11 @@ public class GestionEntidad extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -479,7 +503,8 @@ public class GestionEntidad extends ConeccionMySql {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
-        
+        PreparedStatement psDelete = null;
+
         try {
 
             if (transac == false) { //si no es una transaccion busca una nueva conexion
@@ -505,17 +530,11 @@ public class GestionEntidad extends ConeccionMySql {
 
             }
 
-            String query = "DELETE FROM entidad ";
-            query += "WHERE  idEntidad = " + f.getIdEntidad();
+            psDelete = cn.prepareStatement("DELETE FROM entidad WHERE  idEntidad =?");
+            psDelete.setInt(1, f.getIdEntidad());
+            psDelete.executeUpdate();
 
-
-            System.out.println(query);
-            st = cn.createStatement();
-
-            st.executeUpdate(query);
-            mod = st.getUpdateCount();
-
-            st.close();
+            mod = psDelete.getUpdateCount();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -531,11 +550,11 @@ public class GestionEntidad extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -544,13 +563,14 @@ public class GestionEntidad extends ConeccionMySql {
 
     }
 
-    public ArrayList<Object> MostrarEntidadFormulario(String IdEntidad, Boolean transac, Connection tCn) {
+    public ArrayList<Object> MostrarEntidadFormulario(int IdEntidad, Boolean transac, Connection tCn) {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
-        
+        PreparedStatement psSelectConClave = null;
+
         try {
-            
+
             if (transac == false) { //si no es una transaccion busca una nueva conexion
 
                 ArrayList<Object> resultad = new ArrayList<Object>();
@@ -574,18 +594,13 @@ public class GestionEntidad extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idEntidad, p.primerNombre, p.segundoNombre, p.primerApellido, p.segundoApellido, p.idTipoDocumento, p.identificacion, p.razonSocial, p.idPais, p.idDepartamento, p.idMunicipio, p.direccion, p.telefono, p.email, p.idTipoEntidad ";
-            query += "FROM entidad p ";
-            query += "WHERE  p.idEntidad = " + IdEntidad;
-
-
             System.out.println("***********************************************");
             System.out.println("*****       MostrarEntidadFormulario     *****");
             System.out.println("***********************************************");
 
-            System.out.println(query);
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            psSelectConClave = cn.prepareStatement("SELECT p.idEntidad, p.primerNombre, p.segundoNombre, p.primerApellido, p.segundoApellido, p.idTipoDocumento, p.identificacion, p.razonSocial, p.idPais, p.idDepartamento, p.idMunicipio, p.direccion, p.telefono, p.email, p.idTipoEntidad FROM entidad p WHERE  p.idEntidad =?");
+            psSelectConClave.setInt(1, IdEntidad);
+            ResultSet rs = psSelectConClave.executeQuery();
 
             BeanEntidad bu;
             while (rs.next()) {
@@ -609,8 +624,6 @@ public class GestionEntidad extends ConeccionMySql {
 
             }
 
-            st.close();
-
             if (transac == false) { // si no es una transaccion cierra la conexion
 
                 cn.close();
@@ -625,11 +638,11 @@ public class GestionEntidad extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -637,7 +650,7 @@ public class GestionEntidad extends ConeccionMySql {
         }
 
     }
-    
+
     public ArrayList<Object> commint(Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
@@ -652,11 +665,11 @@ public class GestionEntidad extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -744,7 +757,6 @@ public class GestionEntidad extends ConeccionMySql {
         }
 
     }
-    
 //    private ArrayList<Object> GR_USUARIOS2;
 //
 //    public ArrayList<Object> MostrarUsuarios2(String aux, String aux2) {
@@ -899,7 +911,7 @@ public class GestionEntidad extends ConeccionMySql {
     public void setIdPais(Object idPais) {
         this.idPais = idPais;
     }
-    
+
     public Object getIdDepartamento() {
         return idDepartamento;
     }
@@ -931,5 +943,4 @@ public class GestionEntidad extends ConeccionMySql {
     public void setTelefono(Object telefono) {
         this.telefono = telefono;
     }
-
 }

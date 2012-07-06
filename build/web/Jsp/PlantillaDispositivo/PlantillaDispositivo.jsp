@@ -166,21 +166,28 @@
     </head>
     <body>
         <div >
-            <html:form action="/PlantillaDispositivio" method="post" styleId="forma">
+            <html:form action="/PlantillaDispositivo" method="post" styleId="forma">
 
                 <input type="hidden" name="op" value=""> 
-                <input type="hidden" name="idPlantillaDispositivio" value='<%= String.valueOf(request.getAttribute("getIdPlantillaDispositivio"))%>'> 
+                <input type="hidden" name="idPlantillaDispositivo" value='<%= String.valueOf(request.getAttribute("getIdPlantillaDispositivo"))%>'> 
 
                 <fieldset>
-                    <legend>Ingreso de Plantilla de Dispositivio</legend>
+                    <legend>Ingreso de Plantilla de Dispositivo</legend>
 
                     <table>
                         <tr>
                             <td colspan="2" class="text">Nombre de la Plantilla</td>
                             <td><html:text property="nombre" styleId="nombre" value='<%= String.valueOf(request.getAttribute("getNombre"))%>'></html:text></td>
                         </tr>
+                        <tr>
+                            <td colspan="2" class="text">Puede ser Hija?</td>
+                            <td><html:select property="hija" styleId="hija" size="1" style="width:80px;" value='<%= (String) session.getAttribute("getHija")%>'>
+                                    <html:option value="true"><c:out value='Si'/></html:option>
+                                    <html:option value="false"><c:out value='No'/></html:option>
+                                </html:select></td>
+                        </tr>
                         <%
-                            if (request.getAttribute("getIdPlantillaDispositivio") != "") {
+                            if (request.getAttribute("getIdPlantillaDispositivo") != "") {
                         %>
                         <tr>
                             <td colspan="3" class="text">Por favor establezca cuales campos son obligatorios y habilitados.</td>
@@ -192,7 +199,7 @@
                         <%  }
                         %>
                         <tr>
-                            <td colspan="3"><a class="boton" href="javascript:nuevo();">Nuevo</a> <a class="boton" id="submit" href="javascript:guardar();">Guardar</a> <% if (request.getAttribute("getIdPlantillaDispositivio") != "") {%> <a class="boton" href="javascript:eliminar();">Eliminar</a> <% }%> <a class="boton" href="javascript:atras();">Volver</a></td>
+                            <td colspan="3"><a class="boton" href="javascript:nuevo();">Nuevo</a> <a class="boton" id="submit" href="javascript:guardar();">Guardar</a> <% if (request.getAttribute("getIdPlantillaDispositivo") != "") {%> <a class="boton" href="javascript:eliminar();">Eliminar</a> <% }%> <a class="boton" href="javascript:atras();">Volver</a></td>
                         </tr>
                         <%
                             if (request.getAttribute("respuesta") != "") {

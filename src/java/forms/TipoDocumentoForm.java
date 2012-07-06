@@ -12,17 +12,17 @@ import org.apache.struts.action.ActionForm;
  * @author Mario
  */
 public class TipoDocumentoForm extends ActionForm{
-    private String idTipoDocumento;
+    private int idTipoDocumento;
     private String nombre;
     private String op;
     private boolean habilitar;
     private boolean obligatorio;
 
-    public String getIdTipoDocumento() {
+    public int getIdTipoDocumento() {
         return idTipoDocumento;
     }
 
-    public void setIdTipoDocumento(String idTipoDocumento) {
+    public void setIdTipoDocumento(int idTipoDocumento) {
         this.idTipoDocumento = idTipoDocumento;
     }
 

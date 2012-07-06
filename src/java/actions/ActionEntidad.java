@@ -5,9 +5,11 @@
 package actions;
 
 import forms.EntidadForm;
+import forms.bean.BeanTipoDocumentoAut;
 import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import modelo.GestionEntidad;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -35,6 +37,7 @@ public class ActionEntidad extends Action {
 
         EntidadForm fo = (EntidadForm) form;
         GestionEntidad gr = new GestionEntidad();
+        HttpSession session = request.getSession();
         if (fo.getOp().equals("nuevo")) {
 
             request.setAttribute("getIdEntidad", fo.getIdEntidad());
@@ -52,11 +55,25 @@ public class ActionEntidad extends Action {
             request.setAttribute("getTelefono", fo.getTelefono());
             request.setAttribute("getEmail", fo.getEmail());
             request.setAttribute("getIdTipoEntidad", fo.getIdTipoEntidad());
+            ArrayList<Object> GR_AUT = (ArrayList) session.getAttribute("CMB_TIPODOCUMENTOAUT");
+            BeanTipoDocumentoAut buTipoDocumentoAut;
+            for (int y = 0; y < GR_AUT.size(); y++) {
 
+                buTipoDocumentoAut = new BeanTipoDocumentoAut();
+                buTipoDocumentoAut = (BeanTipoDocumentoAut) GR_AUT.get(y);
+
+                if (String.valueOf(buTipoDocumentoAut.getIdTipoDocumento()).equals(String.valueOf(fo.getIdTipoDocumento()))) {
+
+                    request.setAttribute("Hab" + (String) buTipoDocumentoAut.getCampo(), buTipoDocumentoAut.getHabilitar());
+
+                }
+
+            }
             ArrayList<Object> resultado = new ArrayList<Object>();
             resultado = gr.IngresaEntidad(fo, false, null);
             if ((Boolean) resultado.get(0) == false) {
-                if ((Integer) resultado.get(1) >= 1) {
+                if ((Integer) resultado.get(2) >= 1) {
+                    request.setAttribute("getIdEntidad", resultado.get(1));
                     request.setAttribute("respuesta", "Registro ingresado correctamente.");
                     System.out.println("Action Ingreso Entidad");
                 } else {
@@ -89,15 +106,29 @@ public class ActionEntidad extends Action {
             request.setAttribute("getEmail", fo.getEmail());
             request.setAttribute("getIdTipoEntidad", fo.getIdTipoEntidad());
 
+            ArrayList<Object> GR_AUT = (ArrayList) session.getAttribute("CMB_TIPODOCUMENTOAUT");
+            BeanTipoDocumentoAut buTipoDocumentoAut;
+            for (int y = 0; y < GR_AUT.size(); y++) {
+
+                buTipoDocumentoAut = new BeanTipoDocumentoAut();
+                buTipoDocumentoAut = (BeanTipoDocumentoAut) GR_AUT.get(y);
+
+                if (String.valueOf(buTipoDocumentoAut.getIdTipoDocumento()).equals(String.valueOf(fo.getIdTipoDocumento()))) {
+
+                    request.setAttribute("Hab" + (String) buTipoDocumentoAut.getCampo(), buTipoDocumentoAut.getHabilitar());
+
+                }
+
+            }
             ArrayList<Object> resultado = new ArrayList<Object>();
             resultado = gr.ModificaEntidad(fo, false, null);
             if ((Boolean) resultado.get(0) == false) {
                 if ((Integer) resultado.get(1) >= 1) {
                     request.setAttribute("respuesta", "Registro modificado correctamente.");
-                    System.out.println("Action Modicar Entidad");
+                    System.out.println("Action Modificar Entidad");
                 } else {
                     request.setAttribute("respuesta", "Registro no fue modificado correctamente, vuelvalo a intentar o contacte al programador.");
-                    System.out.println("Action Modicar Entidad");
+                    System.out.println("Action Modificar Entidad");
                 }
                 return mapping.findForward("ok");
             } else {
@@ -113,7 +144,22 @@ public class ActionEntidad extends Action {
             resultado = gr.EliminaEntidad(fo, false, null);
             if ((Boolean) resultado.get(0) == false) {
                 if ((Integer) resultado.get(1) >= 1) {
+                    ArrayList<Object> GR_AUT = (ArrayList) session.getAttribute("CMB_TIPODOCUMENTOAUT");
+                    BeanTipoDocumentoAut buTipoDocumentoAut;
+                    BeanTipoDocumentoAut buTipoDocumentoAut2;
+                    buTipoDocumentoAut2 = (BeanTipoDocumentoAut) GR_AUT.get(0);
+                    for (int y = 0; y < GR_AUT.size(); y++) {
 
+                        buTipoDocumentoAut = new BeanTipoDocumentoAut();
+                        buTipoDocumentoAut = (BeanTipoDocumentoAut) GR_AUT.get(y);
+
+                        if (String.valueOf(buTipoDocumentoAut.getIdTipoDocumento()).equals(String.valueOf(buTipoDocumentoAut2.getIdTipoDocumento()))) {
+
+                            request.setAttribute("Hab" + (String) buTipoDocumentoAut.getCampo(), true);
+
+                        }
+
+                    }
                     request.setAttribute("getIdEntidad", "");
                     request.setAttribute("getPrimerNombre", "");
                     request.setAttribute("getSegundoNombre", "");
@@ -129,6 +175,8 @@ public class ActionEntidad extends Action {
                     request.setAttribute("getTelefono", "");
                     request.setAttribute("getEmail", "");
                     request.setAttribute("getIdTipoEntidad", "");
+                    session.setAttribute("CMB_DEPARTAMENTO", "");
+                    session.setAttribute("CMB_MUNICIPIO", "");
 
                     request.setAttribute("respuesta", "Registro elimidado correctamente.");
                     System.out.println("Action Eliminar Entidad");
@@ -150,7 +198,20 @@ public class ActionEntidad extends Action {
                     request.setAttribute("getTelefono", fo.getTelefono());
                     request.setAttribute("getEmail", fo.getEmail());
                     request.setAttribute("getIdTipoEntidad", fo.getIdTipoEntidad());
+                    ArrayList<Object> GR_AUT = (ArrayList) session.getAttribute("CMB_TIPODOCUMENTOAUT");
+                    BeanTipoDocumentoAut buTipoDocumentoAut;
+                    for (int y = 0; y < GR_AUT.size(); y++) {
 
+                        buTipoDocumentoAut = new BeanTipoDocumentoAut();
+                        buTipoDocumentoAut = (BeanTipoDocumentoAut) GR_AUT.get(y);
+
+                        if (String.valueOf(buTipoDocumentoAut.getIdTipoDocumento()).equals(String.valueOf(fo.getIdTipoDocumento()))) {
+
+                            request.setAttribute("Hab" + (String) buTipoDocumentoAut.getCampo(), buTipoDocumentoAut.getHabilitar());
+
+                        }
+
+                    }
                     request.setAttribute("respuesta", "Registro no fue eliminado correctamente, vuelvalo a intentar o contacte al programador.");
                     System.out.println("Action Eliminar Entidad");
 

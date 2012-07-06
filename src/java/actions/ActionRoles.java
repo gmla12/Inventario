@@ -45,7 +45,8 @@ public class ActionRoles extends Action {
             ArrayList<Object> resultado = new ArrayList<Object>();
             resultado = gr.IngresaRoles(fo, false, null);
             if ((Boolean) resultado.get(0) == false) {
-                if ((Integer) resultado.get(1) >= 1) {
+                if ((Integer) resultado.get(2) >= 1) {
+                    request.setAttribute("getIdRoles", resultado.get(1));
                     request.setAttribute("respuesta", "Registro ingresado correctamente.");
                     System.out.println("Action Ingreso Roles");
                 } else {

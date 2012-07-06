@@ -48,8 +48,8 @@
         op = request.getParameter("identificacion");
         op2 = request.getParameter("idTipoDocumento");
         if (op != null && op2 != null) {
-            String id = String.valueOf(op);
-            String idt = String.valueOf(op2);
+            int id = Integer.parseInt(op);
+            int idt = Integer.parseInt(op2);
 
             GestionEntidad gr = new GestionEntidad();
             ArrayList<Object> resultado = new ArrayList<Object>();

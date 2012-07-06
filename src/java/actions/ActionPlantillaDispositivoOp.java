@@ -221,6 +221,7 @@ public class ActionPlantillaDispositivoOp extends Action {
             session.setAttribute("getbNombre", "");
             session.setAttribute("getbHija", "");
             fo.setbNombre("");
+            fo.setbHija("");
 
             ArrayList<Object> resultado = new ArrayList<Object>();
             resultado = gr.MostrarPlantillaDispositivoOP(fo, false, null);

@@ -33,6 +33,7 @@
         if ((Boolean) resultado.get(0) == false) {
 
             ArrayList<Object> GR_AUT = (ArrayList) resultado.get(1);
+            session.setAttribute("CMB_DEPARTAMENTO", (ArrayList) resultado.get(1));
             BeanDepartamento buDepartamento2;
             json = "";
 

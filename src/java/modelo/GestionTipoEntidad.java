@@ -4,14 +4,10 @@
  */
 package modelo;
 
-import forms.TipoEntidadOpForm;
 import forms.TipoEntidadForm;
+import forms.TipoEntidadOpForm;
 import forms.bean.BeanTipoEntidad;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.text.SimpleDateFormat;
+import java.sql.*;
 import java.util.ArrayList;
 import util.ConeccionMySql;
 
@@ -28,6 +24,7 @@ public class GestionTipoEntidad extends ConeccionMySql {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psInsertar = null;
 
         try {
 
@@ -54,19 +51,17 @@ public class GestionTipoEntidad extends ConeccionMySql {
 
             }
 
-            String query = "insert into tipoEntidad     (nombre"
-                    + ") "
-                    + "values('"
-                    + f.getNombre() + "'"
-                    + ")";
+            psInsertar = cn.prepareStatement("insert into tipoEntidad (idTipoEntidad, nombre) values (null,?)", PreparedStatement.RETURN_GENERATED_KEYS);
+            psInsertar.setString(1, f.getNombre());
+            psInsertar.executeUpdate(); // Se ejecuta la inserción.
 
-            System.out.println(query);
-            st = cn.createStatement();
-
-            st.execute(query);
-            mod = st.getUpdateCount();
-            
-            st.close();
+            // Se obtiene la clave generada
+            int claveGenerada = -1;
+            ResultSet rs = psInsertar.getGeneratedKeys();
+            while (rs.next()) {
+                claveGenerada = rs.getInt(1);
+            }
+            mod = psInsertar.getUpdateCount();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -75,6 +70,7 @@ public class GestionTipoEntidad extends ConeccionMySql {
             }
 
             resultado.add(false); //si no hubo un error asigna false
+            resultado.add(claveGenerada); // clave Generada
             resultado.add(mod); // y el numero de registros consultados
 
         } catch (SQLException e) {
@@ -82,11 +78,11 @@ public class GestionTipoEntidad extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -99,6 +95,7 @@ public class GestionTipoEntidad extends ConeccionMySql {
     public ArrayList<Object> MostrarTipoEntidad(Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psSelectConClave = null;
 
         try {
 
@@ -127,16 +124,8 @@ public class GestionTipoEntidad extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idTipoEntidad, p.nombre ";
-            query += "FROM tipoEntidad p ";
-
-            System.out.println("***********************************************");
-            System.out.println("*****       Cargando grilla  GR_TIPOENTIDAD  *****");
-            System.out.println("***********************************************");
-
-            System.out.println(query);
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            psSelectConClave = cn.prepareStatement("SELECT p.idTipoEntidad, p.nombre FROM tipoEntidad p ");
+            ResultSet rs = psSelectConClave.executeQuery();
 
             BeanTipoEntidad bu;
             while (rs.next()) {
@@ -149,8 +138,6 @@ public class GestionTipoEntidad extends ConeccionMySql {
 
 
             }
-
-            st.close();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -166,11 +153,11 @@ public class GestionTipoEntidad extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -182,6 +169,7 @@ public class GestionTipoEntidad extends ConeccionMySql {
     public ArrayList<Object> MostrarTipoEntidadOP(TipoEntidadOpForm f, Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psSelectConClave = null;
 
         try {
 
@@ -214,19 +202,16 @@ public class GestionTipoEntidad extends ConeccionMySql {
             query += "FROM tipoEntidad p ";
             String query2 = "";
             if (f.getbNombre().isEmpty() != true) {
-                query2 = "p.nombre LIKE '%" + f.getbNombre() + "%'";
+                query2 = "p.nombre LIKE CONCAT('%',?,'%')";
             }
             if (query2.isEmpty() != true) {
                 query += "WHERE " + query2;
             }
-
-            System.out.println("***********************************************");
-            System.out.println("*****       Cargando grilla  GR_TIPOENTIDAD  *****");
-            System.out.println("***********************************************");
-
-            System.out.println(query);
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            psSelectConClave = cn.prepareStatement(query);
+            if (f.getbNombre().isEmpty() != true) {
+                psSelectConClave.setString(1, f.getbNombre());
+            }
+            ResultSet rs = psSelectConClave.executeQuery();
 
             BeanTipoEntidad bu;
             while (rs.next()) {
@@ -239,8 +224,6 @@ public class GestionTipoEntidad extends ConeccionMySql {
                 GR_TIPOENTIDAD.add(bu);
 
             }
-
-            st.close();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -256,11 +239,11 @@ public class GestionTipoEntidad extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -273,6 +256,7 @@ public class GestionTipoEntidad extends ConeccionMySql {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psUpdate = null;
 
         try {
 
@@ -299,17 +283,14 @@ public class GestionTipoEntidad extends ConeccionMySql {
 
             }
 
-            String query = "UPDATE tipoEntidad SET nombre = '" + f.getNombre() + "'";
-            query += " WHERE idTipoEntidad=" + f.getIdTipoEntidad();
+            String query = "UPDATE tipoEntidad SET nombre = ?";
+            query += " WHERE idTipoEntidad = ?";
+            psUpdate = cn.prepareStatement(query);
+            psUpdate.setString(1, f.getNombre());
+            psUpdate.setInt(2, f.getIdTipoEntidad());
+            psUpdate.executeUpdate();
 
-
-            System.out.println(query);
-            st = cn.createStatement();
-
-            st.executeUpdate(query);
-            mod = st.getUpdateCount();
-
-            st.close();
+            mod = psUpdate.getUpdateCount();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -325,11 +306,11 @@ public class GestionTipoEntidad extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -342,6 +323,7 @@ public class GestionTipoEntidad extends ConeccionMySql {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psDelete = null;
 
         try {
 
@@ -368,17 +350,11 @@ public class GestionTipoEntidad extends ConeccionMySql {
 
             }
 
-            String query = "DELETE FROM tipoEntidad ";
-            query += "WHERE  idTipoEntidad = " + f.getIdTipoEntidad();
+            psDelete = cn.prepareStatement("DELETE FROM tipoEntidad WHERE  idTipoEntidad = ?");
+            psDelete.setInt(1, f.getIdTipoEntidad());
+            psDelete.executeUpdate();
 
-
-            System.out.println(query);
-            st = cn.createStatement();
-
-            st.executeUpdate(query);
-            mod = st.getUpdateCount();
-
-            st.close();
+            mod = psDelete.getUpdateCount();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -394,12 +370,12 @@ public class GestionTipoEntidad extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
-       } finally {
+
+        } finally {
 
             return resultado;
 
@@ -407,9 +383,10 @@ public class GestionTipoEntidad extends ConeccionMySql {
 
     }
 
-    public ArrayList<Object> MostrarTipoEntidadFormulario(String IdTipoEntidad, Boolean transac, Connection tCn) {
+    public ArrayList<Object> MostrarTipoEntidadFormulario(int IdTipoEntidad, Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psSelectConClave = null;
 
         try {
 
@@ -436,18 +413,9 @@ public class GestionTipoEntidad extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idTipoEntidad, p.nombre ";
-            query += "FROM tipoEntidad p ";
-            query += "WHERE  p.idTipoEntidad = " + IdTipoEntidad;
-
-
-            System.out.println("***********************************************");
-            System.out.println("*****       MostrarTipoEntidadFormulario     *****");
-            System.out.println("***********************************************");
-
-            System.out.println(query);
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            psSelectConClave = cn.prepareStatement("SELECT p.idTipoEntidad, p.nombre FROM tipoEntidad p WHERE  p.idTipoEntidad = ?");
+            psSelectConClave.setInt(1, IdTipoEntidad);
+            ResultSet rs = psSelectConClave.executeQuery();
 
             BeanTipoEntidad bu;
             while (rs.next()) {
@@ -457,8 +425,6 @@ public class GestionTipoEntidad extends ConeccionMySql {
                 setNombre(rs.getObject("p.nombre"));
 
             }
-
-            st.close();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -473,11 +439,11 @@ public class GestionTipoEntidad extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -500,11 +466,11 @@ public class GestionTipoEntidad extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -592,7 +558,6 @@ public class GestionTipoEntidad extends ConeccionMySql {
         }
 
     }
-
 //    private ArrayList<Object> GR_USUARIOS2;
 //
 //    public ArrayList<Object> MostrarUsuarios2(String aux, String aux2) {

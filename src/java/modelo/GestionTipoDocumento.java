@@ -4,14 +4,10 @@
  */
 package modelo;
 
-import forms.TipoDocumentoOpForm;
 import forms.TipoDocumentoForm;
+import forms.TipoDocumentoOpForm;
 import forms.bean.BeanTipoDocumento;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.text.SimpleDateFormat;
+import java.sql.*;
 import java.util.ArrayList;
 import util.ConeccionMySql;
 
@@ -28,6 +24,7 @@ public class GestionTipoDocumento extends ConeccionMySql {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psInsertar = null;
 
         try {
 
@@ -54,19 +51,18 @@ public class GestionTipoDocumento extends ConeccionMySql {
 
             }
 
-            String query = "insert into tipoDocumento     (nombre"
-                    + ") "
-                    + "values('"
-                    + f.getNombre() + "'"
-                    + ")";
+            psInsertar = cn.prepareStatement("insert into tipoDocumento (idTipoDocumento, nombre) values (null,?)", PreparedStatement.RETURN_GENERATED_KEYS);
+            psInsertar.setString(1, f.getNombre());
+            psInsertar.executeUpdate(); // Se ejecuta la inserción.
 
-            System.out.println(query);
-            st = cn.createStatement();
+            // Se obtiene la clave generada
+            int claveGenerada = -1;
+            ResultSet rs = psInsertar.getGeneratedKeys();
+            while (rs.next()) {
+                claveGenerada = rs.getInt(1);
+            }
+            mod = psInsertar.getUpdateCount();
 
-            st.execute(query);
-            mod = st.getUpdateCount();
-
-            st.close();
             if (transac == false) { // si no es una transaccion cierra la conexion
 
                 cn.close();
@@ -74,6 +70,7 @@ public class GestionTipoDocumento extends ConeccionMySql {
             }
 
             resultado.add(false); //si no hubo un error asigna false
+            resultado.add(claveGenerada); // clave Generada
             resultado.add(mod); // y el numero de registros consultados
 
         } catch (Exception e) {
@@ -81,11 +78,11 @@ public class GestionTipoDocumento extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -98,6 +95,7 @@ public class GestionTipoDocumento extends ConeccionMySql {
     public ArrayList<Object> MostrarTipoDocumento(Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psSelectConClave = null;
 
         try {
 
@@ -126,16 +124,8 @@ public class GestionTipoDocumento extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idTipoDocumento, p.nombre ";
-            query += "FROM tipoDocumento p ";
-
-            System.out.println("***********************************************");
-            System.out.println("*****       Cargando grilla  GR_TIPODOCUMENTO  *****");
-            System.out.println("***********************************************");
-
-            System.out.println(query);
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            psSelectConClave = cn.prepareStatement("SELECT p.idTipoDocumento, p.nombre FROM tipoDocumento p");
+            ResultSet rs = psSelectConClave.executeQuery();
 
             BeanTipoDocumento bu;
             while (rs.next()) {
@@ -147,8 +137,6 @@ public class GestionTipoDocumento extends ConeccionMySql {
                 GR_TIPODOCUMENTO.add(bu);
 
             }
-
-            st.close();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -164,11 +152,11 @@ public class GestionTipoDocumento extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -180,6 +168,7 @@ public class GestionTipoDocumento extends ConeccionMySql {
     public ArrayList<Object> MostrarTipoDocumentoOP(TipoDocumentoOpForm f, Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psSelectConClave = null;
 
         try {
 
@@ -212,19 +201,16 @@ public class GestionTipoDocumento extends ConeccionMySql {
             query += "FROM tipoDocumento p ";
             String query2 = "";
             if (f.getbNombre().isEmpty() != true) {
-                query2 = "p.nombre LIKE '%" + f.getbNombre() + "%'";
+                query2 = "p.nombre LIKE CONCAT('%',?,'%')";
             }
             if (query2.isEmpty() != true) {
                 query += "WHERE " + query2;
             }
-
-            System.out.println("***********************************************");
-            System.out.println("*****       Cargando grilla  GR_TIPODOCUMENTO  *****");
-            System.out.println("***********************************************");
-
-            System.out.println(query);
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            psSelectConClave = cn.prepareStatement(query);
+            if (f.getbNombre().isEmpty() != true) {
+                psSelectConClave.setString(1, f.getbNombre());
+            }
+            ResultSet rs = psSelectConClave.executeQuery();
 
             BeanTipoDocumento bu;
             while (rs.next()) {
@@ -236,8 +222,6 @@ public class GestionTipoDocumento extends ConeccionMySql {
                 GR_TIPODOCUMENTO.add(bu);
 
             }
-
-            st.close();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -253,11 +237,11 @@ public class GestionTipoDocumento extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -270,6 +254,7 @@ public class GestionTipoDocumento extends ConeccionMySql {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psUpdate = null;
 
         try {
 
@@ -296,17 +281,14 @@ public class GestionTipoDocumento extends ConeccionMySql {
 
             }
 
-            String query = "UPDATE tipoDocumento SET nombre = '" + f.getNombre() + "'";
-            query += " WHERE idTipoDocumento=" + f.getIdTipoDocumento();
+            String query = "UPDATE tipoDocumento SET nombre = ?";
+            query += " WHERE idTipoDocumento = ?";
+            psUpdate = cn.prepareStatement(query);
+            psUpdate.setString(1, f.getNombre());
+            psUpdate.setInt(2, f.getIdTipoDocumento());
+            psUpdate.executeUpdate();
 
-
-            System.out.println(query);
-            st = cn.createStatement();
-
-            st.executeUpdate(query);
-            mod = st.getUpdateCount();
-
-            st.close();
+            mod = psUpdate.getUpdateCount();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -322,11 +304,11 @@ public class GestionTipoDocumento extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -339,6 +321,7 @@ public class GestionTipoDocumento extends ConeccionMySql {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psDelete = null;
 
         try {
 
@@ -365,17 +348,11 @@ public class GestionTipoDocumento extends ConeccionMySql {
 
             }
 
-            String query = "DELETE FROM tipoDocumento ";
-            query += "WHERE  idTipoDocumento = " + f.getIdTipoDocumento();
+            psDelete = cn.prepareStatement("DELETE FROM tipoDocumento WHERE idTipoDocumento = ?");
+            psDelete.setInt(1, f.getIdTipoDocumento());
+            psDelete.executeUpdate();
 
-
-            System.out.println(query);
-            st = cn.createStatement();
-
-            st.executeUpdate(query);
-            mod = st.getUpdateCount();
-
-            st.close();
+            mod = psDelete.getUpdateCount();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -391,11 +368,11 @@ public class GestionTipoDocumento extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -404,9 +381,10 @@ public class GestionTipoDocumento extends ConeccionMySql {
 
     }
 
-    public ArrayList<Object> MostrarTipoDocumentoFormulario(String IdTipoDocumento, Boolean transac, Connection tCn) {
+    public ArrayList<Object> MostrarTipoDocumentoFormulario(int IdTipoDocumento, Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psSelectConClave = null;
 
         try {
 
@@ -433,18 +411,9 @@ public class GestionTipoDocumento extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idTipoDocumento, p.nombre ";
-            query += "FROM tipoDocumento p ";
-            query += "WHERE  p.idTipoDocumento = " + IdTipoDocumento;
-
-
-            System.out.println("***********************************************");
-            System.out.println("*****       MostrarTipoDocumentoFormulario     *****");
-            System.out.println("***********************************************");
-
-            System.out.println(query);
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            psSelectConClave = cn.prepareStatement("SELECT p.idTipoDocumento, p.nombre FROM tipoDocumento p WHERE p.idTipoDocumento = ?");
+            psSelectConClave.setInt(1, IdTipoDocumento);
+            ResultSet rs = psSelectConClave.executeQuery();
 
             while (rs.next()) {
 
@@ -452,8 +421,6 @@ public class GestionTipoDocumento extends ConeccionMySql {
                 setNombre(rs.getObject("p.nombre"));
 
             }
-
-            st.close();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
 
@@ -468,11 +435,11 @@ public class GestionTipoDocumento extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;
@@ -495,11 +462,11 @@ public class GestionTipoDocumento extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null){
+            if (cn != null) {
                 cn.rollback();
                 cn.close();
             }
-            
+
         } finally {
 
             return resultado;

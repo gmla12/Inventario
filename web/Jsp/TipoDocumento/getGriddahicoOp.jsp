@@ -7,7 +7,7 @@
 
 <%@page import="java.lang.Object"%>
 <%@page import="java.util.ArrayList"%>
-<%@page import="forms.bean.BeanPlantillaDispositivo"%>
+<%@page import="forms.bean.BeanTipoDocumento"%>
 <%
     String usuario = "";
     HttpSession sesionOk = request.getSession();
@@ -25,7 +25,7 @@
     int total_pages = 0;
     String op = request.getParameter("op");
     if (op.equals("bus")) {
-        ArrayList<Object> GR_AUT = (ArrayList) session.getAttribute("GR_PLANTILLADISPOSITIVO");
+        ArrayList<Object> GR_AUT = (ArrayList) session.getAttribute("GR_TIPODOCUMENTO");
         int intpage = new Integer(request.getParameter("page"));
         int limit = new Integer(request.getParameter("rows"));
 
@@ -36,7 +36,7 @@
          * -----------------------------------
          */
 
-        BeanPlantillaDispositivo buPlantillaDispositivo2;
+        BeanTipoDocumento buTipoDocumento2;
 
         /*
          * -----------------------------------
@@ -97,15 +97,14 @@
                 json = json + ",";
             }
 
-            buPlantillaDispositivo2 = new BeanPlantillaDispositivo();
-            buPlantillaDispositivo2 = (BeanPlantillaDispositivo) GR_AUT.get(i);
+            buTipoDocumento2 = new BeanTipoDocumento();
+            buTipoDocumento2 = (BeanTipoDocumento) GR_AUT.get(i);
 
             json = json + "\n{";
             json = json + "\"id\":\"" + i + "\",";
-            json = json + "\"cell\":[\"" + buPlantillaDispositivo2.getIdPlantillaDispositivo() + "\"";
-            json = json + ",\"" + buPlantillaDispositivo2.getNombre() + "\"";
-            json = json + ",\"" + buPlantillaDispositivo2.getHija() + "\"";
-            String aux2 = "<a href='javascript:modifica(&quot;" + buPlantillaDispositivo2.getIdPlantillaDispositivo() + "&quot;)'>Modificar</a>";
+            json = json + "\"cell\":[\"" + buTipoDocumento2.getIdTipoDocumento() + "\"";
+            json = json + ",\"" + buTipoDocumento2.getNombre() + "\"";
+            String aux2 = "<a href='javascript:modifica(&quot;" + buTipoDocumento2.getIdTipoDocumento() + "&quot;)'>Modificar</a>";
             json = json + ",\"" + aux2 + "\"]";
             json = json + "}";
 
