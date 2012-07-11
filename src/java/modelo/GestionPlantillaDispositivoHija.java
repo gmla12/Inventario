@@ -4,10 +4,11 @@
  */
 package modelo;
 
-import forms.PlantillaDispositivoForm;
-import forms.PlantillaDispositivoOpForm;
-import forms.bean.BeanPlantillaDispositivo;
-import java.sql.*;
+import forms.bean.BeanPlantillaDispositivoHija;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import util.ConeccionMySql;
 
@@ -15,12 +16,13 @@ import util.ConeccionMySql;
  *
  * @author Mario
  */
-public class GestionPlantillaDispositivo extends ConeccionMySql {
+public class GestionPlantillaDispositivoHija extends ConeccionMySql {
 
     Connection cn = null;
     Statement st = null;
+    private ArrayList<Object> GR_PLANTILLADISPOSITIVO;
 
-    public ArrayList<Object> IngresaPlantillaDispositivo(PlantillaDispositivoForm f, Boolean transac, Connection tCn) {
+    public ArrayList<Object> IngresaPlantillaDispositivoHija(int idPlantillaDispositivo, int idPlantillaDispositivoHija, Boolean transac, Connection tCn) {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
@@ -51,18 +53,11 @@ public class GestionPlantillaDispositivo extends ConeccionMySql {
 
             }
 
-            psInsertar = cn.prepareStatement("insert into plantillaDispositivo     (idPlantillaDispositivo, nombre, descripcion, serHija) values (null,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
-            psInsertar.setString(1, f.getNombre());
-            psInsertar.setString(2, f.getDescripcion());
-            psInsertar.setBoolean(3, f.getHija());
+            psInsertar = cn.prepareStatement("insert into plantillaDispositivoHija (idPlantillaDispositivo, idPlantillaDispositivoHija) values (?,?)");
+            psInsertar.setInt(1, idPlantillaDispositivo);
+            psInsertar.setInt(2, idPlantillaDispositivoHija);
             psInsertar.executeUpdate(); // Se ejecuta la inserción.
 
-            // Se obtiene la clave generada
-            int claveGenerada = -1;
-            ResultSet rs = psInsertar.getGeneratedKeys();
-            while (rs.next()) {
-                claveGenerada = rs.getInt(1);
-            }
             mod = psInsertar.getUpdateCount();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
@@ -72,7 +67,6 @@ public class GestionPlantillaDispositivo extends ConeccionMySql {
             }
 
             resultado.add(false); //si no hubo un error asigna false
-            resultado.add(claveGenerada); // clave Generada
             resultado.add(mod); // y el numero de registros consultados
 
         } catch (Exception e) {
@@ -80,11 +74,11 @@ public class GestionPlantillaDispositivo extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null) {
+            if (cn != null){
                 cn.rollback();
                 cn.close();
             }
-
+            
         } finally {
 
             return resultado;
@@ -92,9 +86,8 @@ public class GestionPlantillaDispositivo extends ConeccionMySql {
         }
 
     }
-    private ArrayList<Object> GR_PLANTILLADISPOSITIVO;
 
-    public ArrayList<Object> MostrarPlantillaDispositivo(Boolean transac, Connection tCn) {
+    public ArrayList<Object> MostrarPlantillaDispositivoHija(Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
         PreparedStatement psSelectConClave = null;
@@ -126,26 +119,23 @@ public class GestionPlantillaDispositivo extends ConeccionMySql {
 
             }
 
-            psSelectConClave = cn.prepareStatement("SELECT p.idPlantillaDispositivo, p.nombre, p.descripcion, p.serHija FROM plantillaDispositivo p");
+            psSelectConClave = cn.prepareStatement("SELECT  p.idPlantillaDispositivo, p.idPlantillaDispositivoHija, pd.nombre FROM plantillaDispositivoHija p INNER JOIN plantillaDispositivo pd ON p.idplantillaDispositivoHija = pd.idplantillaDispositivo");
             ResultSet rs = psSelectConClave.executeQuery();
 
-            BeanPlantillaDispositivo bu;
+            BeanPlantillaDispositivoHija bu;
             while (rs.next()) {
-                bu = new BeanPlantillaDispositivo();
+                bu = new BeanPlantillaDispositivoHija();
 
                 bu.setIdPlantillaDispositivo(rs.getObject("p.idPlantillaDispositivo"));
-                bu.setNombre(rs.getObject("p.nombre"));
-                bu.setDescripcion(rs.getObject("p.descripcion"));
-                bu.setHija(rs.getObject("p.serHija"));
+                bu.setIdPlantillaDispositivoHija(rs.getObject("p.idPlantillaDispositivoHija"));
+                bu.setNombre(rs.getObject("pd.nombre"));
 
                 GR_PLANTILLADISPOSITIVO.add(bu);
 
             }
 
             if (transac == false) { // si no es una transaccion cierra la conexion
-
                 cn.close();
-
             }
 
             resultado.add(false); //si no hubo un error asigna false
@@ -156,110 +146,11 @@ public class GestionPlantillaDispositivo extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null) {
+            if (cn != null){
                 cn.rollback();
                 cn.close();
             }
-
-        } finally {
-
-            return resultado;
-
-        }
-
-    }
-
-    public ArrayList<Object> MostrarPlantillaDispositivoOP(PlantillaDispositivoOpForm f, Boolean transac, Connection tCn) {
-
-        ArrayList<Object> resultado = new ArrayList<Object>();
-        PreparedStatement psSelectConClave = null;
-
-        try {
-
-            GR_PLANTILLADISPOSITIVO = new ArrayList<Object>();
-
-            if (transac == false) { //si no es una transaccion busca una nueva conexion
-
-                ArrayList<Object> resultad = new ArrayList<Object>();
-                resultad = (ArrayList) getConection();
-
-                if ((Boolean) resultad.get(0) == false) { // si no hubo error al obtener la conexion
-
-                    cn = (Connection) resultad.get(1);
-
-                } else { //si hubo error al obtener la conexion retorna el error para visualizar
-
-                    resultado.add(true);
-                    resultado.add(resultad.get(1));
-                    return resultado;
-
-                }
-
-            } else { //si es una transaccion asigna la conexion utilizada
-
-                cn = tCn;
-
-            }
-
-            String query = "SELECT p.idPlantillaDispositivo, p.nombre, p.descripcion, p.serHija ";
-            query += "FROM PlantillaDispositivo p ";
-            String query2 = "";
-            if (f.getbNombre().isEmpty() != true) {
-                query2 = "p.nombre LIKE CONCAT('%',?,'%')";
-            }
-            if (f.getbHija().isEmpty() != true) {
-                if (query2.equals("") != true) {
-                    query2 = query2 + " AND ";
-                }
-                query2 = query2 + "p.serHija = ?";
-            }
-            if (query2.isEmpty() != true) {
-                query += "WHERE " + query2;
-            }
-            psSelectConClave = cn.prepareStatement(query);
-            if (f.getbNombre().isEmpty() != true) {
-                psSelectConClave.setString(1, f.getbNombre());
-                if (f.getbHija().isEmpty() != true) {
-                    psSelectConClave.setBoolean(2, Boolean.parseBoolean(f.getbHija()));
-                }
-            } else {
-                if (f.getbHija().isEmpty() != true) {
-                    psSelectConClave.setBoolean(1, Boolean.parseBoolean(f.getbHija()));
-                }
-            }
-            ResultSet rs = psSelectConClave.executeQuery();
-
-            BeanPlantillaDispositivo bu;
-            while (rs.next()) {
-                bu = new BeanPlantillaDispositivo();
-
-                bu.setIdPlantillaDispositivo(rs.getObject("p.idPlantillaDispositivo"));
-                bu.setNombre(rs.getObject("p.nombre"));
-                bu.setHija(rs.getObject("p.serHija"));
-
-                GR_PLANTILLADISPOSITIVO.add(bu);
-
-            }
-
-            if (transac == false) { // si no es una transaccion cierra la conexion
-
-                cn.close();
-
-            }
-
-            resultado.add(false); //si no hubo un error asigna false
-            resultado.add(GR_PLANTILLADISPOSITIVO); // y registros consultados
-
-        } catch (Exception e) {
-
-            resultado.add(true); //si hubo error asigna true
-            resultado.add(e); //y asigna el error para retornar y visualizar
-
-            if (cn != null) {
-                cn.rollback();
-                cn.close();
-            }
-
+            
         } finally {
 
             return resultado;
@@ -300,29 +191,24 @@ public class GestionPlantillaDispositivo extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idPlantillaDispositivo, p.nombre, p.descripcion, p.serHija FROM plantillaDispositivo p WHERE p.idPlantillaDispositivo <> ? AND p.serHija = true AND p.idPlantillaDispositivo <> ALL (SELECT c.idPlantillaDispositivoHija FROM plantillaDispositivoHija c WHERE c.idPlantillaDispositivo = ?) AND p.idPlantillaDispositivo <> ALL (SELECT c.idPlantillaDispositivo FROM plantillaDispositivoHija c WHERE c.idPlantillaDispositivoHija = ?)";
-            psSelectConClave = cn.prepareStatement(query);
+            psSelectConClave = cn.prepareStatement("SELECT p.idPlantillaDispositivo, p.idPlantillaDispositivoHija, pd.nombre FROM plantillaDispositivoHija p INNER JOIN plantillaDispositivo pd ON p.idplantillaDispositivoHija = pd.idplantillaDispositivo WHERE p.idPlantillaDispositivo = ?");
             psSelectConClave.setInt(1, idPlantillaDispositivo);
-            psSelectConClave.setInt(2, idPlantillaDispositivo);
-            psSelectConClave.setInt(3, idPlantillaDispositivo);
             ResultSet rs = psSelectConClave.executeQuery();
 
-            BeanPlantillaDispositivo bu;
+            BeanPlantillaDispositivoHija bu;
             while (rs.next()) {
-                bu = new BeanPlantillaDispositivo();
+                bu = new BeanPlantillaDispositivoHija();
 
                 bu.setIdPlantillaDispositivo(rs.getObject("p.idPlantillaDispositivo"));
-                bu.setNombre(rs.getObject("p.nombre"));
-                bu.setHija(rs.getObject("p.serHija"));
+                bu.setIdPlantillaDispositivoHija(rs.getObject("p.idPlantillaDispositivoHija"));
+                bu.setNombre(rs.getObject("pd.nombre"));
 
                 GR_PLANTILLADISPOSITIVO.add(bu);
 
             }
 
             if (transac == false) { // si no es una transaccion cierra la conexion
-
                 cn.close();
-
             }
 
             resultado.add(false); //si no hubo un error asigna false
@@ -333,11 +219,11 @@ public class GestionPlantillaDispositivo extends ConeccionMySql {
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null) {
+            if (cn != null){
                 cn.rollback();
                 cn.close();
             }
-
+            
         } finally {
 
             return resultado;
@@ -346,11 +232,11 @@ public class GestionPlantillaDispositivo extends ConeccionMySql {
 
     }
 
-    public ArrayList<Object> ModificaPlantillaDispositivo(PlantillaDispositivoForm f, Boolean transac, Connection tCn) {
+    public ArrayList<Object> MostrarPlantillaDispositivoHija(int idPlantillaDispositivo, int idPlantillaDispositivoHija, Boolean transac, Connection tCn) {
 
-        int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
-        PreparedStatement psUpdate = null;
+        BeanPlantillaDispositivoHija bu = new BeanPlantillaDispositivoHija();
+        PreparedStatement psSelectConClave = null;
 
         try {
 
@@ -377,38 +263,37 @@ public class GestionPlantillaDispositivo extends ConeccionMySql {
 
             }
 
-            String query = "UPDATE plantillaDispositivo SET nombre = ?";
-            query += ", descripcion = ?";
-            query += ", serHija = ?";
-            query += " WHERE idPlantillaDispositivo = ?";
-            psUpdate = cn.prepareStatement(query);
-            psUpdate.setString(1, f.getNombre());
-            psUpdate.setString(2, f.getDescripcion());
-            psUpdate.setBoolean(3, f.getHija());
-            psUpdate.setInt(4, f.getIdPlantillaDispositivo());
-            psUpdate.executeUpdate();
+            psSelectConClave = cn.prepareStatement("SELECT p.idPlantillaDispositivo, p.idPlantillaDispositivoHija, pd.nombre FROM plantillaDispositivoHija p INNER JOIN plantillaDispositivo pd ON p.idplantillaDispositivoHija = pd.idplantillaDispositivo WHERE p.idplantillaDispositivo = ? AND p.idplantillaDispositivoHija = ?");
+            psSelectConClave.setInt(1, idPlantillaDispositivo);
+            psSelectConClave.setInt(2, idPlantillaDispositivoHija);
+            ResultSet rs = psSelectConClave.executeQuery();
 
-            mod = psUpdate.getUpdateCount();
+            while (rs.next()) {
+                bu = new BeanPlantillaDispositivoHija();
 
-            if (transac == false) { // si no es una transaccion cierra la conexion
-
-                cn.close();
+                bu.setIdPlantillaDispositivo(rs.getObject("p.idPlantillaDispositivo"));
+                bu.setIdPlantillaDispositivoHija(rs.getObject("p.idPlantillaDispositivoHija"));
+                bu.setNombre(rs.getObject("pd.nombre"));
 
             }
 
+            if (transac == false) { // si no es una transaccion cierra la conexion
+                cn.close();
+            }
+
             resultado.add(false); //si no hubo un error asigna false
-            resultado.add(mod); // y el numero de registros consultados
+            resultado.add(bu); // y registro consultado
 
         } catch (Exception e) {
 
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null) {
+            if (cn != null){
                 cn.rollback();
                 cn.close();
             }
-
+            
         } finally {
 
             return resultado;
@@ -417,7 +302,70 @@ public class GestionPlantillaDispositivo extends ConeccionMySql {
 
     }
 
-    public ArrayList<Object> EliminaPlantillaDispositivo(PlantillaDispositivoForm f, Boolean transac, Connection tCn) {
+    public ArrayList<Object> EliminaPlantillaDispositivoHija(int idPlantillaDispositivo, int idPlantillaDispositivoHija, Boolean transac, Connection tCn) {
+
+        int mod = -99;
+        ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psDelete = null;
+
+        try {
+
+            if (transac == false) { //si no es una transaccion busca una nueva conexion
+
+                ArrayList<Object> resultad = new ArrayList<Object>();
+                resultad = (ArrayList) getConection();
+
+                if ((Boolean) resultad.get(0) == false) { // si no hubo error al obtener la conexion
+
+                    cn = (Connection) resultad.get(1);
+
+                } else { //si hubo error al obtener la conexion retorna el error para visualizar
+
+                    resultado.add(true);
+                    resultado.add(resultad.get(1));
+                    return resultado;
+
+                }
+
+            } else { //si es una transaccion asigna la conexion utilizada
+
+                cn = tCn;
+
+            }
+
+            psDelete = cn.prepareStatement("DELETE FROM plantillaDispositivoHija WHERE  idPlantillaDispositivo = ? AND idPlantillaDispositivoHija = ?");
+            psDelete.setInt(1, idPlantillaDispositivo);
+            psDelete.setInt(2, idPlantillaDispositivoHija);
+            psDelete.executeUpdate();
+
+            mod = psDelete.getUpdateCount();
+
+            if (transac == false) { // si no es una transaccion cierra la conexion
+                cn.close();
+            }
+
+            resultado.add(false); //si no hubo un error asigna false
+            resultado.add(mod); //  y el numero de registros consultados
+
+        } catch (Exception e) {
+
+            resultado.add(true); //si hubo error asigna true
+            resultado.add(e); //y asigna el error para retornar y visualizar
+
+            if (cn != null){
+                cn.rollback();
+                cn.close();
+            }
+            
+        } finally {
+
+            return resultado;
+
+        }
+
+    }
+
+    public ArrayList<Object> EliminaPlantillaDispositivoHija(int idPlantillaDispositivo, Boolean transac, Connection tCn) {
 
         int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
@@ -449,99 +397,28 @@ public class GestionPlantillaDispositivo extends ConeccionMySql {
             }
 
             psDelete = cn.prepareStatement("DELETE FROM plantillaDispositivo WHERE  idPlantillaDispositivo = ?");
-            psDelete.setInt(1, f.getIdPlantillaDispositivo());
+            psDelete.setInt(1, idPlantillaDispositivo);
             psDelete.executeUpdate();
 
             mod = psDelete.getUpdateCount();
 
             if (transac == false) { // si no es una transaccion cierra la conexion
-
                 cn.close();
-
             }
 
             resultado.add(false); //si no hubo un error asigna false
-            resultado.add(mod); // y el numero de registros consultados
+            resultado.add(mod); //  y el numero de registros consultados
 
         } catch (Exception e) {
 
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null) {
+            if (cn != null){
                 cn.rollback();
                 cn.close();
             }
-
-        } finally {
-
-            return resultado;
-
-        }
-
-    }
-
-    public ArrayList<Object> MostrarPlantillaDispositivoFormulario(int IdPlantillaDispositivo, Boolean transac, Connection tCn) {
-
-        ArrayList<Object> resultado = new ArrayList<Object>();
-        PreparedStatement psSelectConClave = null;
-
-        try {
-
-            if (transac == false) { //si no es una transaccion busca una nueva conexion
-
-                ArrayList<Object> resultad = new ArrayList<Object>();
-                resultad = (ArrayList) getConection();
-
-                if ((Boolean) resultad.get(0) == false) { // si no hubo error al obtener la conexion
-
-                    cn = (Connection) resultad.get(1);
-
-                } else { //si hubo error al obtener la conexion retorna el error para visualizar
-
-                    resultado.add(true);
-                    resultado.add(resultad.get(1));
-                    return resultado;
-
-                }
-
-            } else { //si es una transaccion asigna la conexion utilizada
-
-                cn = tCn;
-
-            }
-
-            psSelectConClave = cn.prepareStatement("SELECT p.idPlantillaDispositivo, p.nombre, p.descripcion, p.serHija FROM plantillaDispositivo p WHERE  p.idPlantillaDispositivo = ?");
-            psSelectConClave.setInt(1, IdPlantillaDispositivo);
-            ResultSet rs = psSelectConClave.executeQuery();
-
-            while (rs.next()) {
-
-                setIdPlantillaDispositivo(rs.getObject("p.idPlantillaDispositivo"));
-                setNombre(rs.getObject("p.nombre"));
-                setDescripcion(rs.getObject("p.descripcion"));
-                setHija(rs.getObject("p.serHija"));
-
-            }
-
-            if (transac == false) { // si no es una transaccion cierra la conexion
-
-                cn.close();
-
-            }
-
-            resultado.add(false); //si no hubo un error asigna false
-
-        } catch (Exception e) {
-
-            resultado.add(true); //si hubo error asigna true
-            resultado.add(e); //y asigna el error para retornar y visualizar
-
-            if (cn != null) {
-                cn.rollback();
-                cn.close();
-            }
-
+            
         } finally {
 
             return resultado;
@@ -559,16 +436,16 @@ public class GestionPlantillaDispositivo extends ConeccionMySql {
             tCn.commit();
             resultado.add(false); //si no hubo un error asigna false
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
 
             resultado.add(true); //si hubo error asigna true
             resultado.add(e); //y asigna el error para retornar y visualizar
 
-            if (cn != null) {
+            if (cn != null){
                 cn.rollback();
                 cn.close();
             }
-
+            
         } finally {
 
             return resultado;
@@ -656,6 +533,41 @@ public class GestionPlantillaDispositivo extends ConeccionMySql {
         }
 
     }
+//    public void MostrarTipoDocumentoFormulario(String IdTipoDocumento) {
+//        try {
+//            cn = getConection();
+//
+//            String query = "SELECT p.idTipoDocumento, p.nombre ";
+//            query += "FROM tipoDocumento p ";
+//            query += "WHERE  p.idTipoDocumento = " + IdTipoDocumento;
+//
+//
+//            System.out.println("***********************************************");
+//            System.out.println("*****       MostrarTipoDocumentoFormulario     *****");
+//            System.out.println("***********************************************");
+//
+//            System.out.println(query);
+//            st = cn.createStatement();
+//            ResultSet rs = st.executeQuery(query);
+//
+//            BeanTipoDocumentoAnt bu;
+//            while (rs.next()) {
+//                bu = new BeanTipoDocumentoAnt();
+//
+//                setIdTipoDocumento(rs.getObject("p.idTipoDocumento"));
+//                setNombre(rs.getObject("p.nombre"));
+//
+//            }
+//
+//            st.close();
+//            cn.close();
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//        }
+//
+//    }
 //    private ArrayList<Object> GR_USUARIOS2;
 //
 //    public ArrayList<Object> MostrarUsuarios2(String aux, String aux2) {
@@ -708,25 +620,18 @@ public class GestionPlantillaDispositivo extends ConeccionMySql {
 //        return GR_USUARIOS2;
 //    }
 //}
+    private Object idCaracteristicaPlantilla;
     private Object idPlantillaDispositivo;
     private Object nombre;
-    private Object descripcion;
-    private Object hija;
+    private Object habilitar;
+    private Object obligatorio;
 
-    public Object getNombre() {
-        return nombre;
+    public Object getIdCaracteristicaPlantilla() {
+        return idCaracteristicaPlantilla;
     }
 
-    public void setNombre(Object nombre) {
-        this.nombre = nombre;
-    }
-
-    public Object getHija() {
-        return hija;
-    }
-
-    public void setHija(Object hija) {
-        this.hija = hija;
+    public void setIdCaracteristicaPlantilla(Object idCaracteristicaPlantilla) {
+        this.idCaracteristicaPlantilla = idCaracteristicaPlantilla;
     }
 
     public Object getIdPlantillaDispositivo() {
@@ -737,11 +642,27 @@ public class GestionPlantillaDispositivo extends ConeccionMySql {
         this.idPlantillaDispositivo = idPlantillaDispositivo;
     }
 
-    public Object getDescripcion() {
-        return descripcion;
+    public Object getNombre() {
+        return nombre;
     }
 
-    public void setDescripcion(Object descripcion) {
-        this.descripcion = descripcion;
+    public void setNombre(Object nombre) {
+        this.nombre = nombre;
+    }
+
+    public Object getHabilitar() {
+        return habilitar;
+    }
+
+    public void setHabilitar(Object habilitar) {
+        this.habilitar = habilitar;
+    }
+
+    public Object getObligatorio() {
+        return obligatorio;
+    }
+
+    public void setObligatorio(Object obligatorio) {
+        this.obligatorio = obligatorio;
     }
 }

@@ -5,9 +5,10 @@
     Blog:[URL="http://dahicotux.wordpress.com"]http://dahicotux.wordpress.com[/URL]
 --%>
 
+<%@page import="forms.bean.BeanPlantillaDispositivoHija"%>
 <%@page import="java.lang.Object"%>
 <%@page import="java.util.ArrayList"%>
-<%@page import="forms.bean.BeanCaracteristicaPlantilla"%>
+<%@page import="forms.bean.BeanPlantillaDispositivo"%>
 <%
     String usuario = "";
     HttpSession sesionOk = request.getSession();
@@ -26,7 +27,7 @@
     String op = request.getParameter("op");
     if (op != null) {
         if (op.equals("bus")) {
-            ArrayList<Object> GR_AUT = (ArrayList) session.getAttribute("GR_CARACTERISTICAPLANTILLA");
+            ArrayList<Object> GR_AUT = (ArrayList) session.getAttribute("GR_PlantillaDisponible");
             int intpage = new Integer(request.getParameter("page"));
             int limit = new Integer(request.getParameter("rows"));
 
@@ -37,7 +38,7 @@
              * -----------------------------------
              */
 
-            BeanCaracteristicaPlantilla buCaracteristicaPlantilla2;
+            BeanPlantillaDispositivo buPlantillaDispositivo2;
 
             /*
              * -----------------------------------
@@ -99,16 +100,13 @@
                     json = json + ",";
                 }
 
-                buCaracteristicaPlantilla2 = new BeanCaracteristicaPlantilla();
-                buCaracteristicaPlantilla2 = (BeanCaracteristicaPlantilla) GR_AUT.get(i);
+                buPlantillaDispositivo2 = new BeanPlantillaDispositivo();
+                buPlantillaDispositivo2 = (BeanPlantillaDispositivo) GR_AUT.get(i);
 
                 json = json + "\n{";
                 json = json + "\"id\":\"" + i + "\",";
-                json = json + "\"cell\":[" + buCaracteristicaPlantilla2.getIdCaracteristicaPlantilla() + "";
-                json = json + "," + buCaracteristicaPlantilla2.getIdPlantillaDispositivo() + "";
-                json = json + ",\"" + buCaracteristicaPlantilla2.getNombre() + "\"";
-                json = json + ",\"" + Boolean.valueOf(String.valueOf(buCaracteristicaPlantilla2.getHabilitar())) + "\"";
-                json = json + ",\"" + Boolean.valueOf(String.valueOf(buCaracteristicaPlantilla2.getObligatorio())) + "\"]";
+                json = json + "\"cell\":[" + buPlantillaDispositivo2.getIdPlantillaDispositivo() + "";
+                json = json + ",\"" + buPlantillaDispositivo2.getNombre() + "\"]";
                 json = json + "}";
 
                 rc = true;
@@ -120,9 +118,24 @@
 
             out.print(json);
             out.close();
+        }else{
+            if (op.equals("del")) {
+                int id = Integer.parseInt(String.valueOf(request.getParameter("id")));
+                ArrayList<Object> GR_PlantillaDisponible = (ArrayList) session.getAttribute("GR_PlantillaDisponible");
+                ArrayList<Object> GR_PlantillaHija = (ArrayList) session.getAttribute("GR_PlantillaHija");
+                BeanPlantillaDispositivo buPlantillaDispositivo;
+                BeanPlantillaDispositivoHija buPlantillaDispositivoHija = new BeanPlantillaDispositivoHija();
+                buPlantillaDispositivo = (BeanPlantillaDispositivo) GR_PlantillaDisponible.get(id);
+                GR_PlantillaDisponible.remove(id);
+                buPlantillaDispositivoHija.setIdPlantillaDispositivoHija(buPlantillaDispositivo.getIdPlantillaDispositivo());
+                buPlantillaDispositivoHija.setNombre(buPlantillaDispositivo.getNombre());
+                GR_PlantillaHija.add(buPlantillaDispositivoHija);
+                session.setAttribute("GR_PlantillaDisponible", GR_PlantillaDisponible);
+                session.setAttribute("GR_PlantillaHija", GR_PlantillaHija);
+            }
         }
     } else {
-        String oper = request.getParameter("oper");
+/*        String oper = request.getParameter("oper");
         if (oper != null) {
             if (oper.equals("add")) {
 
@@ -161,7 +174,7 @@
                 session.setAttribute("GR_Eliminados", GR_Eliminados);
 
             }
-        }
+        }*/
     }
 
 %>

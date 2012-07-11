@@ -12,11 +12,11 @@ import org.apache.struts.action.ActionForm;
  * @author mario
  */
 public class PlantillaDispositivoOpForm extends ActionForm{
-    private String bIdPlantillaDispositivo;
+    private int bIdPlantillaDispositivo;
     private String bNombre;
     private String bHija;
     private String op;
-    private String id;
+    private int id;
 
     public String getOp() {
         return op;
@@ -26,11 +26,11 @@ public class PlantillaDispositivoOpForm extends ActionForm{
         this.op = op;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -50,11 +50,11 @@ public class PlantillaDispositivoOpForm extends ActionForm{
         this.bHija = bHija;
     }
 
-    public String getbIdPlantillaDispositivo() {
+    public int getbIdPlantillaDispositivo() {
         return bIdPlantillaDispositivo;
     }
 
-    public void setbIdPlantillaDispositivo(String bIdPlantillaDispositivo) {
+    public void setbIdPlantillaDispositivo(int bIdPlantillaDispositivo) {
         this.bIdPlantillaDispositivo = bIdPlantillaDispositivo;
     }
 

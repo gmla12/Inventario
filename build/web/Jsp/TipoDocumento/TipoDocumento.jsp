@@ -181,7 +181,7 @@
                             if (request.getAttribute("getIdTipoDocumento") != "") {
                         %>
                         <tr>
-                            <td colspan="3" class="text">Por favor establezca cuales campos son obligatorios y habilitados.</td>
+                            <td colspan="3" class="text">Por favor establesca cuales campos son obligatorios y habilitados.</td>
                         </tr>
                         <tr>
                             <td colspan="3"><table id="list4"></table></td>

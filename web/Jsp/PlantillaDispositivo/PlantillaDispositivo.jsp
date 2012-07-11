@@ -66,80 +66,87 @@
                         //alert('El formulario ha sido validado correctamente!');
                     }
                 });
-                var grid = $("#list4"),
-                getColumnIndexByName = function(columnName1, columnName2) {
-                    var cm = grid.jqGrid('getGridParam','colModel'),i=0,l=cm.length;
-                    for (; i<l; i++) {
-                        if (cm[i].name===columnName1 || cm[i].name===columnName2) {
-                            return i; // return the index
-                        }
-                    }
-                    return -1;
-                },
-                disableIfChecked = function(elem, id, column){
-                    var checke = "";
-                    id=id;
-                    if ($(elem.target).is(':checked')) {
-                        checke="true";
-                    }else{
-                        checke="false";
-                    }
-                    $.ajax({
-                        type: "POST",
-                        url: "Jsp/PlantillaDispositivo/getGriddahico.jsp",
-                        data: "op=act&id="+id+"&column="+column+"&valor="+checke
-                    });
-                };
                 jQuery("#list4").jqGrid({
                     url:'Jsp/PlantillaDispositivo/getGriddahico.jsp?op=bus',
                     datatype: "json",
-                    height:180,
+                    height:100,
                     colNames:['IdCaracteristicaPlantilla', 'IdPlantillaDispositivo', 'Nombre', 'Habilitar', 'Obligatorio'],
                     colModel:[
                         {name:'idCaracteristicaPlantilla',index:'idCaracteristicaPlantilla', width:1},
                         {name:'idPlantillaDispositivo',index:'idPlantillaDispositivo', width:1},
-                        {name:'nombre',index:'nombre', width:160},
-                        {name:'habilitar',index:'habilitar', width:80, editable:true, align: "center",edittype:"checkbox", formatter:'checkbox', editoptions: { value: "true:false" }, formatoptions: {disabled : false}},
-                        {name:'obligatorio',index:'obligatorio', width:80, editable:true, align: "center",edittype:"checkbox", formatter:'checkbox', editoptions: { value:"true:false" }, formatoptions: {disabled : false}}		
+                        {name:'nombre',index:'nombre', width:360, editable:true, editrules:{required:true}},
+                        {name:'habilitar',index:'habilitar', width:80, editable:true, align: "center",edittype:"checkbox", formatter:'checkbox', editoptions: { value: "true:false" }},
+                        {name:'obligatorio',index:'obligatorio', width:80, editable:true, align: "center",edittype:"checkbox", formatter:'checkbox', editoptions: { value:"true:false" }}		
                     ],
                     pager: '#prowed1',
                     editurl: "Jsp/PlantillaDispositivo/getGriddahico.jsp",
-                    caption: "Lista de Caracteristicas",
-                    loadComplete: function() {
-                        //Para la columna habilitar
-                        var h=getColumnIndexByName('habilitar'), rows = this.rows, i, c = rows.length;
-                        for (i = 1; i < c; i += 1) {
-                            $(rows[i].cells[h]).click(function (e) {
-                                var id = $(e.target).closest('tr')[0].id;
-                                disableIfChecked(e, id, "habilitar");
-                            });
-                        }
-                        //Para la columna obligatorio
-                        var o=getColumnIndexByName('obligatorio');
-                        for (i = 1; i < c; i += 1) {
-                            $(rows[i].cells[o]).click(function (e) {
-                                var id = $(e.target).closest('tr')[0].id;
-                                disableIfChecked(e, id, "obligatorio");
-                            });
-                        }
-                    }
+                    caption: "Lista de Caracteristicas"
                 }); 
-                jQuery("#list4").jqGrid('navGrid',"#prowed1",{edit:true,add:false,del:false});
+                jQuery("#list4").jqGrid('navGrid',"#prowed1",{edit:false,add:false,del:true});
+                jQuery("#list4").jqGrid('inlineNav',"#prowed1");
                 //Ocultar Columna idTipoDocumento
-                jQuery("#list4").setGridParam().hideCol("idCaracterisitcaPlantilla").trigger("reloadGrid");
-                jQuery("#list4").setGridParam().hideCol("idPlantillaDispositivo").trigger("reloadGrid");
-                function checkboxFormatter(cellvalue, options, rowObject) {
-                    cellvalue = cellvalue + "";
-                    cellvalue = cellvalue.toLowerCase();
-                    var bchk = cellvalue.search(/(false|0|no|off|n)/i) < 0 ? " checked=" +checked : "";
-                    return "<input type='checkbox' onclick=" + disableIfChecked(this, '" + options.rowId + "');" " + bchk + " value='" + cellvalue + "' offval='no' />";
-                }
+                jQuery("#list4").setGridParam().hideCol(["idCaracteristicaPlantilla", "idPlantillaDispositivo"]).trigger("reloadGrid");
+
+                //Grilla Plantillas Dispositivos Disponibles
+                jQuery("#list5").jqGrid({
+                    url:'Jsp/PlantillaDispositivo/getGriddahicoDisponible.jsp?op=bus',
+                    datatype: "json",
+                    height:100,
+                    colNames:['IdPlantillaDispositivo', 'Nombre'],
+                    colModel:[
+                        {name:'idPlantillaDispositivo',index:'idPlantillaDispositivo', width:1},
+                        {name:'nombre',index:'nombre', width:360, editable:true}
+                    ],
+                    pager: '#prowed2',
+                    editurl: "Jsp/PlantillaDispositivo/getGriddahicoDisponible.jsp",
+                    caption: "Lista de Plantillas Disponibles"
+                }); 
+                jQuery("#list5").jqGrid('navGrid',"#prowed2",{edit:false,add:false,del:false});
+                //Ocultar Columna idTipoDocumento
+                jQuery("#list5").setGridParam().hideCol("idPlantillaDispositivo").trigger("reloadGrid");
+
+                //Grilla Plantillas Dispositivos Hijas
+                jQuery("#list6").jqGrid({
+                    url:'Jsp/PlantillaDispositivo/getGriddahicoHija.jsp?op=bus',
+                    datatype: "json",
+                    height:100,
+                    colNames:['IdPlantillaDispositivo', 'IdPlantillaDispositivoHija', 'Nombre'],
+                    colModel:[
+                        {name:'idPlantillaDispositivo',index:'idPlantillaDispositivo', width:1},
+                        {name:'idPlantillaDispositivoHija',index:'idPlantillaDispositivoHija', width:1},
+                        {name:'nombre',index:'nombre', width:360, editable:true}
+                    ],
+                    pager: '#prowed3',
+                    editurl: "Jsp/PlantillaDispositivo/getGriddahicoHija.jsp",
+                    caption: "Lista de Plantillas Hijas"
+                }); 
+                jQuery("#list6").jqGrid('navGrid',"#prowed3",{edit:false,add:false,del:false});
+                //Ocultar Columna idTipoDocumento
+                jQuery("#list6").setGridParam().hideCol(["idPlantillaDispositivo", "idPlantillaDispositivoHija"]).trigger("reloadGrid");
+                jQuery("#a2").click( function(){ 
+                    var idd = jQuery("#list5").jqGrid('getGridParam','selrow'); 
+                    if (idd) {
+                        $.post("Jsp/PlantillaDispositivo/getGriddahicoDisponible.jsp?op=del",{ id:idd },function(data){jQuery("#list5").trigger("reloadGrid");jQuery("#list6").trigger("reloadGrid")})
+                    }else{
+                        alert("Por favor, selecciones una Plantilla Disponible");
+                    }
+                });
+                jQuery("#a3").click( function(){ 
+                    var idd = jQuery("#list6").jqGrid('getGridParam','selrow'); 
+                    if (idd) {
+                        $.post("Jsp/PlantillaDispositivo/getGriddahicoHija.jsp?op=del",{ id:idd },function(data){jQuery("#list6").trigger("reloadGrid");jQuery("#list5").trigger("reloadGrid")})
+                    }else{
+                        alert("Por favor, selecciones una Plantilla Disponible");
+                    }
+                });
             }); 
 
             function nuevo(){
                 document.forms[0].op.value="";
                 document.forms[0].idPlantillaDispositivo.value="";
                 document.forms[0].nombre.value="";
+                document.forms[0].descripcion.value="";
+                document.forms[0].hija.value="";
             }
             
             function eliminar(){
@@ -176,12 +183,16 @@
 
                     <table>
                         <tr>
-                            <td colspan="2" class="text">Nombre de la Plantilla</td>
+                            <td class="text">Nombre de la Plantilla</td>
                             <td><html:text property="nombre" styleId="nombre" value='<%= String.valueOf(request.getAttribute("getNombre"))%>'></html:text></td>
                         </tr>
                         <tr>
-                            <td colspan="2" class="text">Puede ser Hija?</td>
-                            <td><html:select property="hija" styleId="hija" size="1" style="width:80px;" value='<%= (String) session.getAttribute("getHija")%>'>
+                            <td class="text">Descripcion</td>
+                            <td><html:textarea property="descripcion" styleId="descripcion" value='<%= String.valueOf(request.getAttribute("getDescripcion"))%>'></html:textarea></td>
+                        </tr>
+                        <tr>
+                            <td class="text">Puede ser Hija?</td>
+                            <td><html:select property="hija" styleId="hija" size="1" style="width:80px;" value='<%=String.valueOf(session.getAttribute("getHija"))%>'>
                                     <html:option value="true"><c:out value='Si'/></html:option>
                                     <html:option value="false"><c:out value='No'/></html:option>
                                 </html:select></td>
@@ -189,23 +200,40 @@
                         <%
                             if (request.getAttribute("getIdPlantillaDispositivo") != "") {
                         %>
+                        <tr><td colspan="9">&nbsp;</td></tr>
                         <tr>
-                            <td colspan="3" class="text">Por favor establezca cuales campos son obligatorios y habilitados.</td>
+                            <td colspan="9" class="text">Por favor establesca cuales serian las caracteristicas para esta plantilla.</td>
                         </tr>
+                        <tr><td colspan="9">&nbsp;</td></tr>
                         <tr>
-                            <td colspan="3"><table id="list4"></table></td>
-                            <td colspan="3"><div id="prowed1"></div></td>
+                            <td colspan="9"><table id="list4"></table></td>
+                            <td><div id="prowed1"></div></td>
+                        </tr>
+                        <tr><td colspan="9">&nbsp;</td></tr>
+                        <tr>
+                            <td colspan="9" class="text">En esta seccion puede asignar las plantillas hijas.</td>
+                        </tr>
+                        <tr><td colspan="9">&nbsp;</td></tr>
+                        <tr>
+                            <td colspan="3"><table id="list5"></table></td>
+                            <td><div id="prowed2"></div></td>
+                            <td><div align="center"><a class="boton" id="a2" href="#" title="Agregar Plantilla Disponible">></a></div><div align="center">&nbsp;</div><div align="center"><a class="boton" id="a3" href="#" title="Quitar Plantilla Hija"><</a></div></td>
+                            <td></td>
+                            <td><table id="list6"></table></td>
+                            <td><div id="prowed3"></div></td>
                         </tr>
                         <%  }
                         %>
+                        <tr><td colspan="9">&nbsp;</td></tr>
                         <tr>
-                            <td colspan="3"><a class="boton" href="javascript:nuevo();">Nuevo</a> <a class="boton" id="submit" href="javascript:guardar();">Guardar</a> <% if (request.getAttribute("getIdPlantillaDispositivo") != "") {%> <a class="boton" href="javascript:eliminar();">Eliminar</a> <% }%> <a class="boton" href="javascript:atras();">Volver</a></td>
+                            <td colspan="9"><a class="boton" href="javascript:nuevo();">Nuevo</a> <a class="boton" id="submit" href="javascript:guardar();">Guardar</a> <% if (request.getAttribute("getIdPlantillaDispositivo") != "") {%> <a class="boton" href="javascript:eliminar();">Eliminar</a> <% }%> <a class="boton" href="javascript:atras();">Volver</a></td>
                         </tr>
                         <%
                             if (request.getAttribute("respuesta") != "") {
                         %>
+                        <tr><td colspan="9">&nbsp;</td></tr>
                         <tr>
-                            <td class="text"><%= String.valueOf(request.getAttribute("respuesta"))%></td>
+                            <td colspan="9" class="text"><%= String.valueOf(request.getAttribute("respuesta"))%></td>
                         </tr>
                         <%  }
                         %>

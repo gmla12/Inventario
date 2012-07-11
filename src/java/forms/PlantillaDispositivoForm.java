@@ -12,10 +12,10 @@ import org.apache.struts.action.ActionForm;
  * @author Mario
  */
 public class PlantillaDispositivoForm extends ActionForm{
-    private String idPlantillaDispositivo;
+    private int idPlantillaDispositivo;
     private String nombre;
     private String descripcion;
-    private String hija;
+    private boolean hija;
     private String op;
     private boolean habilitar;
     private boolean obligatorio;
@@ -60,19 +60,19 @@ public class PlantillaDispositivoForm extends ActionForm{
         this.descripcion = descripcion;
     }
 
-    public String getHija() {
+    public boolean getHija() {
         return hija;
     }
 
-    public void setHija(String hija) {
+    public void setHija(boolean hija) {
         this.hija = hija;
     }
 
-    public String getIdPlantillaDispositivo() {
+    public int getIdPlantillaDispositivo() {
         return idPlantillaDispositivo;
     }
 
-    public void setIdPlantillaDispositivo(String idPlantillaDispositivo) {
+    public void setIdPlantillaDispositivo(int idPlantillaDispositivo) {
         this.idPlantillaDispositivo = idPlantillaDispositivo;
     }
     
