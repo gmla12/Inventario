@@ -22,15 +22,15 @@ public class GestionEntidad extends ConeccionMySql {
 
     public ArrayList<Object> IngresaEntidad(EntidadForm f, Boolean transac, Connection tCn) {
 
-        int mod = -99;
+        int mod;
         ArrayList<Object> resultado = new ArrayList<Object>();
-        PreparedStatement psInsertar = null;
+        PreparedStatement psInsertar;
 
         try {
 
             if (transac == false) { //si no es una transaccion busca una nueva conexion
 
-                ArrayList<Object> resultad = new ArrayList<Object>();
+                ArrayList<Object> resultad;
                 resultad = (ArrayList) getConection();
 
                 if ((Boolean) resultad.get(0) == false) { // si no hubo error al obtener la conexion
@@ -110,13 +110,13 @@ public class GestionEntidad extends ConeccionMySql {
         ArrayList<Object> resultado = new ArrayList<Object>();
         BeanEntidad bu;
         bu = new BeanEntidad();
-        PreparedStatement psSelectConClave = null;
+        PreparedStatement psSelectConClave;
 
         try {
 
             if (transac == false) { //si no es una transaccion busca una nueva conexion
 
-                ArrayList<Object> resultad = new ArrayList<Object>();
+                ArrayList<Object> resultad;
                 resultad = (ArrayList) getConection();
 
                 if ((Boolean) resultad.get(0) == false) { // si no hubo error al obtener la conexion
@@ -195,15 +195,14 @@ public class GestionEntidad extends ConeccionMySql {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
         BeanEntidad bu;
-        bu = new BeanEntidad();
         boolean encontro = false;
-        PreparedStatement psSelectConClave = null;
+        PreparedStatement psSelectConClave;
 
         try {
 
             if (transac == false) { //si no es una transaccion busca una nueva conexion
 
-                ArrayList<Object> resultad = new ArrayList<Object>();
+                ArrayList<Object> resultad;
                 resultad = (ArrayList) getConection();
 
                 if ((Boolean) resultad.get(0) == false) { // si no hubo error al obtener la conexion
@@ -276,7 +275,7 @@ public class GestionEntidad extends ConeccionMySql {
     public ArrayList<Object> MostrarEntidad(EntidadOpForm f, Boolean transac, Connection tCn) {
 
         ArrayList<Object> resultado = new ArrayList<Object>();
-        PreparedStatement psSelectConClave = null;
+        PreparedStatement psSelectConClave;
 
         try {
 
@@ -284,7 +283,7 @@ public class GestionEntidad extends ConeccionMySql {
 
             if (transac == false) { //si no es una transaccion busca una nueva conexion
 
-                ArrayList<Object> resultad = new ArrayList<Object>();
+                ArrayList<Object> resultad;
                 resultad = (ArrayList) getConection();
 
                 if ((Boolean) resultad.get(0) == false) { // si no hubo error al obtener la conexion
@@ -406,17 +405,97 @@ public class GestionEntidad extends ConeccionMySql {
 
     }
 
+    public ArrayList<Object> MostrarEntidad(Boolean transac, Connection tCn) {
+
+        ArrayList<Object> resultado = new ArrayList<Object>();
+        PreparedStatement psSelectConClave;
+
+        try {
+
+            GR_ENTIDAD = new ArrayList<Object>();
+
+            if (transac == false) { //si no es una transaccion busca una nueva conexion
+
+                ArrayList<Object> resultad;
+                resultad = (ArrayList) getConection();
+
+                if ((Boolean) resultad.get(0) == false) { // si no hubo error al obtener la conexion
+
+                    cn = (Connection) resultad.get(1);
+
+                } else { //si hubo error al obtener la conexion retorna el error para visualizar
+
+                    resultado.add(true);
+                    resultado.add(resultad.get(1));
+                    return resultado;
+
+                }
+
+            } else { //si es una transaccion asigna la conexion utilizada
+
+                cn = tCn;
+
+            }
+
+            String query = "SELECT p.idEntidad, IF(primernombre <> NULL AND primerapellido <> NULL, razonSocial, CONCAT(IF(primernombre <> NULL,'',CONCAT(primernombre,' ')), IF(segundonombre <> NULL,'',CONCAT(segundonombre,' ')), IF(primerapellido <> NULL,'',CONCAT(primerapellido,' ')), IF(segundoapellido <> NULL,'',CONCAT(segundoapellido,' ')))) as nombre ";
+            query += "FROM entidad p";
+
+            System.out.println("***********************************************");
+            System.out.println("*****       Cargando grilla  GR_ENTIDAD  *****");
+            System.out.println("***********************************************");
+            psSelectConClave = cn.prepareStatement(query);
+            ResultSet rs = psSelectConClave.executeQuery();
+
+            BeanEntidad bu;
+            while (rs.next()) {
+                bu = new BeanEntidad();
+
+                bu.setIdEntidad(rs.getObject("p.idEntidad"));
+                bu.setNombre(rs.getObject("nombre"));
+
+                GR_ENTIDAD.add(bu);
+
+
+            }
+
+            if (transac == false) { // si no es una transaccion cierra la conexion
+
+                cn.close();
+
+            }
+
+            resultado.add(false); //si no hubo un error asigna false
+            resultado.add(GR_ENTIDAD); // y registros consultados
+
+        } catch (SQLException e) {
+
+            resultado.add(true); //si hubo error asigna true
+            resultado.add(e); //y asigna el error para retornar y visualizar
+
+            if (cn != null) {
+                cn.rollback();
+                cn.close();
+            }
+
+        } finally {
+
+            return resultado;
+
+        }
+
+    }
+    
     public ArrayList<Object> ModificaEntidad(EntidadForm f, Boolean transac, Connection tCn) {
 
-        int mod = -99;
+        int mod;
         ArrayList<Object> resultado = new ArrayList<Object>();
-        PreparedStatement psUpdate = null;
+        PreparedStatement psUpdate;
 
         try {
 
             if (transac == false) { //si no es una transaccion busca una nueva conexion
 
-                ArrayList<Object> resultad = new ArrayList<Object>();
+                ArrayList<Object> resultad;
                 resultad = (ArrayList) getConection();
 
                 if ((Boolean) resultad.get(0) == false) { // si no hubo error al obtener la conexion
@@ -501,15 +580,15 @@ public class GestionEntidad extends ConeccionMySql {
 
     public ArrayList<Object> EliminaEntidad(EntidadForm f, Boolean transac, Connection tCn) {
 
-        int mod = -99;
+        int mod;
         ArrayList<Object> resultado = new ArrayList<Object>();
-        PreparedStatement psDelete = null;
+        PreparedStatement psDelete;
 
         try {
 
             if (transac == false) { //si no es una transaccion busca una nueva conexion
 
-                ArrayList<Object> resultad = new ArrayList<Object>();
+                ArrayList<Object> resultad;
                 resultad = (ArrayList) getConection();
 
                 if ((Boolean) resultad.get(0) == false) { // si no hubo error al obtener la conexion
@@ -565,15 +644,14 @@ public class GestionEntidad extends ConeccionMySql {
 
     public ArrayList<Object> MostrarEntidadFormulario(int IdEntidad, Boolean transac, Connection tCn) {
 
-        int mod = -99;
         ArrayList<Object> resultado = new ArrayList<Object>();
-        PreparedStatement psSelectConClave = null;
+        PreparedStatement psSelectConClave;
 
         try {
 
             if (transac == false) { //si no es una transaccion busca una nueva conexion
 
-                ArrayList<Object> resultad = new ArrayList<Object>();
+                ArrayList<Object> resultad;
                 resultad = (ArrayList) getConection();
 
                 if ((Boolean) resultad.get(0) == false) { // si no hubo error al obtener la conexion
@@ -631,7 +709,6 @@ public class GestionEntidad extends ConeccionMySql {
             }
 
             resultado.add(false); //si no hubo un error asigna false
-            resultado.add(mod); // y el numero de registros consultados
 
         } catch (SQLException e) {
 
@@ -728,7 +805,7 @@ public class GestionEntidad extends ConeccionMySql {
 
         try {
 
-            ArrayList<Object> resultad = new ArrayList<Object>();
+            ArrayList<Object> resultad;
             resultad = (ArrayList) getConection();
 
             if ((Boolean) resultad.get(0) == false) { // si no hubo error al obtener la conexion

@@ -188,6 +188,11 @@
                     addTab("Roles", "OpRoles.do");
                 }); 
 
+                $('#factura').click(function(e) {
+                    e.preventDefault();
+                    addTab("Factura", "OpFactura.do");
+                }); 
+
                 $('#cerrar').click(function(e) {
                     e.preventDefault();
                     window.parent.location.href = '/Inventario/Jsp/CerrarSesion.jsp';
@@ -228,6 +233,11 @@
                                 <li><a id="plantillaDispositivo" href='#'><span>Plantillas de Dispositivos</span></a></li>
                             </ul>
                         </li>
+                    </ul>
+                </li>
+                <li class='has-sub'><a href='#'><span>Operaciones</span></a>
+                    <ul>
+                        <li><a id="factura" href='#'><span>Factura</span></a></li>
                     </ul>
                 </li>
                 <li class='has-sub'><a href='#'><span>Seguridad</span></a>

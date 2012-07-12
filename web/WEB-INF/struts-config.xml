@@ -26,6 +26,8 @@
         <form-bean name="OpMunicipio" type="forms.MunicipioOpForm"/>
         <form-bean name="PlantillaDispositivo" type="forms.PlantillaDispositivoForm"/>
         <form-bean name="OpPlantillaDispositivo" type="forms.PlantillaDispositivoOpForm"/>
+        <form-bean name="Factura" type="forms.FacturaForm"/>
+        <form-bean name="OpFactura" type="forms.FacturaOpForm"/>
     </form-beans>
 
     <global-exceptions>
@@ -139,8 +141,19 @@
             <forward name="nuevo" path="/Jsp/PlantillaDispositivo/PlantillaDispositivo.jsp"/>
             <forward name="error" path="/Jsp/error.jsp" />
         </action>
+        <action input="/Jsp/Factura/Factura.jsp" name="Factura" path="/Factura" scope="session" type="actions.ActionFactura">
+            <forward name="ok" path="/Jsp/Factura/Factura.jsp"/>
+            <forward name="atras" path="/Jsp/Factura/OpFactura.jsp"/>
+            <forward name="error" path="/Jsp/error.jsp" />
+        </action>
+        <action input="/Jsp/Factura/OpFactura.jsp" name="OpFactura" path="/OpFactura" scope="request" type="actions.ActionFacturaOp" validate="false">
+            <forward name="ok" path="/Jsp/Factura/OpFactura.jsp"/>
+            <forward name="modificar" path="/Jsp/Factura/Factura.jsp"/>
+            <forward name="nuevo" path="/Jsp/Factura/Factura.jsp"/>
+            <forward name="error" path="/Jsp/error.jsp" />
+        </action>
         <action path="/Logout" name="LoginForm" type="actions.ActionSalir">
-            <forward name="ok" path="/ZFsoft/index.jsp" />
+            <forward name="ok" path="/index.jsp" />
             <forward name="error" path="/Jsp/error.jsp" />
         </action>
     </action-mappings>
