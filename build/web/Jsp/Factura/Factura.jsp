@@ -1,6 +1,6 @@
 <%-- 
-    Document   : PlantillaDispositivo
-    Created on : 29-junio-2012, 10:34:01
+    Document   : Factura
+    Created on : 13-julio-2012, 9:26:01
     Author     : Gilberth
 --%>
 
@@ -14,15 +14,19 @@
 <html:html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Plantilla de Dispositivo</title>
+        <title>Factura</title>
         <link type="text/css" href="/Inventario/css/ui.all.css" rel="stylesheet" />
         <link type="text/css" href="/Inventario/css/comun.css" rel="stylesheet" />
         <link rel="stylesheet" type="text/css" media="screen" href="/Inventario/css/ui.jqgrid.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="/Inventario/css/themes/ui-lightness/jquery.ui.datepicker.css"/>
         <script src="/Inventario/Js/jquery-1.7.2.min.js" type="text/javascript"></script>
         <script src="/Inventario/Js/i18n/grid.locale-es.js" type="text/javascript"></script>
         <script src="/Inventario/Js/jquery.jqGrid.min.js" type="text/javascript"></script>
         <script type="text/javascript" src="/Inventario/Js/jquery.validate.js"></script>
         <script src="/Inventario/Js/i18n/messages_es.js" type="text/javascript"></script>
+        <script src="/Inventario/Js/jquery.ui.datepicker.js" type="text/javascript"></script>
+        <script src="/Inventario/Js/jquery.ui.core.js" type="text/javascript"></script>
+        <script src="/Inventario/Js/i18n/jquery.ui.datepicker-es.js" type="text/javascript"></script>
         <link rel="stylesheet" type="text/css" media="all" href="/Inventario/niceforms_files/niceforms-default.css">
         <%
             String usuario = "";
@@ -40,9 +44,15 @@
 
         <script type="text/javascript">
             $(function(){ 
+                $("#fecha").datepicker({
+                    showOtherMonths: true,
+                    selectOtherMonths: true,
+                    changeYear: true,
+                    changeMonth: true
+                });
                 $('#submit').click(function(e) {
                     e.preventDefault();
-                    if(document.forms[0].idPlantillaDispositivo.value==""){
+                    if(document.forms[0].idFactura.value==""){
                         document.forms[0].op.value="nuevo";
                     }
                     else {
@@ -143,10 +153,10 @@
 
             function nuevo(){
                 document.forms[0].op.value="";
-                document.forms[0].idPlantillaDispositivo.value="";
-                document.forms[0].nombre.value="";
-                document.forms[0].descripcion.value="";
-                document.forms[0].hija.value="";
+                document.forms[0].idFactura.value="";
+                document.forms[0].idEntidad.value="";
+                document.forms[0].fecha.value="";
+                document.forms[0].total.value="";
             }
             
             function eliminar(){
@@ -173,29 +183,50 @@
     </head>
     <body>
         <div >
-            <html:form action="/PlantillaDispositivo" method="post" styleId="forma">
+            <html:form action="/Factura" method="post" styleId="forma">
 
                 <input type="hidden" name="op" value=""> 
-                <input type="hidden" name="idPlantillaDispositivo" value='<%= String.valueOf(request.getAttribute("getIdPlantillaDispositivo"))%>'> 
+                <input type="hidden" name="idFactura" value='<%= String.valueOf(request.getAttribute("getIdFactura"))%>'> 
 
                 <fieldset>
-                    <legend>Ingreso de Plantilla de Dispositivo</legend>
+                    <legend>Ingreso de Factura</legend>
 
                     <table>
                         <tr>
-                            <td class="text">Nombre de la Plantilla</td>
-                            <td><html:text property="nombre" styleId="nombre" value='<%= String.valueOf(request.getAttribute("getNombre"))%>'></html:text></td>
-                        </tr>
-                        <tr>
-                            <td class="text">Descripcion</td>
-                            <td><html:textarea property="descripcion" styleId="descripcion" value='<%= String.valueOf(request.getAttribute("getDescripcion"))%>'></html:textarea></td>
-                        </tr>
-                        <tr>
-                            <td class="text">Puede ser Hija?</td>
-                            <td><html:select property="hija" styleId="hija" size="1" style="width:80px;" value='<%=String.valueOf(session.getAttribute("getHija"))%>'>
-                                    <html:option value="true"><c:out value='Si'/></html:option>
-                                    <html:option value="false"><c:out value='No'/></html:option>
+                            <td class="text">Entidad</td>
+                            <% if (request.getAttribute("getIdFactura") != "") {%> 
+                            <td><html:select property="idEntidad" styleId="idEntidad" size="1" style="width:240px;" disabled="true" value='<%= String.valueOf(request.getAttribute("getIdEntidad"))%>'>
+                                    <c:forEach items="${CMB_ENTIDAD}" var="cat">
+                                        <html:option value="${cat.idEntidad}"><c:out value='${cat.nombre}'/></html:option>
+                                    </c:forEach>
                                 </html:select></td>
+                            <% } else {%> 
+                            <td><html:select property="idEntidad" styleId="idEntidad" size="1" style="width:240px;" value='<%= String.valueOf(request.getAttribute("getIdEntidad"))%>'>
+                                    <c:forEach items="${CMB_ENTIDAD}" var="cat">
+                                        <html:option value="${cat.idEntidad}"><c:out value='${cat.nombre}'/></html:option>
+                                    </c:forEach>
+                                </html:select></td>
+                            <% }%> 
+                        </tr>
+                        <tr>
+                            <td class="text">No. Factura</td>
+                            <% if (request.getAttribute("getIdFactura") != "") {%> 
+                            <td><html:text property="numFactura" readonly="true" styleId="numFactura" value='<%= String.valueOf(request.getAttribute("getNumFactura"))%>'></html:text></td>
+                            <% } else {%> 
+                            <td><html:text property="numFactura" styleId="numFactura" value='<%= String.valueOf(request.getAttribute("getNumFactura"))%>'></html:text></td>
+                            <% }%> 
+                        </tr>
+                        <tr>
+                            <td class="text">Fecha</td>
+                            <% if (request.getAttribute("getIdFactura") != "") {%> 
+                            <td><html:text property="fecha" readonly="true" styleId="fecha" value='<%= String.valueOf(request.getAttribute("getFecha"))%>'></html:text></td>
+                            <% } else {%> 
+                            <td><html:text property="fecha" styleId="fecha" value='<%= String.valueOf(request.getAttribute("getFecha"))%>'></html:text></td>
+                            <% }%> 
+                        </tr>
+                        <tr>
+                            <td class="text">Total</td>
+                            <td><html:text property="total" styleId="total" value='<%= String.valueOf(request.getAttribute("getTotal"))%>'></html:text></td>
                         </tr>
                         <%
                             if (request.getAttribute("getIdPlantillaDispositivo") != "") {

@@ -203,8 +203,8 @@ public class GestionFactura extends ConeccionMySql {
 
             }
 
-            String query = "SELECT p.idFactura, p.idEntidad, p.numFactura, p.fecha, p.total ";
-            query += "FROM factura p ";
+            String query = "SELECT p.idFactura, p.idEntidad, p.numFactura, DATE_FORMAT(p.fecha,'%d/%m/%Y') as fecha, p.total, r.idEntidad, IF(r.primernombre <> NULL AND r.primerapellido <> NULL, r.razonSocial, CONCAT(IF(r.primernombre <> NULL,'',CONCAT(r.primernombre,' ')), IF(r.segundonombre <> NULL,'',CONCAT(r.segundonombre,' ')), IF(r.primerapellido <> NULL,'',CONCAT(r.primerapellido,' ')), IF(r.segundoapellido <> NULL,'',CONCAT(r.segundoapellido,' ')))) as nombreEntidad ";
+            query += "FROM factura p INNER JOIN entidad r ON p.idEntidad = r.idEntidad";
             String query2 = "";
             if (f.getbIdEntidad().isEmpty() != true) {
                 query2 = "p.idEntidad = ?";
@@ -219,10 +219,10 @@ public class GestionFactura extends ConeccionMySql {
                 if (query2.equals("") != true) {
                     query2 = query2 + " AND ";
                 }
-                query2 = query2 + "p.fecha = ?";
+                query2 = query2 + "DATE_FORMAT(fecha,'%d/%m/%Y') = ?";
             }
             if (query2.isEmpty() != true) {
-                query += "WHERE " + query2;
+                query += " WHERE " + query2;
             }
             psSelectConClave = cn.prepareStatement(query);
             if (f.getbIdEntidad().isEmpty() != true) {
@@ -230,22 +230,22 @@ public class GestionFactura extends ConeccionMySql {
                 if (f.getbNumFactura().isEmpty() != true) {
                     psSelectConClave.setString(2, f.getbNumFactura());
                     if (f.getbFecha().isEmpty() != true) {
-                        psSelectConClave.setDate(3, Date.valueOf(f.getbFecha()));
+                        psSelectConClave.setString(3, f.getbFecha());
                     }
                 } else {
                     if (f.getbFecha().isEmpty() != true) {
-                        psSelectConClave.setDate(2, Date.valueOf(f.getbFecha()));
+                        psSelectConClave.setString(2, f.getbFecha());
                     }
                 }
             } else {
                 if (f.getbNumFactura().isEmpty() != true) {
                     psSelectConClave.setString(1, f.getbNumFactura());
                     if (f.getbFecha().isEmpty() != true) {
-                        psSelectConClave.setDate(2, Date.valueOf(f.getbFecha()));
+                        psSelectConClave.setString(2, f.getbFecha());
                     }
                 }else{
                     if (f.getbFecha().isEmpty() != true) {
-                        psSelectConClave.setDate(1, Date.valueOf(f.getbFecha()));
+                        psSelectConClave.setString(1, f.getbFecha());
                     }
                 }
             }
@@ -257,8 +257,10 @@ public class GestionFactura extends ConeccionMySql {
 
                 bu.setIdFactura(rs.getObject("p.idFactura"));
                 bu.setIdEntidad(rs.getObject("p.idEntidad"));
+                bu.setNombreEntidad(rs.getObject("nombreEntidad"));
                 bu.setNumFactura(rs.getObject("p.numFactura"));
-                bu.setFecha(rs.getObject("p.fecha"));
+                bu.setFecha(rs.getObject("fecha"));
+                bu.setTotal(rs.getObject("p.total"));
 
                 GR_FACTURA.add(bu);
 
@@ -456,7 +458,7 @@ public class GestionFactura extends ConeccionMySql {
 
             }
 
-            psSelectConClave = cn.prepareStatement("SELECT p.idFactura, p.idEntidad, p.numFactura, p.fecha, p.total FROM factura p WHERE p.idFactura = ?");
+            psSelectConClave = cn.prepareStatement("SELECT p.idFactura, p.idEntidad, p.numFactura, DATE_FORMAT(p.fecha,'%d/%m/%Y') as fecha, p.total FROM factura p WHERE p.idFactura = ?");
             psSelectConClave.setInt(1, IdFactura);
             ResultSet rs = psSelectConClave.executeQuery();
 
@@ -465,7 +467,7 @@ public class GestionFactura extends ConeccionMySql {
                 setIdFactura(rs.getObject("p.idFactura"));
                 setIdEntidad(rs.getObject("p.idEntidad"));
                 setNumFactura(rs.getObject("p.numFactura"));
-                setFecha(rs.getObject("p.fecha"));
+                setFecha(rs.getObject("fecha"));
                 setTotal(rs.getObject("p.total"));
 
             }

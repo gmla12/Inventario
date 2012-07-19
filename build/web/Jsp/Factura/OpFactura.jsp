@@ -14,13 +14,17 @@
 <html:html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link type="text/css" href="/Inventario/css/ui.all.css" rel="stylesheet" />
-        <link type="text/css" href="/Inventario/css/comun.css" rel="stylesheet" />
+        <link type="text/css" href="/Inventario/css/ui.all.css" rel="stylesheet"/>
+        <link type="text/css" href="/Inventario/css/comun.css" rel="stylesheet"/>
         <link rel="stylesheet" type="text/css" media="all" href="/Inventario/niceforms_files/niceforms-default.css">
-        <link rel="stylesheet" type="text/css" media="screen" href="/Inventario/css/ui.jqgrid.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="/Inventario/css/ui.jqgrid.css"/>
+        <link rel="stylesheet" type="text/css" media="screen" href="/Inventario/css/themes/ui-lightness/jquery.ui.datepicker.css"/>
         <script src="/Inventario/Js/jquery-1.7.2.min.js" type="text/javascript"></script>
         <script src="/Inventario/Js/i18n/grid.locale-es.js" type="text/javascript"></script>
         <script src="/Inventario/Js/jquery.jqGrid.min.js" type="text/javascript"></script>
+        <script src="/Inventario/Js/jquery.ui.datepicker.js" type="text/javascript"></script>
+        <script src="/Inventario/Js/jquery.ui.core.js" type="text/javascript"></script>
+        <script src="/Inventario/Js/i18n/jquery.ui.datepicker-es.js" type="text/javascript"></script>
         <title>Opciones Factura</title>
         <%
             String usuario = "";
@@ -45,15 +49,22 @@
 
         <script type="text/javascript">
             $(function(){ 
+                $("#bFecha").datepicker({
+                    showOtherMonths: true,
+                    selectOtherMonths: true,
+                    changeYear: true,
+                    changeMonth: true
+                });
                 jQuery("#list4").jqGrid({
                     url:'Jsp/Factura/getGriddahicoOp.jsp?op=bus',
                     datatype: "json",
-                    colNames:['ID', 'Entidad', 'No. Factura', 'Fecha', 'Editar'],
+                    colNames:['ID', 'Entidad', 'No. Factura', 'Fecha', 'Total', 'Editar'],
                     colModel:[
                         {name:'idFactura',index:'idFactura', width:50, sortable:false},
-                        {name:'nombreEntidad',index:'nombreEntidad', width:160, sortable:false},
+                        {name:'nombreEntidad',index:'nombreEntidad', width:360, sortable:false},
                         {name:'numFactura',index:'numFactura', width:160, sortable:false},
                         {name:'fecha',index:'fecha', width:160, sortable:false},
+                        {name:'total',index:'total', width:160, sortable:false},
                         {name:'editar',index:'editar', width:110, formatter:'showlink', sortable:false}
                     ],
                     pager: '#prowed1',
@@ -99,9 +110,9 @@
                                 <c:forEach items="${CMB_ENTIDAD}" var="cat">
                                     <html:option value="${cat.idEntidad}"><c:out value='${cat.nombre}'/></html:option>
                                 </c:forEach>
-                        </html:select></td>
-                        <td>No. Factura<input size="15" type="text" name="bNumFactura" value="<%= session.getAttribute("getbNumFactura")%>"/> </td>
-                        <td>Fecha<input size="10" type="text" name="bFecha" value="<%= session.getAttribute("getbFecha")%>"/> </td>
+                            </html:select></td>
+                        <td>No. Factura<input size="15" type="text" name="bNumFactura" value="<%= session.getAttribute("getbNumFactura")%>"></td>
+                        <td>Fecha<input size="10" type="text" name="bFecha" id="bFecha" value="<%= session.getAttribute("getbFecha")%>"></td>
                         <td><a class="boton" href="javascript:buscar()">Buscar</a></td>
                         <td><a class="boton" href="javascript:nuevo()">Nuevo</a></td>
                     </tr>

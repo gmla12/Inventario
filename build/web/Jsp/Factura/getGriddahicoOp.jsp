@@ -7,7 +7,7 @@
 
 <%@page import="java.lang.Object"%>
 <%@page import="java.util.ArrayList"%>
-<%@page import="forms.bean.BeanPlantillaDispositivo"%>
+<%@page import="forms.bean.BeanFactura"%>
 <%
     String usuario = "";
     HttpSession sesionOk = request.getSession();
@@ -25,7 +25,7 @@
     int total_pages = 0;
     String op = request.getParameter("op");
     if (op.equals("bus")) {
-        ArrayList<Object> GR_AUT = (ArrayList) session.getAttribute("GR_PLANTILLADISPOSITIVO");
+        ArrayList<Object> GR_AUT = (ArrayList) session.getAttribute("GR_FACTURA");
         int intpage = new Integer(request.getParameter("page"));
         int limit = new Integer(request.getParameter("rows"));
 
@@ -36,7 +36,7 @@
          * -----------------------------------
          */
 
-        BeanPlantillaDispositivo buPlantillaDispositivo2;
+        BeanFactura buFactura2;
 
         /*
          * -----------------------------------
@@ -97,21 +97,17 @@
                 json = json + ",";
             }
 
-            buPlantillaDispositivo2 = new BeanPlantillaDispositivo();
-            buPlantillaDispositivo2 = (BeanPlantillaDispositivo) GR_AUT.get(i);
+            buFactura2 = new BeanFactura();
+            buFactura2 = (BeanFactura) GR_AUT.get(i);
 
             json = json + "\n{";
             json = json + "\"id\":\"" + i + "\",";
-            json = json + "\"cell\":[\"" + buPlantillaDispositivo2.getIdPlantillaDispositivo() + "\"";
-            json = json + ",\"" + buPlantillaDispositivo2.getNombre() + "\"";
-            String hhija = "";
-            if (buPlantillaDispositivo2.getHija().toString().contentEquals("true")){
-                hhija = "Si"; 
-            } else { 
-                hhija = "No"; 
-            }
-            json = json + ",\"" + hhija + "\"";
-            String aux2 = "<a href='javascript:modifica(&quot;" + buPlantillaDispositivo2.getIdPlantillaDispositivo() + "&quot;)'>Modificar</a>";
+            json = json + "\"cell\":[\"" + buFactura2.getIdFactura() + "\"";
+            json = json + ",\"" + buFactura2.getNombreEntidad() + "\"";
+            json = json + ",\"" + buFactura2.getNumFactura() + "\"";
+            json = json + ",\"" + buFactura2.getFecha() + "\"";
+            json = json + ",\"" + buFactura2.getTotal() + "\"";
+            String aux2 = "<a href='javascript:modifica(&quot;" + buFactura2.getIdFactura() + "&quot;)'>Modificar</a>";
             json = json + ",\"" + aux2 + "\"]";
             json = json + "}";
 

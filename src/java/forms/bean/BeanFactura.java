@@ -15,6 +15,7 @@ public class BeanFactura implements Serializable{
 
     private Object idFactura;
     private Object idEntidad;
+    private Object nombreEntidad;
     private Object numFactura;
     private Object fecha;
     private Object total;
@@ -57,6 +58,14 @@ public class BeanFactura implements Serializable{
 
     public void setTotal(Object total) {
         this.total = total;
+    }
+
+    public Object getNombreEntidad() {
+        return nombreEntidad;
+    }
+
+    public void setNombreEntidad(Object nombreEntidad) {
+        this.nombreEntidad = nombreEntidad;
     }
 
 }
